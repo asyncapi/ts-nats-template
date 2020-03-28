@@ -1,18 +1,18 @@
 {
-  "name": "@asyncapi/nats-ts-template",
-  "version": "0.1.0",
-  "description": "Nats typescript template for the AsyncAPI generator.",
-  "keywords": [
-    "asyncapi",
-    "generator",
-    "ts",
-    "nats",
-    "template"
-  ],
-  "author": "Jonas Lagoni (jonas-lt@live.dk)",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "filenamify": "^4.1.0",
-    "lodash": "^4.17.15"
-  }
+	"name": "@asyncapi/ts-nats-template",
+	"version": "0.1.0",
+	"description": "Nats typescript template for the AsyncAPI generator.",
+	"keywords": [
+		"asyncapi",
+		"generator",
+		"ts",
+		"nats",
+		"template"
+	],
+	"author": "Jonas Lagoni (jonas-lt@live.dk)",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"filenamify": "^4.1.0",
+		"lodash": "^4.17.15"
+	}
 }
