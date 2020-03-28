@@ -25,8 +25,7 @@ export default class NatsAsyncApiClient {
 	 * @param options options to use, payload is omitted if sat in the AsyncAPI document.
 	 */
   constructor(options : NatsConnectionOptions) {
-    options = this.setDefaultOptions(options);
-    this.options = options;
+		this.options = this.setDefaultOptions(options);
     this.connect();
   }
 
@@ -35,11 +34,14 @@ export default class NatsAsyncApiClient {
    */
   private async connect(){
     try{
-
+      {%- if asyncapi | containsBinaryPayload %}
       this.options.payload = Payload.BINARY;
       this.binaryClient = await connect(this.options);
+      {%- endif %}
+      {%- if asyncapi | containsStringPayload %}
       this.options.payload = Payload.STRING;
       this.stringClient = await connect(this.options);
+      {%- endif %}
       {%- if asyncapi | containsJsonPayload %}
       this.options.payload = Payload.JSON;
       this.jsonClient = await connect(this.options);
@@ -63,19 +65,19 @@ export default class NatsAsyncApiClient {
 
   {%- if channel | isRequestReply %}
     {%- if channel | isRequester %}
-    {{request(channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description())}}
+    {{request(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description())}}
     {%- endif %}
     {%- if channel | isReplier %}
-    {{reply(channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description())}}
+    {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description())}}
     {%- endif %}
   {%- endif %}
 
   {%- if channel | isPubsub %}
     {%- if channel.hasSubscribe() %}
-    {{subscribe(channelName, channel.subscribe().message(0), channel.description())}}
+    {{subscribe(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.description())}}
     {%- endif %}
     {%- if channel.hasPublish() %}
-    {{publish(channelName, channel.publish().message(0), channel.description())}}
+    {{publish(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.description())}}
     {%- endif %}
   {%- endif %}
 

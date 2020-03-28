@@ -1,10 +1,19 @@
 
-{% macro subscribe(channelName, message, messageDescription) %}
+{% macro subscribe(defaultContentType, channelName, message, messageDescription) %}
   /**
   *  {{messageDescription}}
   * @param onDataCallback Called when message recieved.
   */
   public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message) => void): Promise<Subscription> {
-    return {{ channelName | camelCase }}Channel.subscribe(onDataCallback, this.nc);
+    {%- if message | isBinaryPayload(defaultContentType) %}
+    Client nc = this.binaryClient;
+    {%- endif %}
+    {%- if message | isStringPayload(defaultContentType) %}
+    Client nc = this.stringClient;
+    {%- endif %}
+    {%- if message | isJsonPayload(defaultContentType) %}
+    Client nc = this.jsonClient;
+    {%- endif %}
+    return {{ channelName | camelCase }}Channel.subscribe(onDataCallback, nc);
   }
 {% endmacro %}

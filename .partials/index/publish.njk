@@ -1,10 +1,19 @@
 
-{% macro publish(channelName, message, messageDescription) %}
+{% macro publish(defaultContentType, channelName, message, messageDescription) %}
   /**
   *  {{messageDescription}}
   * @param requestMessage The message to publish.
   */
   public publishTo{{channelName | pascalCase }}(requestMessage: {{ message.uid() | pascalCase }}Message): Promise<void> {
-    return {{ channelName | camelCase }}Channel.publish(requestMessage, this.nc);
+    {%- if message | isBinaryPayload(defaultContentType) %}
+    Client nc = this.binaryClient;
+    {%- endif %}
+    {%- if message | isStringPayload(defaultContentType) %}
+    Client nc = this.stringClient;
+    {%- endif %}
+    {%- if message | isJsonPayload(defaultContentType) %}
+    Client nc = this.jsonClient;
+    {%- endif %}
+    return {{ channelName | camelCase }}Channel.publish(requestMessage, nc);
   }
 {% endmacro %}
