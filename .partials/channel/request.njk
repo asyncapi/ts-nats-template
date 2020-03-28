@@ -1,0 +1,27 @@
+
+{% macro request(channelName, publishMessage, subscribtionMessage, server) %}
+export function request(requestMessage: {{publishMessage.uid() | pascalCase}}Message, nc?: Client): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
+  return new Promise<{{subscribtionMessage.uid() | pascalCase}}Message>(async (resolve, reject) => {
+    if (nc) {
+      try {
+        let inbox = nc.createInbox();
+        await nc.subscribe(inbox, (err, msg) => {
+          if (err) {
+            reject(err);
+          } else {
+            let processedData = utils.processRecievedData(msg.data, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
+            resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedData));
+          }
+        }, { max: 1 });
+        let requestData = utils.beforeRequest(requestMessage, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
+        nc.publish('{{channelName}}', requestData, inbox);
+      }catch(e){
+        reject(e);
+      }
+    } else {
+      reject(new Error("Nats client is not connected"));
+    }
+  })
+}
+
+{% endmacro %}

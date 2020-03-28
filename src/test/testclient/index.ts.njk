@@ -1,0 +1,70 @@
+
+{%- from "../../../.partials/index/publish.njk" import publish %}
+{%- from "../../../.partials/index/reply.njk" import reply %}
+{%- from "../../../.partials/index/request.njk" import request %}
+{%- from "../../../.partials/index/subscribe.njk" import subscribe %}
+
+import { Client, NatsConnectionOptions, connect, Payload, NatsError, Subscription } from 'ts-nats';
+
+{%- for channelName, channel in asyncapi.channels() %}
+import * as {{ channelName | camelCase }}Channel from "./testchannels/{{ channelName | firstUpperCase }}";
+{%- endfor %}
+
+{%- for messageName, message in asyncapi.allMessages() %}
+import {default as {{ messageName | pascalCase }}Message} from "../../messages/{{ messageName | pascalCase }}";
+{%- endfor %}
+
+export default class NatsAsyncApiClient {
+  public nc?: Client;
+  public options: NatsConnectionOptions;
+  constructor(options : NatsConnectionOptions) {
+    options = this.setDefaultOptions(options);
+    this.options = options;
+    this.connect(options);
+  }
+
+  /**
+   * Try to connect to the NATS server.
+   * @param options The connection options for NATS
+   */
+  private async connect(options : NatsConnectionOptions){
+    try{
+      this.nc = await connect(options);
+    }catch(e){
+      console.error("Could not connect to NATS: " + e)
+    }
+  }
+
+  /**
+   * Set the default options from the AsyncAPI file.
+   * @param options The options to set
+   */
+  private setDefaultOptions(options: NatsConnectionOptions){
+    //If server binding options sat set the options
+    options.encoding = 'utf8';
+    options.payload = Payload.BINARY;
+    return options;
+  }
+
+  {%- for channelName, channel in asyncapi.channels() %}
+
+  {%- if channel | isRequestReply %}
+    {%- if channel | isRequester %}
+    {{reply(channelName, channel.publish().message(0), channel.subscribe().message(0), channel)}}
+    {%- endif %}
+    {%- if channel | isReplier %}
+    {{request(channelName, channel.subscribe().message(0), channel.publish().message(0), channel)}}
+    {%- endif %}
+  {%- endif %}
+
+  {%- if channel | isPubsub %}
+    {%- if channel.hasSubscribe() %}
+    {{publish(channelName, channel.subscribe().message(0), channel)}}
+    {%- endif %}
+    {%- if channel.hasPublish() %}
+    {{subscribe(channelName, channel.publish().message(0), channel)}}
+    {%- endif %}
+  {%- endif %}
+
+  {%- endfor %}
+}
