@@ -22,14 +22,13 @@ export default class NatsAsyncApiClient {
   constructor(options : NatsConnectionOptions) {
     options = this.setDefaultOptions(options);
     this.options = options;
-    this.connect(options);
+    this.connect();
   }
 
   /**
-   * Try to connect to the NATS server.
-   * @param options The connection options for NATS
+   * Try to connect to the NATS server with the different payloads.
    */
-  private async connect(options : NatsConnectionOptions){
+  private async connect(){
     try{
       {%- if asyncapi | containsJsonPayload %}
 
@@ -38,6 +37,11 @@ export default class NatsAsyncApiClient {
     }catch(e){
       console.error("Could not connect to NATS: " + e)
     }
+  }
+
+  private async connectJsonPayload(){
+
+    return connect(options);
   }
 
   /**

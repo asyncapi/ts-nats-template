@@ -10,6 +10,11 @@ module.exports = ({ Nunjucks }) => {
 	Nunjucks.addFilter('camelCase', string => {
 		return camelCase(string);
 	});
+
+	Nunjucks.addFilter('containsJsonPayload', server => {
+		return true;
+	});
+
 	function camelCase(string) {
 		return _.camelCase(string);
 	}
