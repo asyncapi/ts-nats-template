@@ -19,6 +19,11 @@ export default class NatsAsyncApiClient {
   public stringClient?: Client;
   public binaryClient?: Client;
   public options: NatsConnectionOptions;
+
+	/**
+	 *
+	 * @param options options to use, payload is omitted if sat in the AsyncAPI document.
+	 */
   constructor(options : NatsConnectionOptions) {
     options = this.setDefaultOptions(options);
     this.options = options;
@@ -30,18 +35,18 @@ export default class NatsAsyncApiClient {
    */
   private async connect(){
     try{
-      {%- if asyncapi | containsJsonPayload %}
 
+      this.options.payload = Payload.BINARY;
+      this.binaryClient = await connect(this.options);
+      this.options.payload = Payload.STRING;
+      this.stringClient = await connect(this.options);
+      {%- if asyncapi | containsJsonPayload %}
+      this.options.payload = Payload.JSON;
+      this.jsonClient = await connect(this.options);
       {%- endif %}
-      this.nc = await connect(options);
     }catch(e){
       console.error("Could not connect to NATS: " + e)
     }
-  }
-
-  private async connectJsonPayload(){
-
-    return connect(options);
   }
 
   /**
@@ -51,7 +56,6 @@ export default class NatsAsyncApiClient {
   private setDefaultOptions(options: NatsConnectionOptions){
     //If server binding options sat set the options
     options.encoding = 'utf8';
-    options.payload = Payload.BINARY;
     return options;
   }
 

@@ -10,9 +10,7 @@ var renameAllSync = function(dir) {
 			path.extname(filepath) === '.njk' &&
 			!dir.includes('node_modules')
 		) {
-			let baseName = path.basename(filepath, '.ts.njk');
-			let newName =
-				baseName.charAt(0).toUpperCase() + baseName.slice(1) + '.ts';
+			let newName = path.basename(filepath, '.njk');
 			let newPath = path.resolve(dir, newName);
 			console.log(newPath);
 			fs.renameSync(filepath, newPath);
