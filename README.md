@@ -1,8 +1,7 @@
-# {{ asyncapi.info().title() }}
+# Template usage
 
-{{ asyncapi.info().description() | safe }}
+## content types
 
-
-
-Available nats encodings:
-https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings
+For binary payloads use: `binary` content type
+For json payloads use: `json` content type
+For string payloads use: `string` content type
