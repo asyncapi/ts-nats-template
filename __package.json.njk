@@ -1,7 +1,7 @@
 {
-{% set name = "NatsTSclient" %}
-{% set version = "1.0.0" %}
-{% set description = "" %}
+{%- set name = "NatsTSclient" %}
+{%- set version = "1.0.0" %}
+{%- set description = "" %}
   {%- if asyncapi.info() | length %}
     {%- if asyncapi.info().title() | length %}
       {% set name = asyncapi.info().title() | kebabCase %}
@@ -31,7 +31,9 @@
     "#channels": "./src/channels"
   },
   "dependencies": {
+		"@types/klaw-sync": "^6.0.0",
     "@types/uuid": "3.4.5",
+		"klaw-sync": "6.0.0",
     "link-module-alias": "^1.2.0",
     "msgpack-lite": "^0.1.26",
     "ts-nats": "1.2.4",
