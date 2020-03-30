@@ -8,7 +8,14 @@
 		"removeComments": true,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		"outDir": "dist/"
+		"outDir": "dist/",
+		"baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
+		"paths": {
+			"#messages": ["messages"],
+			"#schemas": ["schema"],
+			"#channels": ["channels"],
+			"#hooks": ["hooks"]
+		}
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "**/*.spec.ts"]

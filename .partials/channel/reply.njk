@@ -1,6 +1,13 @@
 
-{% macro reply(channelName, subscribtionMessage, publishMessage, server) %}
-export function reply(onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => {{publishMessage.uid() | pascalCase}}Message, onReplyError: (err: NatsError) => void, nc?: Client): Promise<Subscription> {
+{% macro reply(channelName, parameters, subscribtionMessage, publishMessage, server) %}
+export function reply(
+  onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => {{publishMessage.uid() | pascalCase}}Message, 
+  onReplyError: (err: NatsError) => void,
+  {% if parameters | length %},{% endif %}
+  {% if parameters | length %}
+    {{parameters | realizeParametersForChannel}}
+  {% endif %}{% if parameters | length %},{% endif %}
+  nc?: Client): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
     if (nc) {
       try {
@@ -17,7 +24,11 @@ export function reply(onRequest: (err?: NatsError, msg?: {{subscribtionMessage.u
         {%- endif %}
         {%- endif %}
 
-        let subscription = nc.subscribe('{{channelName}}', (err, msg) => {
+        let subscription = nc.subscribe(realizeChannelName('{{channelName}}', {
+          {% for parameterName, parameter in parameters %}
+            "{{parameterName}}": {{parameterName}}
+          {% endfor %}
+        }), (err, msg) => {
           if (err) {
             onRequest(err);
           } else {

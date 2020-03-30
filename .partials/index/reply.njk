@@ -6,14 +6,14 @@
   * @param onReplyError Called when it was not possible to send the reply.
   */
   public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message) => {{ publishMessage.uid() | pascalCase }}Message, onReplyError : (err: NatsError) => void): Promise<Subscription> {
-    {%- if message | isBinaryPayload(defaultContentType) %}
-    Client nc = this.binaryClient;
+    {%- if subscribeMessage.contentType() | isBinaryPayload(defaultContentType) %}
+    const nc: Client = this.binaryClient!;
     {%- endif %}
-    {%- if message | isStringPayload(defaultContentType) %}
-    Client nc = this.stringClient;
+    {%- if subscribeMessage.contentType() | isStringPayload(defaultContentType) %}
+    const nc: Client = this.stringClient!;
     {%- endif %}
-    {%- if message | isJsonPayload(defaultContentType) %}
-    Client nc = this.jsonClient;
+    {%- if subscribeMessage.contentType() | isJsonPayload(defaultContentType) %}
+    const nc: Client = this.jsonClient!;
     {%- endif %}
     return {{ channelName | camelCase }}Channel.reply(onRequest, onReplyError, nc);
   }

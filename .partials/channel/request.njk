@@ -1,6 +1,11 @@
 
-{% macro request(channelName, publishMessage, subscribtionMessage, server) %}
-export function request(requestMessage: {{publishMessage.uid() | pascalCase}}Message, nc?: Client): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
+{% macro request(channelName, parameters, publishMessage, subscribtionMessage, server) %}
+export function request(
+  requestMessage: {{publishMessage.uid() | pascalCase}}Message,
+  {% if parameters | length %}
+    {{parameters | realizeParametersForChannel}}
+  {% endif %}{% if parameters | length %},{% endif %}
+  nc?: Client): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
   return new Promise<{{subscribtionMessage.uid() | pascalCase}}Message>(async (resolve, reject) => {
     if (nc) {
       try {
@@ -13,8 +18,17 @@ export function request(requestMessage: {{publishMessage.uid() | pascalCase}}Mes
             resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedData));
           }
         }, { max: 1 });
-        let requestData = utils.beforeRequest(requestMessage, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
-        nc.publish('{{channelName}}', requestData, inbox);
+        let publishDataHooks = getHooks(AvailableHooks.BeforeSendingData);
+        let publishDataHooks = hooks.getHooks(AvailableHooks.BeforeSendingData) as hooks.BeforeSendingDataHook[];
+        var requestData;
+        for(let hook in publishDataHooks){
+          requestData = hook(requestMessage);
+        }
+        nc.publish(realizeChannelName('{{channelName}}', {
+          {% for parameterName, parameter in parameters %}
+            "{{parameterName}}": {{parameterName}}
+          {% endfor %}
+        }), requestData, inbox);
       }catch(e){
         reject(e);
       }

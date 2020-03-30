@@ -5,14 +5,14 @@
   * @param requestMessage The request message to send.
   */
   public request{{channelName | pascalCase }}(requestMessage: {{ publishMessage.uid() | pascalCase }}Message): Promise<{{ subscribeMessage.uid() | pascalCase }}Message> {
-    {%- if message | isBinaryPayload(defaultContentType) %}
-    Client nc = this.binaryClient;
+    {%- if publishMessage.contentType() | isBinaryPayload(defaultContentType) %}
+    const nc: Client = this.binaryClient!;
     {%- endif %}
-    {%- if message | isStringPayload(defaultContentType) %}
-    Client nc = this.stringClient;
+    {%- if publishMessage.contentType() | isStringPayload(defaultContentType) %}
+    const nc: Client = this.stringClient!;
     {%- endif %}
-    {%- if message | isJsonPayload(defaultContentType) %}
-    Client nc = this.jsonClient;
+    {%- if publishMessage.contentType() | isJsonPayload(defaultContentType) %}
+    const nc: Client = this.jsonClient!;
     {%- endif %}
     return {{ channelName | camelCase }}Channel.request(requestMessage, nc);
   }

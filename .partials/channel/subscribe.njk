@@ -1,6 +1,13 @@
 
-{% macro subscribe(channelName, subscribtionMessage, server) %}
-export function subscribe(onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | camelCase}}) => void, nc?: Client): Promise<Subscription> {
+{% macro subscribe(channelName, parameters, subscribtionMessage, server) %}
+
+import {getHooks, AvailableHooks} from '#hooks';
+export function subscribe(
+  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | camelCase}}) => void, 
+  {% if parameters | length %}
+    {{parameters | realizeParametersForChannel}}
+  {% endif %}{% if parameters | length %},{% endif %}
+  nc?: Client): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
     if (nc) {
       try{
@@ -16,7 +23,11 @@ export function subscribe(onDataCallback : (err?: NatsError, msg?: {{subscribtio
         {%- endif %}
         {%- endif %}
 
-        let subscription = nc.subscribe('{{channelName}}', (err, msg) => {
+        let subscription = nc.subscribe(realizeChannelName('{{channelName}}', {
+          {% for parameterName, parameter in parameters %}
+            "{{parameterName}}": {{parameterName}}
+          {% endfor %}
+        }), (err, msg) => {
           if(err){
             onDataCallback(err);
           }else{

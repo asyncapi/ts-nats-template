@@ -6,11 +6,11 @@
 
 import { Client, NatsConnectionOptions, connect, Payload, NatsError, Subscription } from 'ts-nats';
 
-{%- for channelName, channel in asyncapi.channels() %}
+{%- for channelName, _ in asyncapi.channels() %}
 import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | firstUpperCase }}";
 {%- endfor %}
 
-{%- for messageName, message in asyncapi.allMessages() %}
+{%- for messageName, _ in asyncapi.allMessages() %}
 import {default as {{ messageName | pascalCase }}Message} from "./messages/{{ messageName | pascalCase }}";
 {%- endfor %}
 
