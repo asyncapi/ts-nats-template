@@ -226,23 +226,21 @@ module.exports = ({ Nunjucks }) => {
 	});
 
 	Nunjucks.addFilter('isPubsub', channel => {
-		let tempChannel = channel._json;
-		if (tempChannel.bindings.nats && tempChannel.bindings.nats.is == 'pubsub') {
+		const tempChannel = channel._json;
+		if (tempChannel.bindings && tempChannel.bindings.nats && tempChannel.bindings.nats.is == 'pubsub') {
 			return true;
 		}
 		return false;
 	});
 
 	Nunjucks.addFilter('hasNatsBindings', obj => {
-		if (obj.bindings.nats) {
-			return true;
-		}
-		return false;
+		return obj.bindings && obj.bindings.nats;
 	});
 
 	Nunjucks.addFilter('isRequestReply', channel => {
 		let tempChannel = channel._json;
 		if (
+			tempChannel.bindings &&
 			tempChannel.bindings.nats &&
 			tempChannel.bindings.nats.is == 'requestReply'
 		) {
@@ -254,6 +252,7 @@ module.exports = ({ Nunjucks }) => {
 	Nunjucks.addFilter('isRequester', channel => {
 		let tempChannel = channel._json;
 		if (
+			tempChannel.bindings &&
 			tempChannel.bindings.nats &&
 			tempChannel.bindings.nats.is == 'requestReply' &&
 			tempChannel.bindings.nats.requestReply &&
@@ -267,6 +266,7 @@ module.exports = ({ Nunjucks }) => {
 	Nunjucks.addFilter('isReplier', channel => {
 		let tempChannel = channel._json;
 		if (
+			tempChannel.bindings &&
 			tempChannel.bindings.nats &&
 			tempChannel.bindings.nats.is == 'requestReply' &&
 			tempChannel.bindings.nats.requestReply &&
