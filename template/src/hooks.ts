@@ -9,8 +9,8 @@ export enum AvailableHooks {
 export type RecievedDataHook = () => void;
 export type BeforeSendingDataHook = (messageToSend: any) => void;
 export var hooks: {
-	BeforeSendingData: [BeforeSendingDataHook];
-	RecievedData: [RecievedDataHook];
+	BeforeSendingData: BeforeSendingDataHook[];
+	RecievedData: RecievedDataHook[];
 };
 
 /**
@@ -22,7 +22,6 @@ try {
 		const files = walkSync(hooksPath, { nodir: true });
 		files.forEach((file: any) => {
 			require(file.path)((when: AvailableHooks, hook: any) => {
-				hooks[when] = hooks[when] || [];
 				hooks[when].push(hook);
 			});
 		});
