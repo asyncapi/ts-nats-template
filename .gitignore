@@ -1,2 +1,2 @@
 node_modules
-tests/actual_comparators
+test/actual_comparators/*

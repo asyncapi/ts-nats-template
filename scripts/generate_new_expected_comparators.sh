@@ -18,16 +18,16 @@ if [ $machine == "MinGw" ]; then
 fi
 
 docker run --rm -it \
-	-v ${currentDir}/tests/docs/0.1.0/frontend.yml:/app/asyncapi.yml \
-	-v ${currentDir}/tests/docs/0.1.0/components:/app/components \
-	-v ${currentDir}/tests/expected_comparators/latest/frontend:/app/output \
+	-v ${currentDir}/test/docs/0.1.0/frontend.yml:/app/asyncapi.yml \
+	-v ${currentDir}/test/docs/0.1.0/components:/app/components \
+	-v ${currentDir}/test/expected_comparators/latest/frontend:/app/output \
 	-v ${currentDir}:/app/template \
 	asyncapi/generator:latest -o ./output ./asyncapi.yml ./template --force-write --install
 
 docker run --rm -it \
-	-v ${currentDir}/tests/docs/0.1.0/light-controller.yml:/app/asyncapi.yml \
-	-v ${currentDir}/tests/docs/0.1.0/components:/app/components \
-	-v ${currentDir}/tests/expected_comparators/latest/light-controller:/app/output \
+	-v ${currentDir}/test/docs/0.1.0/light-controller.yml:/app/asyncapi.yml \
+	-v ${currentDir}/test/docs/0.1.0/components:/app/components \
+	-v ${currentDir}/test/expected_comparators/latest/light-controller:/app/output \
 	-v ${currentDir}:/app/template \
 	asyncapi/generator:latest -o ./output ./asyncapi.yml ./template --force-write --install
 
