@@ -1,0 +1,27 @@
+
+{%- from "../../../../partials/index/Publish.njk" import publish %}
+{%- from "../../../../partials/index/Reply.njk" import reply %}
+{%- from "../../../../partials/index/Request.njk" import request %}
+{%- from "../../../../partials/index/Subscribe.njk" import subscribe %}
+
+  {%- for channelName, channel in asyncapi.channels() %}
+
+  {%- if channel | isRequestReply %}
+    {%- if channel | isRequester %}
+    {{reply(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel)}}
+    {%- endif %}
+    {%- if channel | isReplier %}
+    {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel)}}
+    {%- endif %}
+  {%- endif %}
+
+  {%- if channel | isPubsub %}
+    {%- if channel.hasSubscribe() %}
+    {{publish(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel)}}
+    {%- endif %}
+    {%- if channel.hasPublish() %}
+    {{subscribe(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel)}}
+    {%- endif %}
+  {%- endif %}
+
+  {%- endfor %}

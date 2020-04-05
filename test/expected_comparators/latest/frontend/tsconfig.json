@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es5",
+		"declaration": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"outDir": "dist/",
+		"baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
+		"paths": {
+			"#messages": ["messages"],
+			"#schemas": ["schema"],
+			"#channels": ["channels"],
+			"#hooks": ["hooks"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "**/*.spec.ts"]
+}
