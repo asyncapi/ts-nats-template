@@ -27,13 +27,6 @@ filter.isJsonPayload = (messageContentType, defaultContentType) => {
 	return containsPayload(messageContentType, defaultContentType, 'json');
 }
 
-filter.kebabCase = string => {
-	return _.kebabCase(string);
-}
-filter.camelCase = string => {
-	return camelCase(string);
-}
-
 
 
 /**
