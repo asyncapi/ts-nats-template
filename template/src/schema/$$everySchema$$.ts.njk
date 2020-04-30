@@ -18,13 +18,42 @@
 
   {%- if schema.properties() | length %}
       {%- for propertyName, property in schema.properties() %}
-      {{ propertyName}}{% if not required or not property.required() %}?{% endif %}: {{ property.type() | toTsType }}
+      {{ propertyName}}{% if not required or not property.required() %}?{% endif %}: {{ property.type() | toTsType(property) }}
       {%- endfor %}
   {%- endif %}
 
 {% endmacro %}
 
+{% macro importSchemas(schema) %}
+  {%- if schema.allOf() | length %}
+    {%- for allOfSchema in schema.allOf() %}
+    {{importSchemas(allOfSchema)}}
+    {%- endfor %}
+  {%- endif %}
 
+  {%- if schema.oneOf() | length %}
+    {%- for oneOfSchema in schema.oneOf() %}
+    {{importSchemas(oneOfSchema)}}
+    {%- endfor %}
+  {%- endif %}
+
+  {%- if schema.anyOf() | length %}
+    {%- for oneOfSchema in schema.anyOf() %}
+    {{importSchemas(oneOfSchema)}}
+    {%- endfor %}
+  {%- endif %}
+
+  {%- if schema.properties() | length %}
+      {%- for propertyName, property in schema.properties() %}
+      {%- if property.type() === "object" %}
+import { default as {{property.uid() | pascalCase}} } from './{{property.uid() | pascalCase}}';
+      {%- endif %}
+      {%- endfor %}
+  {%- endif %}
+
+{% endmacro %}
+
+{{ importSchemas(schema) }}
 export default class {{ schema.uid() | camelCase }} {
 
   {{ initProperties(schema) }}
