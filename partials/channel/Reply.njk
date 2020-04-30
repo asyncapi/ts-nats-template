@@ -3,10 +3,10 @@
 export function reply(
   onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => {{publishMessage.uid() | pascalCase}}Message, 
   onReplyError: (err: NatsError) => void,
-  {% if parameters | length %},{% endif %}
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
-  {% endif %}{% if parameters | length %},{% endif %}
+    ,
+  {% endif %}
   nc?: Client): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
     if (nc) {
