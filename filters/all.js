@@ -138,7 +138,6 @@ function toTsType(jsonSchemaType, property) {
 			if(property){
 				return property.uid();
 			}else{
-				console.log(property)
 				return 'UndefinedObject';
 			}
 		default: return 'Undefined';
@@ -158,7 +157,7 @@ filter.realizeParametersForChannel = parameters => {
 	}
 	return returnString;
 }
-filter.constructorParameters = schema => {
+filter.messageConstructorParameters = schema => {
 	let returnString = '';
 	if (schema.allOf()) {
 		schema.allOf().forEach(element => {
@@ -178,6 +177,38 @@ filter.constructorParameters = schema => {
 		returnString += `${camelCase(schema.uid())}: ${pascalCase(
 			schema.uid()
 		)}Schema,`;
+	}
+	if (returnString.length > 1) {
+		returnString = returnString.slice(0, -1);
+	}
+	return returnString;
+}
+filter.schemaConstructorParameters = schema => {
+	let returnString = '';
+	if (schema.allOf()) {
+		schema.allOf().forEach(element => {
+			returnString += `${camelCase(element.uid())}: ${pascalCase(
+				element.uid()
+			)},`;
+		});
+	}
+	if (schema.oneOf()) {
+		returnString += `oneOf: ${getTypeFromOneOf(schema.oneOf())},`;
+	}
+	if (schema.anyOf()) {
+		schema.anyOf().forEach(element => {
+			returnString += `${camelCase(element.uid())}: ${pascalCase(
+				element.uid()
+			)},`;
+		});
+	}
+	if (schema.properties() && schema.required()) {
+		schema.required().forEach(requiredPropertyName => {
+			const property = schema.properties()[requiredPropertyName]
+			if(property && property.required()){
+				returnString += `${camelCase(requiredPropertyName)}: ${toTsType(property.type(), property)},`;
+			}
+		});
 	}
 	if (returnString.length > 1) {
 		returnString = returnString.slice(0, -1);
@@ -222,6 +253,9 @@ filter.fileName = string => {
 }
 filter.tsPayload = server => {
 	return 'STRING';
+}
+filter.print = obj => {
+	console.log(JSON.stringify(obj, null, 4))
 }
 filter.tsEncoding = server => {
 	return 'STRING';
