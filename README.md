@@ -24,3 +24,9 @@ These are the available hooks:
 | Hookname | Callback type | Description |
 | BeforeSendingData | (Message: any) => new data | Called before sending any data.
 | RevievedData | (recieved data: any) => new data | Called after data is recieved.
+
+
+
+### OBS
+
+* Always specify schema id, since we cant resolve the dependency correctly atm.
