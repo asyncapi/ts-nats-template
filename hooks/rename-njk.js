@@ -12,7 +12,6 @@ var renameAllSync = function(dir) {
 		) {
 			let newName = path.basename(filepath, '.njk');
 			let newPath = path.resolve(dir, newName);
-			console.log(newPath);
 			fs.renameSync(filepath, newPath);
 		}
 	});

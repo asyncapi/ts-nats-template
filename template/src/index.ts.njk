@@ -7,7 +7,7 @@
 import { Client, NatsConnectionOptions, connect, Payload, NatsError, Subscription } from 'ts-nats';
 
 {%- for channelName, _ in asyncapi.channels() %}
-import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | firstUpperCase }}";
+import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | pascalCase | firstUpperCase }}";
 {%- endfor %}
 
 {%- for messageName, _ in asyncapi.allMessages() %}
