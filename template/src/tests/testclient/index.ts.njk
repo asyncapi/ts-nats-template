@@ -4,24 +4,83 @@
 {%- from "../../../../partials/index/Request.njk" import request %}
 {%- from "../../../../partials/index/Subscribe.njk" import subscribe %}
 
+import { Client, NatsConnectionOptions, connect, Payload, NatsError, Subscription } from 'ts-nats';
+
+{%- for channelName, _ in asyncapi.channels() %}
+import * as {{ channelName | camelCase }}Channel from "./testchannels/{{ channelName | pascalCase | firstUpperCase }}";
+{%- endfor %}
+
+{%- for messageName, _ in asyncapi.allMessages() %}
+import {default as {{ messageName | pascalCase }}Message} from "../../../src/messages/{{ messageName | pascalCase }}";
+{%- endfor %}
+
+export default class NatsAsyncApiClient {
+  public jsonClient?: Client;
+  public stringClient?: Client;
+  public binaryClient?: Client;
+  public options: NatsConnectionOptions;
+
+	/**
+	 *
+	 * @param options options to use, payload is omitted if sat in the AsyncAPI document.
+	 */
+  constructor(options : NatsConnectionOptions) {
+		this.options = this.setDefaultOptions(options);
+    this.connect();
+  }
+
+  /**
+   * Try to connect to the NATS server with the different payloads.
+   */
+  private async connect(){
+    try{
+      {%- if asyncapi | containsBinaryPayload %}
+      this.options.payload = Payload.BINARY;
+      this.binaryClient = await connect(this.options);
+      {%- endif %}
+      {%- if asyncapi | containsStringPayload %}
+      this.options.payload = Payload.STRING;
+      this.stringClient = await connect(this.options);
+      {%- endif %}
+      {%- if asyncapi | containsJsonPayload %}
+      this.options.payload = Payload.JSON;
+      this.jsonClient = await connect(this.options);
+      {%- endif %}
+    }catch(e){
+      console.error("Could not connect to NATS: " + e)
+    }
+  }
+
+  /**
+   * Set the default options based on the AsyncAPI file.
+   * @param options to set
+   */
+  private setDefaultOptions(options: NatsConnectionOptions){
+    //If server binding options sat set the options
+    options.encoding = 'utf8';
+    return options;
+  }
+
   {%- for channelName, channel in asyncapi.channels() %}
 
   {%- if channel | isRequestReply %}
     {%- if channel | isRequester %}
-    {{reply(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel)}}
+    {{reply(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters())}}
     {%- endif %}
     {%- if channel | isReplier %}
-    {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel)}}
+    {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
     {%- endif %}
   {%- endif %}
 
   {%- if channel | isPubsub %}
     {%- if channel.hasSubscribe() %}
-    {{publish(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel)}}
+    {{publish(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.description(), channel.parameters())}}
     {%- endif %}
     {%- if channel.hasPublish() %}
-    {{subscribe(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel)}}
+    {{subscribe(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.description(), channel.parameters())}}
     {%- endif %}
   {%- endif %}
 
   {%- endfor %}
+
+}

@@ -3,7 +3,7 @@
 
 import {getHooks, AvailableHooks} from '#hooks';
 export function subscribe(
-  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | camelCase}}) => void, 
+  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => void, 
   nc: Client,
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
@@ -27,9 +27,14 @@ export function subscribe(
         if(err){
           onDataCallback(err);
         }else{
-          let processedData = utils.processRecievedData(msg.data, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
-          let publishedData = new {{subscribtionMessage.name() | camelCase}}();
-          publishedData.copyFrom(processedData);
+          
+          let receivedDataHooks = Hooks.getHooks(Hooks.AvailableHooks.RecievedData) as Hooks.RecievedDataHook[];
+          var processedDataReceived: any = msg.data;
+          for(let hook of receivedDataHooks){
+            processedDataReceived = hook(processedDataReceived);
+          }
+          let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
+
           onDataCallback(undefined, publishedData);
         }
       }, subscribeOptions);

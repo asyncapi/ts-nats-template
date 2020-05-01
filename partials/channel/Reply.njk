@@ -28,15 +28,23 @@ export function reply(
           if (err) {
             onRequest(err);
           } else {
-            let processedData = utils.processRecievedData(msg.data, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
-            let requestData = new {{subscribtionMessage.name() | pascalCase}}Message();
-            requestData.copyFrom(processedData);
+            
+            let receivedDataHooks = Hooks.getHooks(Hooks.AvailableHooks.RecievedData) as Hooks.RecievedDataHook[];
+            var processedDataReceived : any = msg.data;
+            for(let hook of receivedDataHooks){
+              processedDataReceived = hook(processedDataReceived);
+            }
+            let requestData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
 
             let responseObject = onRequest(undefined, requestData);
             if (msg.reply) {
               try {
-                let requestData = utils.beforeResponse(responseObject, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
-                nc.publish(msg.reply, requestData);
+                let publishDataHooks = Hooks.getHooks(Hooks.AvailableHooks.BeforeSendingData) as Hooks.BeforeSendingDataHook[];
+                var dataToPublish : any = responseObject;
+                for(let hook of publishDataHooks){
+                  dataToPublish = hook(dataToPublish);
+                }
+                nc.publish(msg.reply, dataToPublish);
               } catch (e) {
                 if (onReplyError) {
                   onReplyError(e)

@@ -6,8 +6,8 @@ export enum AvailableHooks {
 	RecievedData = 'RecievedData',
 	BeforeSendingData = 'BeforeSendingData'
 }
-export type RecievedDataHook = () => void;
-export type BeforeSendingDataHook = (messageToSend: any) => void;
+export type RecievedDataHook = (receivedData: any) => string;
+export type BeforeSendingDataHook = (messageToSend: any) => string;
 export var hooks: {
 	BeforeSendingData: BeforeSendingDataHook[];
 	RecievedData: RecievedDataHook[];

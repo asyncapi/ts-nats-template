@@ -4,14 +4,14 @@
 {%- from "../../../../../partials/channel/Request.njk" import request %}
 {%- from "../../../../../partials/channel/Subscribe.njk" import subscribe %}
 {%- if channel.hasPublish() %}
-import {default as {{ channel.publish().message(0).uid() | pascalCase }}Message} from '../../../messages/{{ channel.publish().message(0).uid() | pascalCase}}'
+import {default as {{ channel.publish().message(0).uid() | pascalCase }}Message} from '../../../../src/messages/{{ channel.publish().message(0).uid() | pascalCase}}'
 {%- endif %}
 {%- if channel.hasSubscribe() %}
-import {default as {{ channel.subscribe().message(0).uid() | pascalCase }}Message} from '../../../messages/{{ channel.subscribe().message(0).uid() | pascalCase}}'
+import {default as {{ channel.subscribe().message(0).uid() | pascalCase }}Message} from '../../../../src//messages/{{ channel.subscribe().message(0).uid() | pascalCase}}'
 {%- endif %}
-
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
-import * as utils from '../utils';
+import * as Hooks from '#hooks';
+
 
 {%- if channel | isRequestReply %}
   {%- if channel | isRequester %}

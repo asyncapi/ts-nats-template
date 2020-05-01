@@ -12,9 +12,9 @@ export function publish(
     if (nc) {
       try{
         let publishDataHooks = Hooks.getHooks(Hooks.AvailableHooks.BeforeSendingData) as Hooks.BeforeSendingDataHook[];
-        var dataToPublish;
+        var dataToPublish : any = requestMessage;
         for(let hook of publishDataHooks){
-          dataToPublish = hook(requestMessage);
+          dataToPublish = hook(dataToPublish);
         }
         nc.publish({{parameters | realizeChannelName(channelName)}}, dataToPublish);
         resolve();

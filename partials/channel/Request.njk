@@ -15,15 +15,18 @@ export function request(
           if (err) {
             reject(err);
           } else {
-            let processedData = utils.processRecievedData(msg.data, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
-            resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedData));
+            let receivedDataHooks = Hooks.getHooks(Hooks.AvailableHooks.RecievedData) as Hooks.RecievedDataHook[];
+            var processedDataReceived : any = msg.data;
+            for(let hook of receivedDataHooks){
+              processedDataReceived = hook(processedDataReceived);
+            }
+            resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedDataReceived));
           }
         }, { max: 1 });
-        let publishDataHooks = getHooks(AvailableHooks.BeforeSendingData);
-        let publishDataHooks = hooks.getHooks(AvailableHooks.BeforeSendingData) as hooks.BeforeSendingDataHook[];
-        var requestData;
+        let publishDataHooks = Hooks.getHooks(Hooks.AvailableHooks.BeforeSendingData) as Hooks.BeforeSendingDataHook[];
+        var requestData : any = requestMessage;
         for(let hook in publishDataHooks){
-          requestData = hook(requestMessage);
+          requestData = hook(requestData);
         }
         nc.publish({{parameters | realizeChannelName(channelName)}}, requestData, inbox);
       }catch(e){

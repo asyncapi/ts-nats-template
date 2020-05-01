@@ -4,7 +4,7 @@
   *  {{messageDescription}}
   * @param onDataCallback Called when message recieved.
   */
-  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message) => void, {% if parameters | length %}
+  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message) => void {% if parameters | length %}
     ,{{parameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
@@ -22,7 +22,7 @@
         ,{{parameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
-      reject(new Error("Nats client is not connected"));
+      throw new Error("Nats client is not connected");
     }
   }
 {% endmacro %}
