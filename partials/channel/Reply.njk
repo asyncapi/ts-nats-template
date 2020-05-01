@@ -3,11 +3,11 @@
 export function reply(
   onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => {{publishMessage.uid() | pascalCase}}Message, 
   onReplyError: (err: NatsError) => void,
+  nc: Client,
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
-    ,
   {% endif %}
-  nc?: Client): Promise<Subscription> {
+  ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
     if (nc) {
       try {
@@ -24,11 +24,7 @@ export function reply(
         {%- endif %}
         {%- endif %}
 
-        let subscription = nc.subscribe(realizeChannelName('{{channelName}}', {
-          {% for parameterName, parameter in parameters %}
-            "{{parameterName}}": {{parameterName}}
-          {% endfor %}
-        }), (err, msg) => {
+        let subscription = nc.subscribe({{parameters | realizeChannelName(channelName)}}, (err, msg) => {
           if (err) {
             onRequest(err);
           } else {

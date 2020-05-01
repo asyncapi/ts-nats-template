@@ -2,10 +2,11 @@
 {% macro request(channelName, parameters, publishMessage, subscribtionMessage, server) %}
 export function request(
   requestMessage: {{publishMessage.uid() | pascalCase}}Message,
+  nc: Client,
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
-  {% endif %}{% if parameters | length %},{% endif %}
-  nc?: Client): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
+  {% endif %}
+  ): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
   return new Promise<{{subscribtionMessage.uid() | pascalCase}}Message>(async (resolve, reject) => {
     if (nc) {
       try {
@@ -24,11 +25,7 @@ export function request(
         for(let hook in publishDataHooks){
           requestData = hook(requestMessage);
         }
-        nc.publish(realizeChannelName('{{channelName}}', {
-          {% for parameterName, parameter in parameters %}
-            "{{parameterName}}": {{parameterName}}
-          {% endfor %}
-        }), requestData, inbox);
+        nc.publish({{parameters | realizeChannelName(channelName)}}, requestData, inbox);
       }catch(e){
         reject(e);
       }

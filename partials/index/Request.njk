@@ -1,10 +1,13 @@
 
-{% macro request(defaultContentType, channelName, publishMessage, subscribeMessage, messageDescription) %}
+{% macro request(defaultContentType, channelName, publishMessage, subscribeMessage, messageDescription, parameters) %}
   /**
   *  {{messageDescription}}
   * @param requestMessage The request message to send.
   */
-  public request{{channelName | pascalCase }}(requestMessage: {{ publishMessage.uid() | pascalCase }}Message): Promise<{{ subscribeMessage.uid() | pascalCase }}Message> {
+  public request{{channelName | pascalCase }}(requestMessage: {{ publishMessage.uid() | pascalCase }}Message 
+  {% if parameters | length %}
+    ,{{parameters | realizeParametersForChannel}}
+  {% endif %}): Promise<{{ subscribeMessage.uid() | pascalCase }}Message> {
     {%- if publishMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
@@ -14,6 +17,13 @@
     {%- if publishMessage.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
-    return {{ channelName | camelCase }}Channel.request(requestMessage, nc);
+    if(nc){
+      return {{ channelName | camelCase }}Channel.request(requestMessage, nc
+      {% if parameters | length %}
+        ,{{parameters | realizeParametersForChannelWithoutType}}
+      {% endif %});
+    }else{
+      reject(new Error("Nats client is not connected"));
+    }
   }
 {% endmacro %}

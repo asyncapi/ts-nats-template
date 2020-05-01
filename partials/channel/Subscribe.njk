@@ -4,45 +4,38 @@
 import {getHooks, AvailableHooks} from '#hooks';
 export function subscribe(
   onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | camelCase}}) => void, 
+  nc: Client,
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
-  {% endif %}{% if parameters | length %},{% endif %}
-  nc?: Client): Promise<Subscription> {
+  {% endif %}
+  ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
-    if (nc) {
-      try{
-        let subscribeOptions: SubscriptionOptions = {};
-        {%- if subscribtionMessage | hasNatsBindings %}
-        {%- if subscribtionMessage.bindings().nats().queue() | length %}
-        //If queue
-        subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue().name()}}';
-        {%- endif %}
-        {%- if subscribtionMessage.bindings().nats().unsubAfter() | length %}
-        //If unsubafter
-        subscribeOptions.max = {{subscribtionMessage.bindings().nats().unsubAfter()}};
-        {%- endif %}
-        {%- endif %}
+    try{
+      let subscribeOptions: SubscriptionOptions = {};
+      {%- if subscribtionMessage | hasNatsBindings %}
+      {%- if subscribtionMessage.bindings().nats().queue() | length %}
+      //If queue
+      subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue().name()}}';
+      {%- endif %}
+      {%- if subscribtionMessage.bindings().nats().unsubAfter() | length %}
+      //If unsubafter
+      subscribeOptions.max = {{subscribtionMessage.bindings().nats().unsubAfter()}};
+      {%- endif %}
+      {%- endif %}
 
-        let subscription = nc.subscribe(realizeChannelName('{{channelName}}', {
-          {% for parameterName, parameter in parameters %}
-            "{{parameterName}}": {{parameterName}}
-          {% endfor %}
-        }), (err, msg) => {
-          if(err){
-            onDataCallback(err);
-          }else{
-            let processedData = utils.processRecievedData(msg.data, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
-            let publishedData = new {{subscribtionMessage.name() | camelCase}}();
-            publishedData.copyFrom(processedData);
-            onDataCallback(undefined, publishedData);
-          }
-        }, subscribeOptions);
-        resolve(subscription);
-      }catch(e){
-        reject(e);
-      }
-    }else{
-      reject(new Error("Nats client is not connected"));
+      let subscription = nc.subscribe({{parameters | realizeChannelName(channelName)}}, (err, msg) => {
+        if(err){
+          onDataCallback(err);
+        }else{
+          let processedData = utils.processRecievedData(msg.data, Payload.{{server | tsPayload}}, '{{server | tsEncoding}}');
+          let publishedData = new {{subscribtionMessage.name() | camelCase}}();
+          publishedData.copyFrom(processedData);
+          onDataCallback(undefined, publishedData);
+        }
+      }, subscribeOptions);
+      resolve(subscription);
+    }catch(e){
+      reject(e);
     }
   })
 }

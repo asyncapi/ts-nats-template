@@ -2,25 +2,21 @@
 {% macro publish(channelName, parameters, publishMessage, server) %}
 
 export function publish(
-  requestMessage: {{publishMessage.uid() | pascalCase}}Message, 
+  requestMessage: {{publishMessage.uid() | pascalCase}}Message,
+  nc: Client,
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
-  {% endif %}{% if parameters | length %},{% endif %}
-  nc?: Client
+  {% endif %}
   ): Promise<void> {
   return new Promise<void>(async (resolve, reject) => {
     if (nc) {
       try{
-        let publishDataHooks = hooks.getHooks(AvailableHooks.BeforeSendingData) as hooks.BeforeSendingDataHook[];
+        let publishDataHooks = Hooks.getHooks(Hooks.AvailableHooks.BeforeSendingData) as Hooks.BeforeSendingDataHook[];
         var dataToPublish;
-        for(let hook in publishDataHooks){
+        for(let hook of publishDataHooks){
           dataToPublish = hook(requestMessage);
         }
-        nc.publish(realizeChannelName('{{channelName}}', {
-          {% for parameterName, parameter in parameters %}
-            "{{parameterName}}": {{parameterName}}
-          {% endfor %}
-        }), dataToPublish);
+        nc.publish({{parameters | realizeChannelName(channelName)}}, dataToPublish);
         resolve();
       }catch(e){
         reject(e);

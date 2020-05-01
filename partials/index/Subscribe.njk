@@ -1,10 +1,12 @@
 
-{% macro subscribe(defaultContentType, channelName, message, messageDescription) %}
+{% macro subscribe(defaultContentType, channelName, message, messageDescription, parameters) %}
   /**
   *  {{messageDescription}}
   * @param onDataCallback Called when message recieved.
   */
-  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message) => void): Promise<Subscription> {
+  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message) => void, {% if parameters | length %}
+    ,{{parameters | realizeParametersForChannel}}
+  {% endif %}): Promise<Subscription> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
@@ -14,6 +16,13 @@
     {%- if message.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
-    return {{ channelName | camelCase }}Channel.subscribe(onDataCallback, nc);
+    if(nc){
+      return {{ channelName | camelCase }}Channel.subscribe(onDataCallback, nc
+      {% if parameters | length %}
+        ,{{parameters | realizeParametersForChannelWithoutType}}
+      {% endif %});
+    }else{
+      reject(new Error("Nats client is not connected"));
+    }
   }
 {% endmacro %}

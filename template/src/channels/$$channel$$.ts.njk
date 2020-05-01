@@ -11,7 +11,7 @@ import {default as {{ channel.subscribe().message(0).uid() | pascalCase }}Messag
 {%- endif %}
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {realizeChannelName} from './utils';
-import * as hooks from '#hooks';
+import * as Hooks from '#hooks';
 {%- if channel | isRequestReply %}
   {%- if channel | isRequester %}
   {{ request(channelName, channel.parameters(), channel.publish().message(0), channel.subscribe().message(0), asyncapi.server(params.server)) }}

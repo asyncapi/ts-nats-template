@@ -1,11 +1,14 @@
 
-{% macro reply(defaultContentType, channelName, subscribeMessage, publishMessage, messageDescription) %}
+{% macro reply(defaultContentType, channelName, subscribeMessage, publishMessage, messageDescription, parameters) %}
   /**
   *  {{messageDescription}}
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message) => {{ publishMessage.uid() | pascalCase }}Message, onReplyError : (err: NatsError) => void): Promise<Subscription> {
+  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message) => {{ publishMessage.uid() | pascalCase }}Message, onReplyError : (err: NatsError) => void 
+  {% if parameters | length %}
+    ,{{parameters | realizeParametersForChannel}}
+  {% endif %}): Promise<Subscription> {
     {%- if subscribeMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
@@ -15,6 +18,14 @@
     {%- if subscribeMessage.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
-    return {{ channelName | camelCase }}Channel.reply(onRequest, onReplyError, nc);
+    
+    if(nc){
+      return {{ channelName | camelCase }}Channel.reply(onRequest, onReplyError, nc
+      {% if parameters | length %}
+        ,{{parameters | realizeParametersForChannelWithoutType}}
+      {% endif %});
+    }else{
+      reject(new Error("Nats client is not connected"));
+    }
   }
 {% endmacro %}
