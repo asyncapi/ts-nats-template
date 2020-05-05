@@ -129,7 +129,7 @@ function toTsType(jsonSchemaType, property) {
 			return 'Boolean';
 		case 'object':
 			if(property){
-				return property.uid();
+				return property.uid() + 'Schema';
 			}else{
 				return 'UndefinedObject';
 			}
@@ -177,15 +177,8 @@ filter.messageConstructorParameters = schema => {
 				element.uid()
 			)}Schema,`;
 		});
-	} else if (schema.oneOf()) {
-		returnString += `oneOf: ${getTypeFromOneOf(schema.oneOf())},`;
-	} else if (schema.anyOf()) {
-		schema.anyOf().forEach(element => {
-			returnString += `${camelCase(element.uid())}: ${pascalCase(
-				element.uid()
-			)}Schema,`;
-		});
-	} else if (schema.uid()) {
+	} 
+	if (schema.uid() && schema.type() === "object") {
 		returnString += `${camelCase(schema.uid())}: ${pascalCase(
 			schema.uid()
 		)}Schema,`;
@@ -195,6 +188,59 @@ filter.messageConstructorParameters = schema => {
 	}
 	return returnString;
 }
+function genericImports(schema, imports) {
+	if(!imports){
+		imports = {}
+	}
+	if (schema.allOf()) {
+		for(var allOf of schema.allOf()){
+			imports = genericImports(allOf, imports);
+		}
+	}
+	if (schema.oneOf()) {
+		for(var oneOf of schema.oneOf()){
+			imports = genericImports(oneOf, imports);
+		}
+	}
+	if (schema.anyOf()) {
+		for(var anyOf of schema.anyOf()){
+			imports = genericImports(anyOf, imports);
+		}
+	}
+	if (schema.type() && schema.type() === "object"){
+		imports[schema.uid()] = `import { default as ${pascalCase(schema.uid())}Schema } from '#schemas/${pascalCase(schema.uid())}';`
+	}
+	return imports;
+}
+function schemaImports(schema, imports) {
+	if(!imports){
+		imports = {}
+	}
+	if (schema.allOf()) {
+		for(var allOf of schema.allOf()){
+			imports = schemaImports(allOf, imports)
+		}
+	}
+	if (schema.oneOf()) {
+		for(var oneOf of schema.oneOf()){
+			imports = schemaImports(oneOf, imports)
+		}
+	}
+	if (schema.anyOf()) {
+		for(var anyOf of schema.anyOf()){
+			imports = schemaImports(anyOf, imports)
+		}
+	}
+	if (schema.properties()){
+		for(const [_, property] of Object.entries(schema.properties())){
+			imports = genericImports(property, imports)
+		}
+	}
+	return imports;
+}
+filter.genericImports = genericImports;
+filter.schemaImports = schemaImports;
+
 filter.schemaConstructorParameters = schema => {
 	let returnString = '';
 	if (schema.allOf()) {
@@ -214,29 +260,23 @@ filter.schemaConstructorParameters = schema => {
 			)},`;
 		});
 	}
-	if (schema.properties() && schema.required()) {
-		schema.required().forEach(requiredPropertyName => {
-			const property = schema.properties()[requiredPropertyName]
-			if(property && property.required()){
-				returnString += `${camelCase(requiredPropertyName)}: ${toTsType(property.type(), property)},`;
+	if (schema.type() && schema.type() === "object"){
+		if (schema.properties() && schema.required()) {
+			for(const [propertyName, property] of Object.entries(schema.properties())){
+				if(property.required()){
+					returnString += `${camelCase(propertyName)}: ${toTsType(property.type(), property)},`;
+				}
 			}
-		});
+		}
+	}else if(schema.type()){
+		returnString += `type: ${toTsType(schema.type())},`;
 	}
 	if (returnString.length > 1) {
 		returnString = returnString.slice(0, -1);
 	}
 	return returnString;
 }
-filter.schemaConstructor = properties => {
-	let returnString = '';
-	for (const [key, value] of Object.entries(properties)) {
-		returnString += `${key},`;
-	}
-	if (returnString.length > 1) {
-		returnString = returnString.slice(0, -1);
-	}
-	return returnString;
-}
+
 
 
 function getTypeFromOneOf(oneFromSchema) {

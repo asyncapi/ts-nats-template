@@ -15,7 +15,7 @@ export function request(
           if (err) {
             reject(err);
           } else {
-            let receivedDataHooks = Hooks.getHooks(Hooks.AvailableHooks.RecievedData) as Hooks.RecievedDataHook[];
+            let receivedDataHooks = Hooks.getRecievedDataHook();
             var processedDataReceived : any = msg.data;
             for(let hook of receivedDataHooks){
               processedDataReceived = hook(processedDataReceived);
@@ -23,9 +23,9 @@ export function request(
             resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedDataReceived));
           }
         }, { max: 1 });
-        let publishDataHooks = Hooks.getHooks(Hooks.AvailableHooks.BeforeSendingData) as Hooks.BeforeSendingDataHook[];
+        let publishDataHooks = Hooks.getBeforeSendingDataHook();
         var requestData : any = requestMessage;
-        for(let hook in publishDataHooks){
+        for(let hook of publishDataHooks){
           requestData = hook(requestData);
         }
         nc.publish({{parameters | realizeChannelName(channelName)}}, requestData, inbox);

@@ -51,13 +51,15 @@ export async function registerRecievedData(hook: RecievedDataHook) {
 		: [hook];
 }
 
-/**
- * Get all the hooks registered at a given hook point/name.
- * @param hook to find hooks for
- * @returns all hooks
- */
-export function getHooks(hook: AvailableHooks): Function[] {
-	if (!Array.isArray(hooks[hook])) return [];
+
+export function getRecievedDataHook(): RecievedDataHook[] {
+	if (!Array.isArray(hooks[AvailableHooks.RecievedData])) return [];
 	// Return valid hooks
-	return hooks[hook];
+	return hooks[AvailableHooks.RecievedData];
+}
+
+export function getBeforeSendingDataHook(): BeforeSendingDataHook[] {
+	if (!Array.isArray(hooks[AvailableHooks.BeforeSendingData])) return [];
+	// Return valid hooks
+	return hooks[AvailableHooks.BeforeSendingData];
 }

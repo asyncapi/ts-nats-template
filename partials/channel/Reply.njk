@@ -29,7 +29,7 @@ export function reply(
             onRequest(err);
           } else {
             
-            let receivedDataHooks = Hooks.getHooks(Hooks.AvailableHooks.RecievedData) as Hooks.RecievedDataHook[];
+            let receivedDataHooks = Hooks.getRecievedDataHook();
             var processedDataReceived : any = msg.data;
             for(let hook of receivedDataHooks){
               processedDataReceived = hook(processedDataReceived);
@@ -39,7 +39,7 @@ export function reply(
             let responseObject = onRequest(undefined, requestData);
             if (msg.reply) {
               try {
-                let publishDataHooks = Hooks.getHooks(Hooks.AvailableHooks.BeforeSendingData) as Hooks.BeforeSendingDataHook[];
+                let publishDataHooks = Hooks.getBeforeSendingDataHook();
                 var dataToPublish : any = responseObject;
                 for(let hook of publishDataHooks){
                   dataToPublish = hook(dataToPublish);

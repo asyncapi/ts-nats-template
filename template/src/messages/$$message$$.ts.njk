@@ -3,14 +3,20 @@
     {%- for allOfSchema in schema.allOf() %}
     {{initProperties(allOfSchema)}}
     {%- endfor %}
-  {%- elif schema.oneOf() | length %}
+  {%- endif %}
+  {%- if schema.oneOf() | length %}
     oneOf:{{schema.oneOf() | oneOfSchemaType}}
-  {%- elif schema.anyOf() | length %}
+  {%- endif %}
+  {%- if schema.anyOf() | length %}
     {%- for anyOfSchema in schema.anyOf() %}
     {{initProperties(anyOfSchema, false)}}
     {%- endfor %}
-  {%- elif schema.uid() | length %}
+  {%- endif %}
+  
+  {%- if schema.type() == "object" %}
     {{initProperty(schema.uid(), schema.uid())}}
+  {%- elif schema.type() | length%}
+    type: {{ schema.type() | toTsType }}
   {%- endif %}
 {%- endmacro %}
 {%- macro setConstructorProperties(schema) %}
@@ -18,32 +24,12 @@
     {%- for allOfSchema in schema.allOf() %}
     {{setConstructorProperties(allOfSchema)}}
     {%- endfor %}
-  {%- elif schema.oneOf() | length %}
-    {{setProperty("oneOf")}}
-  {%- elif schema.anyOf() | length %}
-    {%- for anyOfSchema in schema.anyOf() %}
-    {{setConstructorProperties(anyOfSchema)}}
-    {%- endfor %}
-  {%- elif schema.uid() | length %}
-    {{setProperty(schema.uid())}}
   {%- endif %}
-{%- endmacro %}
-{%- macro importSchemas(schema) %}
-  {%- if schema.allOf() | length %}
-    {%- for allOfSchema in schema.allOf() %}
-    {{importSchemas(allOfSchema)}}
-    {%- endfor %}
-  {%- elif schema.oneOf() | length %}
-    {{importSchema("OneOf")}}
-    {%- for oneOfSchema in schema.oneOf() %}
-    {{importSchemas(oneOfSchema)}}
-    {%- endfor %}
-  {%- elif schema.anyOf() | length %}
-    {%- for anyOfSchema in schema.anyOf() %}
-    {{importSchemas(anyOfSchema)}}
-    {%- endfor %}
-  {%- elif schema.uid() | length %}
-    {{importSchema(schema.uid())}}
+  
+  {%- if schema.type() == "object" %}
+    {{setProperty(schema.uid())}}
+  {%- elif schema.type() | length %}
+    {{setProperty("type")}}
   {%- endif %}
 {%- endmacro %}
 {%- macro initProperty(propertyName, propertyType) %}
@@ -54,11 +40,9 @@
     this.{{propertyName | camelCase}} = {{propertyName | camelCase}};
 {% endmacro %}
 
-{%- macro importSchema(propertyName) %}
-import { default as {{propertyName | pascalCase}}Schema } from '../schema/{{propertyName | pascalCase}}';
-{% endmacro %}
-{{ importSchemas(message.payload()) }}
-
+{%- for _, import in (message.payload() | genericImports) %}
+{{import | safe }}
+{%- endfor %}
 export default class {{ message.name() | pascalCase}} {
   {{ initProperties(message.payload()) }}
 

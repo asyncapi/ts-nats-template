@@ -16,42 +16,16 @@
     {%- endfor %}
   {%- endif %}
 
-  {%- if schema.properties() | length %}
+  {%- if schema.type() == "object" %}
       {%- for propertyName, property in schema.properties() %}
       {{ propertyName | camelCase}}{% if not required or not property.required() %}?{% endif %}: {{ property.type() | toTsType(property) }}
       {%- endfor %}
+  {%- elif schema.type() | length %}
+    type: {{ schema.type() | toTsType }}
   {%- endif %}
 
 {% endmacro %}
 
-{% macro importSchemas(schema) %}
-  {%- if schema.allOf() | length %}
-    {%- for allOfSchema in schema.allOf() %}
-    {{importSchemas(allOfSchema)}}
-    {%- endfor %}
-  {%- endif %}
-
-  {%- if schema.oneOf() | length %}
-    {%- for oneOfSchema in schema.oneOf() %}
-    {{importSchemas(oneOfSchema)}}
-    {%- endfor %}
-  {%- endif %}
-
-  {%- if schema.anyOf() | length %}
-    {%- for oneOfSchema in schema.anyOf() %}
-    {{importSchemas(oneOfSchema)}}
-    {%- endfor %}
-  {%- endif %}
-
-  {%- if schema.properties() | length %}
-      {%- for propertyName, property in schema.properties() %}
-      {%- if property.type() == "object" %}
-import { default as {{property.uid() | pascalCase}} } from './{{property.uid() | pascalCase}}';
-      {%- endif %}
-      {%- endfor %}
-  {%- endif %}
-
-{% endmacro %}
 {%- macro setConstructorProperties(schema) %}
   {%- if schema.allOf() | length %}
     {%- for allOfSchema in schema.allOf() %}
@@ -66,13 +40,15 @@ import { default as {{property.uid() | pascalCase}} } from './{{property.uid() |
     {{setConstructorProperties(anyOfSchema)}}
     {%- endfor %}
   {%- endif %}
-  {%- if schema.properties() | length %}
-  
-  {%- for propertyName, property in schema.properties() %}
-    {% if property.required() %}
-    {{setProperty(propertyName)}}
-  {%- endif %}
-    {%- endfor %}
+
+  {%- if schema.type() == "object" %}
+      {%- for propertyName, property in schema.properties() %}
+        {% if property.required() %}
+        {{setProperty(propertyName)}}
+        {%- endif %}
+      {%- endfor %}
+  {%- elif schema.type() | length %}
+    {{setProperty("type")}}
   {%- endif %}
   
 {%- endmacro %}
@@ -81,7 +57,11 @@ import { default as {{property.uid() | pascalCase}} } from './{{property.uid() |
     this.{{propertyName | camelCase}} = {{propertyName | camelCase}};
 {% endmacro %}
 
-{{ importSchemas(schema) }}
+
+{%- for _, import in (schema | schemaImports) %}
+{{import | safe }}
+{%- endfor %}
+
 export default class {{ schema.uid() | camelCase }} {
 
   {{ initProperties(schema) }}

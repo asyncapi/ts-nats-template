@@ -1,7 +1,5 @@
 
 {% macro subscribe(channelName, parameters, subscribtionMessage, server) %}
-
-import {getHooks, AvailableHooks} from '#hooks';
 export function subscribe(
   onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => void, 
   nc: Client,
@@ -28,7 +26,7 @@ export function subscribe(
           onDataCallback(err);
         }else{
           
-          let receivedDataHooks = Hooks.getHooks(Hooks.AvailableHooks.RecievedData) as Hooks.RecievedDataHook[];
+          let receivedDataHooks = Hooks.getRecievedDataHook();
           var processedDataReceived: any = msg.data;
           for(let hook of receivedDataHooks){
             processedDataReceived = hook(processedDataReceived);
