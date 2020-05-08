@@ -14,6 +14,13 @@ import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName
 import {default as {{ messageName | pascalCase }}Message} from "./messages/{{ messageName | pascalCase }}";
 {%- endfor %}
 
+export enum AvailableEvents {
+	connection_error = 'connection_error'
+}
+export declare interface NatsAsyncApiClient {
+  on(event: AvailableEvents.connection_error, listener: (error: any) => void): this;
+  //on(event: AvailableEvents.connection_error, listener: Function): this;
+}
 export default class NatsAsyncApiClient {
   public jsonClient?: Client;
   public stringClient?: Client;
@@ -25,6 +32,7 @@ export default class NatsAsyncApiClient {
 	 * @param options options to use, payload is omitted if sat in the AsyncAPI document.
 	 */
   constructor(options : NatsConnectionOptions) {
+    super();
 		this.options = this.setDefaultOptions(options);
     this.connect();
   }
@@ -47,7 +55,7 @@ export default class NatsAsyncApiClient {
       this.jsonClient = await connect(this.options);
       {%- endif %}
     }catch(e){
-      console.error("Could not connect to NATS: " + e)
+      this.emit(AvailableEvents.connection_error, e)
     }
   }
 

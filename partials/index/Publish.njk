@@ -23,6 +23,7 @@
       {% endif %});
     }else{
       throw new Error("Nats client is not connected");
+      return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))
     }
   }
 {% endmacro %}

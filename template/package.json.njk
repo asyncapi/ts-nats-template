@@ -26,11 +26,22 @@
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "_moduleAliasIgnoreWarning": true,
+  "baseUrl": "./src",
+  "paths": {
+    "#messages": [
+      "messages/*"
+    ],
+    "#schemas": [
+      "schema/*"
+    ],
+    "#hooks": [
+      "hooks"
+    ]
+  },
   "_moduleAliases": {
-    "#messages": "./src/messages",
-    "#schemas": "./src/schema",
-    "#channels": "./src/channels",
-    "#hooks": "./src/hooks"
+    "#messages": "./dist/messages",
+    "#schemas": "./dist/schema",
+    "#hooks": "./dist/hooks"
   },
   "dependencies": {
 		"@types/klaw-sync": "^6.0.0",
