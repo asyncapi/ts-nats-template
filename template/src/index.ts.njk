@@ -31,7 +31,7 @@ export default class NatsAsyncApiClient {
 	 *
 	 * @param options options to use, payload is omitted if sat in the AsyncAPI document.
 	 */
-  constructor(options : NatsConnectionOptions) {
+  constructor() {
     super();
 		this.options = this.setDefaultOptions(options);
     this.connect();
@@ -40,7 +40,8 @@ export default class NatsAsyncApiClient {
   /**
    * Try to connect to the NATS server with the different payloads.
    */
-  private async connect(){
+  async connect(options : NatsConnectionOptions){
+		this.options = this.setDefaultOptions(options);
     try{
       {%- if asyncapi | containsBinaryPayload %}
       this.options.payload = Payload.BINARY;
@@ -59,6 +60,17 @@ export default class NatsAsyncApiClient {
     }
   }
 
+  /**
+   * Try to connect to the NATS server with nkey authentication
+   */
+  async connectWithNkey(options : NatsConnectionOptions, publicNkey: string, seed: string){
+    options.nkey = publicNkey;
+    options.nonceSigner = (nonce: string): Buffer => {
+      const sk = fromSeed(Buffer.from(seed));
+      return sk.sign(Buffer.from(nonce));
+    }
+    await connect(options);
+  }
   /**
    * Set the default options based on the AsyncAPI file.
    * @param options to set
