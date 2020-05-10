@@ -26,7 +26,7 @@ export function subscribe(
           onDataCallback(err);
         }else{
           
-          let receivedDataHooks = Hooks.getRecievedDataHook();
+          let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
           var processedDataReceived: any = msg.data;
           for(let hook of receivedDataHooks){
             processedDataReceived = hook(processedDataReceived);

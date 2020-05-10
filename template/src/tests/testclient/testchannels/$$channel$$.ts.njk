@@ -10,7 +10,7 @@ import {default as {{ channel.publish().message(0).uid() | pascalCase }}Message}
 import {default as {{ channel.subscribe().message(0).uid() | pascalCase }}Message} from '#messages/{{ channel.subscribe().message(0).uid() | pascalCase}}'
 {%- endif %}
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
-import * as Hooks from '#hooks';
+import { Hooks } from '#hooks';
 
 
 {%- if channel | isRequestReply %}

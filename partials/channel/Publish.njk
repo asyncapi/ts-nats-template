@@ -11,7 +11,7 @@ export function publish(
   return new Promise<void>(async (resolve, reject) => {
     if (nc) {
       try{
-        let publishDataHooks = Hooks.getBeforeSendingDataHook();
+        let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
         var dataToPublish : any = requestMessage;
         for(let hook of publishDataHooks){
           dataToPublish = hook(dataToPublish);

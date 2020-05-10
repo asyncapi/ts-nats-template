@@ -4,28 +4,66 @@
 {%- from "../../partials/index/Request.njk" import request %}
 {%- from "../../partials/index/Subscribe.njk" import subscribe %}
 
-import { Client, NatsConnectionOptions, connect, Payload, NatsError, Subscription } from 'ts-nats';
+import { 
+  Client, 
+  NatsConnectionOptions, 
+  connect,
+  Payload, 
+  NatsError, 
+  Subscription, 
+  ServersChangedEvent, 
+  SubEvent, 
+  ServerInfo
+  } from 'ts-nats';
 
 {%- for channelName, _ in asyncapi.channels() %}
-import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | pascalCase | firstUpperCase }}";
+import * as {{ channelName | camelCase }}Channel from "#channels/{{ channelName | pascalCase | firstUpperCase }}";
 {%- endfor %}
 
 {%- for messageName, _ in asyncapi.allMessages() %}
-import {default as {{ messageName | pascalCase }}Message} from "./messages/{{ messageName | pascalCase }}";
+import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
 {%- endfor %}
-
+import {fromSeed} from 'ts-nkeys';
+import * as events from 'events';
 export enum AvailableEvents {
-	connection_error = 'connection_error'
+	connectionError = 'connectionError',
+  permissionError = 'permissionError',
+  close = 'close',
+  connect = 'connect',
+  connecting = 'connecting',
+  disconnect = 'disconnect',
+  error = 'error',
+  pingcount = 'pingcount',
+  pingtimer = 'pingtimer',
+  reconnect = 'reconnect',
+  reconnecting = 'reconnecting',
+  serversChanged = 'serversChanged',
+  subscribe = 'subscribe',
+  unsubscribe = 'unsubscribe',
+  yield = 'yield'
 }
 export declare interface NatsAsyncApiClient {
-  on(event: AvailableEvents.connection_error, listener: (error: any) => void): this;
-  //on(event: AvailableEvents.connection_error, listener: Function): this;
+  on(event: AvailableEvents.connectionError, listener: (error: any) => void): this;
+  on(event: AvailableEvents.permissionError, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.close, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
+  on(event: AvailableEvents.connecting, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.disconnect, listener: (serverURL: string) => void): this;
+  on(event: AvailableEvents.error, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.pingcount, listener: () => void): this;
+  on(event: AvailableEvents.pingtimer, listener: () => void): this;
+  on(event: AvailableEvents.reconnect, listener: (connection: Client, serverURL: string, info: ServerInfo)=> void): this;
+  on(event: AvailableEvents.reconnecting, listener: (serverURL: string) => void): this;
+  on(event: AvailableEvents.serversChanged, listener: (e: ServersChangedEvent) => void): this;
+  on(event: AvailableEvents.subscribe, listener: (e: SubEvent) => void): this;
+  on(event: AvailableEvents.unsubscribe, listener: (e: SubEvent) => void): this;
+  on(event: AvailableEvents.yield, listener:  () => void): this;
 }
-export default class NatsAsyncApiClient {
+export class NatsAsyncApiClient extends events.EventEmitter{
   public jsonClient?: Client;
   public stringClient?: Client;
   public binaryClient?: Client;
-  public options: NatsConnectionOptions;
+  public options?: NatsConnectionOptions;
 
 	/**
 	 *
@@ -33,8 +71,6 @@ export default class NatsAsyncApiClient {
 	 */
   constructor() {
     super();
-		this.options = this.setDefaultOptions(options);
-    this.connect();
   }
 
   /**
@@ -46,20 +82,67 @@ export default class NatsAsyncApiClient {
       {%- if asyncapi | containsBinaryPayload %}
       this.options.payload = Payload.BINARY;
       this.binaryClient = await connect(this.options);
+      this.chainEvents(this.binaryClient);
       {%- endif %}
       {%- if asyncapi | containsStringPayload %}
       this.options.payload = Payload.STRING;
       this.stringClient = await connect(this.options);
+      this.chainEvents(this.stringClient);
       {%- endif %}
       {%- if asyncapi | containsJsonPayload %}
       this.options.payload = Payload.JSON;
       this.jsonClient = await connect(this.options);
+      this.chainEvents(this.jsonClient);
       {%- endif %}
     }catch(e){
-      this.emit(AvailableEvents.connection_error, e)
+      this.emit(AvailableEvents.connectionError, e)
     }
   }
 
+  private chainEvents(ns: Client){
+      ns.on('permissionError', (e: NatsError) => {
+        this.emit(AvailableEvents.permissionError, e)
+      });
+      ns.on('close', (e: NatsError) => {
+        this.emit(AvailableEvents.close, e)
+      });
+      ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) => {
+        this.emit(AvailableEvents.connect, connection, serverURL, info)
+      });
+      ns.on('connecting', (serverURL: NatsError) => {
+        this.emit(AvailableEvents.connecting, serverURL)
+      });
+      ns.on('disconnect', (serverURL: string) => {
+        this.emit(AvailableEvents.disconnect, serverURL)
+      });
+      ns.on('error', (e: NatsError) => {
+        this.emit(AvailableEvents.error, e)
+      });
+      ns.on('pingcount', () => {
+        this.emit(AvailableEvents.pingcount)
+      });
+      ns.on('pingtimer', () => {
+        this.emit(AvailableEvents.pingtimer)
+      });
+      ns.on('reconnect', (connection: Client, serverURL: string, info: ServerInfo) => {
+        this.emit(AvailableEvents.reconnect, connection, serverURL, info)
+      });
+      ns.on('reconnecting', (serverURL: string) => {
+        this.emit(AvailableEvents.reconnecting, serverURL)
+      });
+      ns.on('serversChanged', (e: ServersChangedEvent) => {
+        this.emit(AvailableEvents.serversChanged, e)
+      });
+      ns.on('subscribe', (e: SubEvent) => {
+        this.emit(AvailableEvents.subscribe, e)
+      });
+      ns.on('unsubscribe', (e: SubEvent) => {
+        this.emit(AvailableEvents.unsubscribe, e)
+      });
+      ns.on('yield', () => {
+        this.emit(AvailableEvents.yield)
+      });
+  }
   /**
    * Try to connect to the NATS server with nkey authentication
    */
@@ -69,7 +152,7 @@ export default class NatsAsyncApiClient {
       const sk = fromSeed(Buffer.from(seed));
       return sk.sign(Buffer.from(nonce));
     }
-    await connect(options);
+    await this.connect(options);
   }
   /**
    * Set the default options based on the AsyncAPI file.

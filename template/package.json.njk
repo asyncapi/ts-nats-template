@@ -20,28 +20,17 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "watch": "tsc --watch",
-    "build": "tsc",
+    "build": "tsc && npm run dopostinstall",
     "start": "node src/api/index.js",
-    "postinstall": "link-module-alias",
+    "dopostinstall": "link-module-alias",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "_moduleAliasIgnoreWarning": true,
-  "baseUrl": "./src",
-  "paths": {
-    "#messages": [
-      "messages/*"
-    ],
-    "#schemas": [
-      "schema/*"
-    ],
-    "#hooks": [
-      "hooks"
-    ]
-  },
   "_moduleAliases": {
-    "#messages": "./dist/messages",
-    "#schemas": "./dist/schema",
-    "#hooks": "./dist/hooks"
+    "#messages": "dist/messages/",
+    "#schemas": "dist/schema/",
+    "#channels": "dist/channels/",
+    "#hooks": "dist/hooks.js"
   },
   "dependencies": {
 		"@types/klaw-sync": "^6.0.0",

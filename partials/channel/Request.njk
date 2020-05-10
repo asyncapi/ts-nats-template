@@ -15,7 +15,7 @@ export function request(
           if (err) {
             reject(err);
           } else {
-            let receivedDataHooks = Hooks.getRecievedDataHook();
+            let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
             var processedDataReceived : any = msg.data;
             for(let hook of receivedDataHooks){
               processedDataReceived = hook(processedDataReceived);
@@ -23,7 +23,7 @@ export function request(
             resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedDataReceived));
           }
         }, { max: 1 });
-        let publishDataHooks = Hooks.getBeforeSendingDataHook();
+        let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
         var requestData : any = requestMessage;
         for(let hook of publishDataHooks){
           requestData = hook(requestData);

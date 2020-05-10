@@ -1,4 +1,3 @@
-const HOOKS_DIRNAME = './hooks';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as walkSync from 'klaw-sync';
@@ -8,58 +7,54 @@ export enum AvailableHooks {
 }
 export type RecievedDataHook = (receivedData: any) => string;
 export type BeforeSendingDataHook = (messageToSend: any) => string;
-export var hooks: {
-	BeforeSendingData: BeforeSendingDataHook[];
-	RecievedData: RecievedDataHook[];
-};
-
-/**
- * Loads the custom hooks.
- */
-try {
-	const hooksPath = path.resolve(HOOKS_DIRNAME);
-	if (fs.existsSync(hooksPath)) {
-		const files = walkSync(hooksPath, { nodir: true });
-		files.forEach((file: any) => {
-			require(file.path)((when: AvailableHooks, hook: any) => {
-				hooks[when].push(hook);
-			});
-		});
+export class Hooks {
+	private static instance: Hooks;
+	
+	private hooks: {
+		BeforeSendingData: BeforeSendingDataHook[];
+		RecievedData: RecievedDataHook[];
+	};
+	private constructor() { 
+		this.hooks = {
+			BeforeSendingData: [],
+			RecievedData: []
+		}
 	}
-} catch (e) {
-	e.message = `There was a problem registering the hooks: ${e.message}`;
-	throw e;
-}
+    public static getInstance(): Hooks {
+        if (!Hooks.instance) {
+            Hooks.instance = new Hooks();
+        }
+        return Hooks.instance;
+	}
 
-/**
- * Register a hook for BeforeSendingData
- * @param hook
- */
-export async function registerBeforeSendingData(hook: BeforeSendingDataHook) {
-	hooks[AvailableHooks.BeforeSendingData]
-		? hooks[AvailableHooks.BeforeSendingData].push(hook)
-		: [hook];
-}
-
-/**
- * Register a hook for BeforeSendingData
- * @param hook
- */
-export async function registerRecievedData(hook: RecievedDataHook) {
-	hooks[AvailableHooks.RecievedData]
-		? hooks[AvailableHooks.RecievedData].push(hook)
-		: [hook];
-}
-
-
-export function getRecievedDataHook(): RecievedDataHook[] {
-	if (!Array.isArray(hooks[AvailableHooks.RecievedData])) return [];
-	// Return valid hooks
-	return hooks[AvailableHooks.RecievedData];
-}
-
-export function getBeforeSendingDataHook(): BeforeSendingDataHook[] {
-	if (!Array.isArray(hooks[AvailableHooks.BeforeSendingData])) return [];
-	// Return valid hooks
-	return hooks[AvailableHooks.BeforeSendingData];
+	
+	
+	/**
+	 * Register a hook for BeforeSendingData
+	 * @param hook
+	 */
+	public async registerBeforeSendingData(hook: BeforeSendingDataHook) {
+		this.hooks[AvailableHooks.BeforeSendingData]
+			? this.hooks[AvailableHooks.BeforeSendingData].push(hook)
+			: [hook];
+	}
+	
+	/**
+	 * Register a hook for BeforeSendingData
+	 * @param hook
+	 */
+	public async registerRecievedData(hook: RecievedDataHook) {
+		this.hooks[AvailableHooks.RecievedData]
+			? this.hooks[AvailableHooks.RecievedData].push(hook)
+			: [hook];
+	}
+	
+	
+	public getRecievedDataHook(): RecievedDataHook[] {
+		return this.hooks[AvailableHooks.RecievedData];
+	}
+	
+	public getBeforeSendingDataHook(): BeforeSendingDataHook[] {
+		return this.hooks[AvailableHooks.BeforeSendingData];
+	}
 }

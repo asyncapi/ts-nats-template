@@ -11,7 +11,7 @@ import * as {{ channelName | camelCase }}Channel from "./testchannels/{{ channel
 {%- endfor %}
 
 {%- for messageName, _ in asyncapi.allMessages() %}
-import {default as {{ messageName | pascalCase }}Message} from "../../../src/messages/{{ messageName | pascalCase }}";
+import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
 {%- endfor %}
 
 export default class NatsAsyncApiClient {

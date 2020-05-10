@@ -9,11 +9,11 @@
 		"preserveConstEnums": true,
 		"sourceMap": true,
 		"outDir": "dist/",
-		"baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
+		"baseUrl": "./src",
 		"paths": {
-			"#messages": ["messages"],
-			"#schemas": ["schema"],
-			"#channels": ["channels"],
+			"#messages/*": ["messages/*"],
+			"#schemas/*": ["schema/*"],
+			"#channels/*": ["channels/*"],
 			"#hooks": ["hooks"]
 		}
 	},
