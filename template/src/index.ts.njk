@@ -99,6 +99,21 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     }
   }
 
+  /**
+   * Disconnect all clients from the server
+   */
+  async disconnect(){
+    {%- if asyncapi | containsBinaryPayload %}
+    this.binaryClient!.close()
+    {%- endif %}
+    {%- if asyncapi | containsStringPayload %}
+    this.stringClient!.close()
+    {%- endif %}
+    {%- if asyncapi | containsJsonPayload %}
+    this.jsonClient!.close()
+    {%- endif %}
+  }
+
   private chainEvents(ns: Client){
       ns.on('permissionError', (e: NatsError) => {
         this.emit(AvailableEvents.permissionError, e)
