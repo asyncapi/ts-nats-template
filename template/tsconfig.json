@@ -14,7 +14,10 @@
 			"#messages/*": ["messages/*"],
 			"#schemas/*": ["schema/*"],
 			"#channels/*": ["channels/*"],
-			"#hooks": ["hooks"]
+			"#testchannels/*": ["tests/testclient/testchannels/*"],
+			"#hooks": ["hooks"],
+			"#testclient": ["tests/testclient/index"],
+			"#client": ["index"]
 		}
 	},
 	"include": ["src"],
