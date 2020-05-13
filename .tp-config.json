@@ -1,4 +1,11 @@
 {
+	"supportedProtocols": ["nats"],
+	"parameters": {
+	  "generateTestFiles": {
+		"description": "Generate the test files for the client as well",
+		"required": false
+	  }
+	},
 	"generator": ">=0.41.0 <2.0.0",
 	"filters": [ "@asyncapi/generator-filters"]
 }
