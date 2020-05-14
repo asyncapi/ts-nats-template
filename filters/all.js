@@ -139,8 +139,8 @@ function toTsType(jsonSchemaType, property) {
 filter.toTsType = toTsType
 
 filter.realizeChannelName = (parameters, channelName) => {
-
 	let returnString = '\`' + channelName + '\`';
+	returnString = returnString.replace(`/`, `.`);
 	for (paramName in parameters) {
 		returnString = returnString.replace(`{${paramName}}`, `\${${paramName}}`);
 	}
