@@ -14,11 +14,11 @@ const deleteFolderRecursive = function(path) {
 	  fs.rmdirSync(path);
 	}
   };
-module.exports = register => {
-	register('generate:after', generator => {
+module.exports = {
+	'generate:after': (generator) => {
 		if(generator.targetDir && generator.templateParams && !generator.templateParams.generateTestFiles){
 			pathToTests = Path.resolve(generator.targetDir, "src/tests/")
 			deleteFolderRecursive(pathToTests)
 		}
-	});
+	}
 };

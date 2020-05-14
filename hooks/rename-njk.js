@@ -16,8 +16,8 @@ var renameAllSync = function(dir) {
 		}
 	});
 };
-module.exports = register => {
-	register('generate:after', generator => {
+module.exports = {
+	'generate:after': (generator) => {
 		renameAllSync(path.resolve(generator.targetDir));
-	});
+	}
 };
