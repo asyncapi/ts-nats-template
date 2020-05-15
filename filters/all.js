@@ -140,13 +140,26 @@ filter.toTsType = toTsType
 
 filter.realizeChannelName = (parameters, channelName) => {
 	let returnString = '\`' + channelName + '\`';
-	returnString = returnString.replace(`/`, `.`);
+	returnString = returnString.replace(/\//g, `.`);
 	for (paramName in parameters) {
 		returnString = returnString.replace(`{${paramName}}`, `\${${paramName}}`);
 	}
 	return returnString;
 }
-filter.realizeParametersForChannelWithoutType = parameters => {
+filter.realizeChannelNameWithoutParameters = (channelName) => {
+	return toNatsChannel(channelName, null)
+}
+function toNatsChannel(channelName, parameters){
+	let returnString = '\`' + channelName + '\`';
+	returnString = returnString.replace(/\//g, `.`);
+	if(parameters){
+		for (paramName in parameters) {
+			returnString = returnString.replace(`{${paramName}}`, `\${${paramName}}`);
+		}
+	}
+	return returnString;
+}
+filter.realizeParametersForChannelWithoutType = (parameters) => {
 	let returnString = '';
 	for (paramName in parameters) {
 		returnString += `${paramName},`;
@@ -156,11 +169,11 @@ filter.realizeParametersForChannelWithoutType = parameters => {
 	}
 	return returnString;
 }
-filter.realizeParametersForChannel = parameters => {
+filter.realizeParametersForChannel = (parameters, required = true) => {
 	let returnString = '';
-
+	const requiredType = !required ? '?' : ''
 	for (paramName in parameters) {
-		returnString += `${paramName}:${toTsType(
+		returnString += `${paramName}${requiredType}: ${toTsType(
 			parameters[paramName].schema().type()
 		)},`;
 	}

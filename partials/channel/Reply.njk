@@ -1,7 +1,7 @@
 
 {% macro reply(channelName, parameters, subscribtionMessage, publishMessage, server) %}
 export function reply(
-  onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => {{publishMessage.uid() | pascalCase}}Message, 
+  onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => {{publishMessage.uid() | pascalCase}}Message, 
   onReplyError: (err: NatsError) => void,
   nc: Client,
   {% if parameters | length %}
@@ -11,7 +11,6 @@ export function reply(
   return new Promise(async (resolve, reject) => {
     if (nc) {
       try {
-
         let subscribeOptions: SubscriptionOptions = {};
         {%- if subscribtionMessage | hasNatsBindings %}
         {%- if subscribtionMessage.bindings().nats().queue() | length %}
@@ -28,7 +27,16 @@ export function reply(
           if (err) {
             onRequest(err);
           } else {
-            
+            {%- if parameters | length %}
+            const unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters}}
+            const receivedTopicParameters = {
+              {%- set counter = 1 %}
+              {%- for parameterName, parameter in parameters %}
+                {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (parameters | length) %},{%- endif %}
+                {%- set counter = counter+1 %}
+              {%- endfor %}
+            }
+            {%- endif %}
             let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
             var processedDataReceived : any = msg.data;
             for(let hook of receivedDataHooks){
@@ -36,7 +44,13 @@ export function reply(
             }
             let requestData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
 
-            let responseObject = onRequest(undefined, requestData);
+            let responseObject = onRequest(undefined, requestData{% if parameters | length %},
+              {%- set counter = 1 %}
+              {%- for parameterName, parameter in parameters %}
+                receivedTopicParameters['{{parameterName}}']{%- if counter < (parameters | length) %},{%- endif %}
+                {%- set counter = counter+1 %}
+              {%- endfor %}
+              {%- endif %});
             if (msg.reply) {
               try {
                 let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();

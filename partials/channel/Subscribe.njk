@@ -1,7 +1,7 @@
 
 {% macro subscribe(channelName, parameters, subscribtionMessage, server) %}
 export function subscribe(
-  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message) => void, 
+  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
   nc: Client,
   {% if parameters | length %}
     {{parameters | realizeParametersForChannel}}
@@ -25,15 +25,29 @@ export function subscribe(
         if(err){
           onDataCallback(err);
         }else{
-          
+          {%- if parameters | length %}
+          const unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters}}
+          const receivedTopicParameters = {
+            {%- set counter = 1 %}
+            {%- for parameterName, parameter in parameters %}
+              {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (parameters | length) %},{%- endif %}
+              {%- set counter = counter+1 %}
+            {%- endfor %}
+          }
+          {%- endif %}
           let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
           var processedDataReceived: any = msg.data;
           for(let hook of receivedDataHooks){
             processedDataReceived = hook(processedDataReceived);
           }
           let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
-
-          onDataCallback(undefined, publishedData);
+          onDataCallback(undefined, publishedData{% if parameters | length %},
+              {%- set counter = 1 %}
+              {%- for parameterName, parameter in parameters %}
+                receivedTopicParameters['{{parameterName}}']{%- if counter < (parameters | length) %},{%- endif %}
+                {%- set counter = counter+1 %}
+              {%- endfor %}
+              {%- endif %});
         }
       }, subscribeOptions);
       resolve(subscription);

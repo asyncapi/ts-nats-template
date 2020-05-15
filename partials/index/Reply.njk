@@ -5,7 +5,7 @@
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message) => {{ publishMessage.uid() | pascalCase }}Message, onReplyError : (err: NatsError) => void 
+  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => {{ publishMessage.uid() | pascalCase }}Message, onReplyError : (err: NatsError) => void 
   {% if parameters | length %}
     ,{{parameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
