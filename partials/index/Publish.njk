@@ -1,11 +1,11 @@
 
-{% macro publish(defaultContentType, channelName, message, messageDescription, parameters) %}
+{% macro publish(defaultContentType, channelName, message, messageDescription, channelParameters) %}
   /**
   *  {{messageDescription}}
   * @param requestMessage The message to publish.
   */
-  public publishTo{{channelName | pascalCase }}(requestMessage: {{ message.uid() | pascalCase }}Message {% if parameters | length %}
-    ,{{parameters | realizeParametersForChannel}}
+  public publishTo{{channelName | pascalCase }}(requestMessage: {{ message.uid() | pascalCase }}Message {% if channelParameters | length %}
+    ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<void> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
@@ -18,8 +18,8 @@
     {%- endif %}
     if(nc){
       return {{ channelName | camelCase }}Channel.publish(requestMessage, nc
-      {% if parameters | length %}
-        ,{{parameters | realizeParametersForChannelWithoutType}}
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
       return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))

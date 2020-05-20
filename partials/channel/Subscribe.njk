@@ -1,10 +1,10 @@
 
-{% macro subscribe(channelName, parameters, subscribtionMessage, server) %}
+{% macro subscribe(channelName, channelParameters, subscribtionMessage, server) %}
 export function subscribe(
-  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
+  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
   nc: Client,
-  {% if parameters | length %}
-    {{parameters | realizeParametersForChannel}}
+  {% if channelParameters | length %}
+    {{channelParameters | realizeParametersForChannel}}
   {% endif %}
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
@@ -21,16 +21,16 @@ export function subscribe(
       {%- endif %}
       {%- endif %}
 
-      let subscription = nc.subscribe({{parameters | realizeChannelName(channelName)}}, (err, msg) => {
+      let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, (err, msg) => {
         if(err){
           onDataCallback(err);
         }else{
-          {%- if parameters | length %}
+          {%- if channelParameters | length %}
           const unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters}}
           const receivedTopicParameters = {
             {%- set counter = 1 %}
-            {%- for parameterName, parameter in parameters %}
-              {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (parameters | length) %},{%- endif %}
+            {%- for parameterName, parameter in channelParameters %}
+              {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (channelParameters | length) %},{%- endif %}
               {%- set counter = counter+1 %}
             {%- endfor %}
           }
@@ -41,10 +41,10 @@ export function subscribe(
             processedDataReceived = hook(processedDataReceived);
           }
           let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
-          onDataCallback(undefined, publishedData{% if parameters | length %},
+          onDataCallback(undefined, publishedData{% if channelParameters | length %},
               {%- set counter = 1 %}
-              {%- for parameterName, parameter in parameters %}
-                receivedTopicParameters['{{parameterName}}']{%- if counter < (parameters | length) %},{%- endif %}
+              {%- for parameterName, parameter in channelParameters %}
+                receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
                 {%- set counter = counter+1 %}
               {%- endfor %}
               {%- endif %});

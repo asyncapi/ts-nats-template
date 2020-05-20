@@ -1,11 +1,12 @@
 
-{% macro reply(channelName, parameters, subscribtionMessage, publishMessage, server) %}
+{% macro reply(channelName, channelParameters, subscribtionMessage, publishMessage, server, params) %}
 export function reply(
-  onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => {{publishMessage.uid() | pascalCase}}Message, 
+  onRequest: (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
+  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{publishMessage.uid() | pascalCase}}Message{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
   onReplyError: (err: NatsError) => void,
   nc: Client,
-  {% if parameters | length %}
-    {{parameters | realizeParametersForChannel}}
+  {% if channelParameters | length %}
+    {{channelParameters | realizeParametersForChannel}}
   {% endif %}
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
@@ -23,16 +24,16 @@ export function reply(
         {%- endif %}
         {%- endif %}
 
-        let subscription = nc.subscribe({{parameters | realizeChannelName(channelName)}}, (err, msg) => {
+        let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, {%- if params.promisifyReplyCallback | length %}async{%- endif %} (err, msg) => {
           if (err) {
             onRequest(err);
           } else {
-            {%- if parameters | length %}
+            {%- if channelParameters | length %}
             const unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters}}
             const receivedTopicParameters = {
               {%- set counter = 1 %}
-              {%- for parameterName, parameter in parameters %}
-                {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (parameters | length) %},{%- endif %}
+              {%- for parameterName, parameter in channelParameters %}
+                {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (channelParameters | length) %},{%- endif %}
                 {%- set counter = counter+1 %}
               {%- endfor %}
             }
@@ -43,11 +44,10 @@ export function reply(
               processedDataReceived = hook(processedDataReceived);
             }
             let requestData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
-
-            let responseObject = onRequest(undefined, requestData{% if parameters | length %},
+            let responseObject = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
               {%- set counter = 1 %}
-              {%- for parameterName, parameter in parameters %}
-                receivedTopicParameters['{{parameterName}}']{%- if counter < (parameters | length) %},{%- endif %}
+              {%- for parameterName, parameter in channelParameters %}
+                receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
                 {%- set counter = counter+1 %}
               {%- endfor %}
               {%- endif %});
@@ -70,8 +70,7 @@ export function reply(
               let error = new NatsError('Expected request to need a reply, did not..', '000');
               if (onReplyError) {
                 onReplyError(error)
-              } else {
-                console.error(error)
+              } else { 
               }
             }
           }

@@ -1,11 +1,11 @@
 
-{% macro subscribe(defaultContentType, channelName, message, messageDescription, parameters) %}
+{% macro subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) %}
   /**
   *  {{messageDescription}}
   * @param onDataCallback Called when message recieved.
   */
-  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if parameters | length %}
-    ,{{parameters | realizeParametersForChannel}}
+  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if channelParameters | length %}
+    ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
@@ -18,8 +18,8 @@
     {%- endif %}
     if(nc){
       return {{ channelName | camelCase }}Channel.subscribe(onDataCallback, nc
-      {% if parameters | length %}
-        ,{{parameters | realizeParametersForChannelWithoutType}}
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
       return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))

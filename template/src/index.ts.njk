@@ -186,7 +186,7 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     {{request(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters())}}
     {%- endif %}
     {%- if channel | isReplier %}
-    {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
+    {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters(), params)}}
     {%- endif %}
   {%- endif %}
 

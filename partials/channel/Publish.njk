@@ -1,11 +1,11 @@
 
-{% macro publish(channelName, parameters, publishMessage, server) %}
+{% macro publish(channelName, channelParameters, publishMessage, server) %}
 
 export function publish(
   requestMessage: {{publishMessage.uid() | pascalCase}}Message,
   nc: Client,
-  {% if parameters | length %}
-    {{parameters | realizeParametersForChannel}}
+  {% if channelParameters | length %}
+    {{channelParameters | realizeParametersForChannel}}
   {% endif %}
   ): Promise<void> {
   return new Promise<void>(async (resolve, reject) => {
@@ -16,7 +16,7 @@ export function publish(
         for(let hook of publishDataHooks){
           dataToPublish = hook(dataToPublish);
         }
-        nc.publish({{parameters | realizeChannelName(channelName)}}, dataToPublish);
+        nc.publish({{channelParameters | realizeChannelName(channelName)}}, dataToPublish);
         resolve();
       }catch(e){
         reject(e);

@@ -1,0 +1,56 @@
+import {NatsAsyncApiTestClient} from '#testclient'
+import {NatsAsyncApiClient} from '#client'
+import { default as AchievementSchema } from '#schemas/Achievement';
+{%- if channel.hasPublish() %}
+import {default as {{ channel.publish().message(0).uid() | pascalCase }}Message} from '#messages/{{ channel.publish().message(0).uid() | pascalCase}}'
+{%- for _, import in (channel.publish().message(0).payload() | genericImports) %}
+{{import | safe }}
+{%- endfor %}
+{%- endif %}
+{%- if channel.hasSubscribe() %}
+import {default as {{ channel.subscribe().message(0).uid() | pascalCase }}Message} from '#messages/{{ channel.subscribe().message(0).uid() | pascalCase}}'
+{%- for _, import in (channel.subscribe().message(0).payload() | genericImports) %}
+{{import | safe }}
+{%- endfor %}
+{%- endif %}
+import { expect } from 'chai';
+import 'mocha';
+
+describe('{{channelName | pascalCase}}', () => {
+  it('should be able to publish to publish to channel', () => {
+	  return new Promise(async (resolve, reject) => {
+		  try{
+				const natsRustAPiClient = new NatsAsyncApiClient();
+				const testNatsRustAPiClient = new NatsAsyncApiTestClient();
+				await natsRustAPiClient.connect({url: "0.0.0.0:8589", reconnectTimeWait: 1000, reconnect: true, waitOnFirstConnect: true, maxReconnectAttempts: -1});
+				await testNatsRustAPiClient.connect({url: "0.0.0.0:8589", reconnectTimeWait: 1000, reconnect: true, waitOnFirstConnect: true, maxReconnectAttempts: -1});
+			
+				const achievement = new AchievementSchema();
+				const message = new PublishForServerPlayerAchievementsAcquired(achievement)
+				const parameterServerId = 2;
+				const parameterPlayerId = "test"
+				let subscription = await testNatsRustAPiClient.subscribeToRustServersServerIdPlayersSteamIdAchievementsAcquired((err, msg) => {
+					try{
+						expect(msg).to.deep.equal(message);
+						resolve();
+					}catch(e){
+						reject(e);
+					}
+					subscription.unsubscribe()
+					natsRustAPiClient.disconnect();
+					testNatsRustAPiClient.disconnect();
+				}, parameterServerId, parameterPlayerId);
+				//Delay a bit
+				setTimeout(async () => { 
+					try{
+						await natsRustAPiClient.publishToRustServersServerIdPlayersSteamIdAchievementsAcquired(message, parameterServerId, parameterPlayerId);
+					}catch(e){
+						console.log(e);
+					}
+				}, 150);
+			}catch(e){
+				reject(e)
+			}
+	  })
+  });
+});

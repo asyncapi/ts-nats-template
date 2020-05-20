@@ -1,13 +1,13 @@
 
-{% macro reply(defaultContentType, channelName, subscribeMessage, publishMessage, messageDescription, parameters) %}
+{% macro reply(defaultContentType, channelName, subscribeMessage, publishMessage, messageDescription, channelParameters, params) %}
   /**
   *  {{messageDescription}}
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message{% if parameters | length %}, {{parameters | realizeParametersForChannel(false)}}{% endif %}) => {{ publishMessage.uid() | pascalCase }}Message, onReplyError : (err: NatsError) => void 
-  {% if parameters | length %}
-    ,{{parameters | realizeParametersForChannel}}
+  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ publishMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsError) => void 
+  {% if channelParameters | length %}
+    ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
     {%- if subscribeMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
@@ -21,8 +21,8 @@
     
     if(nc){
       return {{ channelName | camelCase }}Channel.reply(onRequest, onReplyError, nc
-      {% if parameters | length %}
-        ,{{parameters | realizeParametersForChannelWithoutType}}
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
       return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))
