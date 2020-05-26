@@ -22,7 +22,6 @@ import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ mes
 import {fromSeed} from 'ts-nkeys';
 import * as events from 'events';
 export enum AvailableEvents {
-	connectionError = 'connectionError',
   permissionError = 'permissionError',
   close = 'close',
   connect = 'connect',
@@ -39,7 +38,6 @@ export enum AvailableEvents {
   yield = 'yield'
 }
 export declare interface NatsAsyncApiTestClient {
-  on(event: AvailableEvents.connectionError, listener: (error: any) => void): this;
   on(event: AvailableEvents.permissionError, listener: (error: NatsError) => void): this;
   on(event: AvailableEvents.close, listener: (error: NatsError) => void): this;
   on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
@@ -72,27 +70,30 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   /**
    * Try to connect to the NATS server with the different payloads.
    */
-  async connect(options : NatsConnectionOptions){
-		this.options = this.setDefaultOptions(options);
-    try{
-      {%- if asyncapi | containsBinaryPayload %}
-      this.options.payload = Payload.BINARY;
-      this.binaryClient = await connect(this.options);
-      this.chainEvents(this.binaryClient);
-      {%- endif %}
-      {%- if asyncapi | containsStringPayload %}
-      this.options.payload = Payload.STRING;
-      this.stringClient = await connect(this.options);
-      this.chainEvents(this.stringClient);
-      {%- endif %}
-      {%- if asyncapi | containsJsonPayload %}
-      this.options.payload = Payload.JSON;
-      this.jsonClient = await connect(this.options);
-      this.chainEvents(this.jsonClient);
-      {%- endif %}
-    }catch(e){
-      this.emit(AvailableEvents.connectionError, e)
-    }
+  connect(options : NatsConnectionOptions): Promise<void>{
+    return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
+      this.options = this.setDefaultOptions(options);
+      try{
+        {%- if asyncapi | containsBinaryPayload %}
+        this.options.payload = Payload.BINARY;
+        this.binaryClient = await connect(this.options);
+        this.chainEvents(this.binaryClient);
+        {%- endif %}
+        {%- if asyncapi | containsStringPayload %}
+        this.options.payload = Payload.STRING;
+        this.stringClient = await connect(this.options);
+        this.chainEvents(this.stringClient);
+        {%- endif %}
+        {%- if asyncapi | containsJsonPayload %}
+        this.options.payload = Payload.JSON;
+        this.jsonClient = await connect(this.options);
+        this.chainEvents(this.jsonClient);
+        {%- endif %}
+        resolve();
+      }catch(e){
+        reject(e);
+      }
+    })
   }
 
 

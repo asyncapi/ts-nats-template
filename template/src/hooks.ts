@@ -1,6 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as walkSync from 'klaw-sync';
 export enum AvailableHooks {
 	RecievedData = 'RecievedData',
 	BeforeSendingData = 'BeforeSendingData'
