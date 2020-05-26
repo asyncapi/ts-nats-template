@@ -1,4 +1,3 @@
-const HOOKS_DIRNAME = './hooks';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as walkSync from 'klaw-sync';
@@ -6,58 +5,56 @@ export enum AvailableHooks {
 	RecievedData = 'RecievedData',
 	BeforeSendingData = 'BeforeSendingData'
 }
-export type RecievedDataHook = () => void;
-export type BeforeSendingDataHook = (messageToSend: any) => void;
-export var hooks: {
-	BeforeSendingData: BeforeSendingDataHook[];
-	RecievedData: RecievedDataHook[];
-};
-
-/**
- * Loads the custom hooks.
- */
-try {
-	const hooksPath = path.resolve(HOOKS_DIRNAME);
-	if (fs.existsSync(hooksPath)) {
-		const files = walkSync(hooksPath, { nodir: true });
-		files.forEach((file: any) => {
-			require(file.path)((when: AvailableHooks, hook: any) => {
-				hooks[when].push(hook);
-			});
-		});
+export type RecievedDataHook = (receivedData: any) => string;
+export type BeforeSendingDataHook = (messageToSend: any) => string;
+export class Hooks {
+	private static instance: Hooks;
+	
+	private hooks: {
+		BeforeSendingData: BeforeSendingDataHook[];
+		RecievedData: RecievedDataHook[];
+	};
+	private constructor() { 
+		this.hooks = {
+			BeforeSendingData: [],
+			RecievedData: []
+		}
 	}
-} catch (e) {
-	e.message = `There was a problem registering the hooks: ${e.message}`;
-	throw e;
-}
+    public static getInstance(): Hooks {
+        if (!Hooks.instance) {
+            Hooks.instance = new Hooks();
+        }
+        return Hooks.instance;
+	}
 
-/**
- * Register a hook for BeforeSendingData
- * @param hook
- */
-export async function registerBeforeSendingData(hook: BeforeSendingDataHook) {
-	hooks[AvailableHooks.BeforeSendingData]
-		? hooks[AvailableHooks.BeforeSendingData].push(hook)
-		: [hook];
-}
-
-/**
- * Register a hook for BeforeSendingData
- * @param hook
- */
-export async function registerRecievedData(hook: RecievedDataHook) {
-	hooks[AvailableHooks.RecievedData]
-		? hooks[AvailableHooks.RecievedData].push(hook)
-		: [hook];
-}
-
-/**
- * Get all the hooks registered at a given hook point/name.
- * @param hook to find hooks for
- * @returns all hooks
- */
-export function getHooks(hook: AvailableHooks): Function[] {
-	if (!Array.isArray(hooks[hook])) return [];
-	// Return valid hooks
-	return hooks[hook];
+	
+	
+	/**
+	 * Register a hook for BeforeSendingData
+	 * @param hook
+	 */
+	public async registerBeforeSendingData(hook: BeforeSendingDataHook) {
+		this.hooks[AvailableHooks.BeforeSendingData]
+			? this.hooks[AvailableHooks.BeforeSendingData].push(hook)
+			: [hook];
+	}
+	
+	/**
+	 * Register a hook for BeforeSendingData
+	 * @param hook
+	 */
+	public async registerRecievedData(hook: RecievedDataHook) {
+		this.hooks[AvailableHooks.RecievedData]
+			? this.hooks[AvailableHooks.RecievedData].push(hook)
+			: [hook];
+	}
+	
+	
+	public getRecievedDataHook(): RecievedDataHook[] {
+		return this.hooks[AvailableHooks.RecievedData];
+	}
+	
+	public getBeforeSendingDataHook(): BeforeSendingDataHook[] {
+		return this.hooks[AvailableHooks.BeforeSendingData];
+	}
 }

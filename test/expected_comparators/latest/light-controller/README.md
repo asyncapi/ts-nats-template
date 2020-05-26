@@ -1,8 +1,8 @@
-# Streetlights Nats API for lightning controllers
+# Streetlights Nats API for the frontend
 
 The Smartylighting Streetlights API allows you to remotely manage the city lights.
 
-This is for the lighting controllers, which assumed are multiple instances to ensure availability.
+This is for the frontend where the lights can be controlled, which assumed are multiple instances to ensure availability.
 
 ### Check out its awesome features:
 

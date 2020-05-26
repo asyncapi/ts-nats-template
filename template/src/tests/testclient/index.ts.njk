@@ -8,19 +8,19 @@
   {%- for channelName, channel in asyncapi.channels() %}
     {%- if channel | isRequestReply %}
       {%- if channel | isRequester %}
-      {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
+      {{request(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters())}}
       {%- endif %}
       {%- if channel | isReplier %}
-      {{reply(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters(), params)}}
+      {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters(), params)}}
       {%- endif %}
     {%- endif %}
 
     {%- if channel | isPubsub %}
       {%- if channel.hasSubscribe() %}
-      {{subscribe(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.description(), channel.parameters())}}
+      {{subscribe(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.description(), channel.parameters())}}
       {%- endif %}
       {%- if channel.hasPublish() %}
-      {{publish(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.description(), channel.parameters())}}
+      {{publish(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.description(), channel.parameters())}}
       {%- endif %}
     {%- endif %}
   {%- endfor %}

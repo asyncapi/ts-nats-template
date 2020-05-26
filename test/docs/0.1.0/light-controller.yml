@@ -1,11 +1,11 @@
 asyncapi: '2.0.0'
 info:
-  title: Streetlights Nats API for lightning controllers
+  title: Streetlights Nats API for the frontend
   version: '1.0.0'
   description: |
     The Smartylighting Streetlights API allows you to remotely manage the city lights.
 
-    This is for the lighting controllers, which assumed are multiple instances to ensure availability.
+    This is for the frontend where the lights can be controlled, which assumed are multiple instances to ensure availability.
 
     ### Check out its awesome features:
 
@@ -28,87 +28,93 @@ servers:
       - apiKey: []
 
 defaultContentType: json
+
 channels:
+  smartylighting/streetlights/1/0/event/*:
+    description: Topic for which one can subscribe to all measurements regardless of id.
+    subscribe:
+      operationId: receiveAllLightMeasurements
+      message:
+        $ref: './components/messages.yml#/lightMeasured'
+    bindings:
+      $ref: './components/channel-bindings.yml#/smartylightingMeasurement'
+
   smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured:
-    description: Any measured values will be published through this method.
+    description: Topic for which one can subscribe to measurements on a specific streetlightId.
     parameters:
       streetlightId:
         $ref: './components/parameters.yml#/streetlightId'
-    publish:
-      operationId: publishLightMeasurement
+    subscribe:
+      operationId: receiveLightMeasurements
       message:
         $ref: './components/messages.yml#/lightMeasured'
     bindings:
       $ref: './components/channel-bindings.yml#/smartylightingMeasurement'
 
   smartylighting/streetlights/1/0/action/{streetlightId}/turn/on:
-    description: Get notified when a streetlight should be turned on. This should only be handled by 1 subscriber but ensured by request reply.
     parameters:
       streetlightId:
         $ref: './components/parameters.yml#/streetlightId'
     publish:
-      operationId: turnOnResponse
-      description: The response returned by us to the frontend.
-      message:
-        $ref: './components/messages.yml#/turnOnOffResponse'
-    subscribe:
       operationId: turnOn
-      description: The turn on request received from the frontend.
+      description: The turn on request send to the light controller.
       message:
         $ref: './components/messages.yml#/turnOnOff'
+    subscribe:
+      operationId: turnOnResponse
+      description: The response returned by the light controller.
+      message:
+        $ref: './components/messages.yml#/turnOnOffResponse'
     bindings:
       nats:
         is: requestReply
         requestReply:
-          is: replier
+          is: requester
         queue:
           name: smartylightingTurnOn
         bindingVersion: '0.1.0'
-
   smartylighting/streetlights/1/0/action/{streetlightId}/turn/off:
-    description: Get notified when a streetlight should be turned off. This should only be handled by 1 subscriber but ensured by request reply.
     parameters:
       streetlightId:
         $ref: './components/parameters.yml#/streetlightId'
-    publish:
+    subscribe:
       operationId: turnOffResponse
-      description: The response returned by us to the frontend.
+      description: The response returned by the light controller.
       message:
         $ref: './components/messages.yml#/turnOnOffResponse'
-    subscribe:
+    publish:
       operationId: turnOff
-      description: The turn off request received from the frontend.
+      description: The turn off request send to the light controller.
       message:
         $ref: './components/messages.yml#/turnOnOff'
     bindings:
       nats:
         is: requestReply
         requestReply:
-          is: replier
+          is: requester
         queue:
           name: smartylightingTurnOff
         bindingVersion: '0.1.0'
 
   smartylighting/streetlights/1/0/action/{streetlightId}/dim:
-    description: Get notified when a streetlight should be dimmed. This should only be handled by 1 subscriber but ensured by request reply.
     parameters:
       streetlightId:
         $ref: './components/parameters.yml#/streetlightId'
-    publish:
+    subscribe:
       operationId: dimLightResponse
-      description: The response returned by us.
+      description: The response returned by the light controller.
       message:
         $ref: './components/messages.yml#/dimLightResponse'
-    subscribe:
+    publish:
       operationId: dimLight
-      description: The dim light request received from the frontend.
+      description: The dim light request send to the light controller.
       message:
         $ref: './components/messages.yml#/dimLight'
     bindings:
       nats:
         is: requestReply
         requestReply:
-          is: replier
+          is: requester
         queue:
           name: smartylightingDim
         bindingVersion: '0.1.0'

@@ -1,54 +1,247 @@
 
-    
+  
+import { 
+  Client, 
+  NatsConnectionOptions, 
+  connect,
+  Payload, 
+  NatsError, 
+  Subscription, 
+  ServersChangedEvent, 
+  SubEvent, 
+  ServerInfo
+  } from 'ts-nats';
+import * as smartylightingStreetlights10EventStreetlightIdLightingMeasuredChannel from "#testchannels/SmartylightingStreetlights10EventStreetlightIdLightingMeasured";
+import * as smartylightingStreetlights10ActionStreetlightIdTurnOnChannel from "#testchannels/SmartylightingStreetlights10ActionStreetlightIdTurnOn";
+import * as smartylightingStreetlights10ActionStreetlightIdTurnOffChannel from "#testchannels/SmartylightingStreetlights10ActionStreetlightIdTurnOff";
+import * as smartylightingStreetlights10ActionStreetlightIdDimChannel from "#testchannels/SmartylightingStreetlights10ActionStreetlightIdDim";
+import {default as LightMeasuredMessage} from "#messages/LightMeasured";
+import {default as TurnOnOffResponseMessage} from "#messages/TurnOnOffResponse";
+import {default as TurnOnOffMessage} from "#messages/TurnOnOff";
+import {default as DimLightResponseMessage} from "#messages/DimLightResponse";
+import {default as DimLightMessage} from "#messages/DimLight";
+import {fromSeed} from 'ts-nkeys';
+import * as events from 'events';
+export enum AvailableEvents {
+	connectionError = 'connectionError',
+  permissionError = 'permissionError',
+  close = 'close',
+  connect = 'connect',
+  connecting = 'connecting',
+  disconnect = 'disconnect',
+  error = 'error',
+  pingcount = 'pingcount',
+  pingtimer = 'pingtimer',
+  reconnect = 'reconnect',
+  reconnecting = 'reconnecting',
+  serversChanged = 'serversChanged',
+  subscribe = 'subscribe',
+  unsubscribe = 'unsubscribe',
+  yield = 'yield'
+}
+export declare interface NatsAsyncApiTestClient {
+  on(event: AvailableEvents.connectionError, listener: (error: any) => void): this;
+  on(event: AvailableEvents.permissionError, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.close, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
+  on(event: AvailableEvents.connecting, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.disconnect, listener: (serverURL: string) => void): this;
+  on(event: AvailableEvents.error, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.pingcount, listener: () => void): this;
+  on(event: AvailableEvents.pingtimer, listener: () => void): this;
+  on(event: AvailableEvents.reconnect, listener: (connection: Client, serverURL: string, info: ServerInfo)=> void): this;
+  on(event: AvailableEvents.reconnecting, listener: (serverURL: string) => void): this;
+  on(event: AvailableEvents.serversChanged, listener: (e: ServersChangedEvent) => void): this;
+  on(event: AvailableEvents.subscribe, listener: (e: SubEvent) => void): this;
+  on(event: AvailableEvents.unsubscribe, listener: (e: SubEvent) => void): this;
+  on(event: AvailableEvents.yield, listener:  () => void): this;
+}
+export class NatsAsyncApiTestClient extends events.EventEmitter{
+  public jsonClient?: Client;
+  public stringClient?: Client;
+  public binaryClient?: Client;
+  public options?: NatsConnectionOptions;
+
+	/**
+	 *
+	 * @param options options to use, payload is omitted if sat in the AsyncAPI document.
+	 */
+  constructor() {
+    super();
+  }
+
   /**
-  *  [object Object]
+   * Try to connect to the NATS server with the different payloads.
+   */
+  async connect(options : NatsConnectionOptions){
+		this.options = this.setDefaultOptions(options);
+    try{
+      this.options.payload = Payload.JSON;
+      this.jsonClient = await connect(this.options);
+      this.chainEvents(this.jsonClient);
+    }catch(e){
+      this.emit(AvailableEvents.connectionError, e)
+    }
+  }
+
+
+  /**
+   * Disconnect all clients from the server
+   */
+  async disconnect(){
+    this.jsonClient!.close()
+  }
+  
+  private chainEvents(ns: Client){
+      ns.on('permissionError', (e: NatsError) => {
+        this.emit(AvailableEvents.permissionError, e)
+      });
+      ns.on('close', (e: NatsError) => {
+        this.emit(AvailableEvents.close, e)
+      });
+      ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) => {
+        this.emit(AvailableEvents.connect, connection, serverURL, info)
+      });
+      ns.on('connecting', (serverURL: NatsError) => {
+        this.emit(AvailableEvents.connecting, serverURL)
+      });
+      ns.on('disconnect', (serverURL: string) => {
+        this.emit(AvailableEvents.disconnect, serverURL)
+      });
+      ns.on('error', (e: NatsError) => {
+        this.emit(AvailableEvents.error, e)
+      });
+      ns.on('pingcount', () => {
+        this.emit(AvailableEvents.pingcount)
+      });
+      ns.on('pingtimer', () => {
+        this.emit(AvailableEvents.pingtimer)
+      });
+      ns.on('reconnect', (connection: Client, serverURL: string, info: ServerInfo) => {
+        this.emit(AvailableEvents.reconnect, connection, serverURL, info)
+      });
+      ns.on('reconnecting', (serverURL: string) => {
+        this.emit(AvailableEvents.reconnecting, serverURL)
+      });
+      ns.on('serversChanged', (e: ServersChangedEvent) => {
+        this.emit(AvailableEvents.serversChanged, e)
+      });
+      ns.on('subscribe', (e: SubEvent) => {
+        this.emit(AvailableEvents.subscribe, e)
+      });
+      ns.on('unsubscribe', (e: SubEvent) => {
+        this.emit(AvailableEvents.unsubscribe, e)
+      });
+      ns.on('yield', () => {
+        this.emit(AvailableEvents.yield)
+      });
+  }
+  /**
+   * Try to connect to the NATS server with nkey authentication
+   */
+  async connectWithNkey(options : NatsConnectionOptions, publicNkey: string, seed: string){
+    options.nkey = publicNkey;
+    options.nonceSigner = (nonce: string): Buffer => {
+      const sk = fromSeed(Buffer.from(seed));
+      return sk.sign(Buffer.from(nonce));
+    }
+    await this.connect(options);
+  }
+  /**
+   * Set the default options based on the AsyncAPI file.
+   * @param options to set
+   */
+  private setDefaultOptions(options: NatsConnectionOptions){
+    //If server binding options sat set the options
+    options.encoding = 'utf8';
+    return options;
+  }
+
+
+      
+  /**
+  *  Any measured values will be published through this method.
   * @param requestMessage The message to publish.
   */
-  public publishToSmartylightingStreetlights10Event(requestMessage: LightMeasuredMessage): Promise<void> {
+  public publishToSmartylightingStreetlights10EventStreetlightIdLightingMeasured(requestMessage: LightMeasuredMessage 
+    ,streetlightId: string
+  ): Promise<void> {
     const nc: Client = this.jsonClient!;
-    return smartylightingStreetlights10EventChannel.publish(requestMessage, nc);
+    if(nc){
+      return smartylightingStreetlights10EventStreetlightIdLightingMeasuredChannel.publish(requestMessage, nc
+      
+        ,streetlightId
+      );
+    }else{
+      return Promise.reject(new Error('Nats client is not connected, could not send message on channel smartylightingStreetlights10EventStreetlightIdLightingMeasured'))
+    }
   }
 
-    
+      
   /**
-  *  [object Object]
-  * @param requestMessage The message to publish.
-  */
-  public publishToSmartylightingStreetlights10EventStreetlightIdLightingMeasured(requestMessage: LightMeasuredMessage): Promise<void> {
-    const nc: Client = this.jsonClient!;
-    return smartylightingStreetlights10EventStreetlightIdLightingMeasuredChannel.publish(requestMessage, nc);
-  }
-
-    
-  /**
-  *  [object Object]
+  *  Get notified when a streetlight should be turned on. This should only be handled by 1 subscriber but ensured by request reply.
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyToSmartylightingStreetlights10ActionStreetlightIdTurnOn(onRequest : (err?: NatsError, msg?: TurnOnOffMessage) => TurnOnOffResponseMessage, onReplyError : (err: NatsError) => void): Promise<Subscription> {
+  public replyToSmartylightingStreetlights10ActionStreetlightIdTurnOn(onRequest : (err?: NatsError, msg?: TurnOnOffMessage, streetlightId?: string) =>Promise<TurnOnOffResponseMessage>, onReplyError : (err: NatsError) => void 
+  
+    ,streetlightId: string
+  ): Promise<Subscription> {
     const nc: Client = this.jsonClient!;
-    return smartylightingStreetlights10ActionStreetlightIdTurnOnChannel.reply(onRequest, onReplyError, nc);
+    
+    if(nc){
+      return smartylightingStreetlights10ActionStreetlightIdTurnOnChannel.reply(onRequest, onReplyError, nc
+      
+        ,streetlightId
+      );
+    }else{
+      return Promise.reject(new Error('Nats client is not connected, could not send message on channel smartylightingStreetlights10ActionStreetlightIdTurnOn'))
+    }
   }
 
-    
+      
   /**
-  *  [object Object]
+  *  Get notified when a streetlight should be turned off. This should only be handled by 1 subscriber but ensured by request reply.
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyToSmartylightingStreetlights10ActionStreetlightIdTurnOff(onRequest : (err?: NatsError, msg?: TurnOnOffMessage) => TurnOnOffResponseMessage, onReplyError : (err: NatsError) => void): Promise<Subscription> {
+  public replyToSmartylightingStreetlights10ActionStreetlightIdTurnOff(onRequest : (err?: NatsError, msg?: TurnOnOffMessage, streetlightId?: string) =>Promise<TurnOnOffResponseMessage>, onReplyError : (err: NatsError) => void 
+  
+    ,streetlightId: string
+  ): Promise<Subscription> {
     const nc: Client = this.jsonClient!;
-    return smartylightingStreetlights10ActionStreetlightIdTurnOffChannel.reply(onRequest, onReplyError, nc);
+    
+    if(nc){
+      return smartylightingStreetlights10ActionStreetlightIdTurnOffChannel.reply(onRequest, onReplyError, nc
+      
+        ,streetlightId
+      );
+    }else{
+      return Promise.reject(new Error('Nats client is not connected, could not send message on channel smartylightingStreetlights10ActionStreetlightIdTurnOff'))
+    }
   }
 
-    
+      
   /**
-  *  [object Object]
+  *  Get notified when a streetlight should be dimmed. This should only be handled by 1 subscriber but ensured by request reply.
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyToSmartylightingStreetlights10ActionStreetlightIdDim(onRequest : (err?: NatsError, msg?: DimLightMessage) => DimLightResponseMessage, onReplyError : (err: NatsError) => void): Promise<Subscription> {
+  public replyToSmartylightingStreetlights10ActionStreetlightIdDim(onRequest : (err?: NatsError, msg?: DimLightMessage, streetlightId?: string) =>Promise<DimLightResponseMessage>, onReplyError : (err: NatsError) => void 
+  
+    ,streetlightId: string
+  ): Promise<Subscription> {
     const nc: Client = this.jsonClient!;
-    return smartylightingStreetlights10ActionStreetlightIdDimChannel.reply(onRequest, onReplyError, nc);
+    
+    if(nc){
+      return smartylightingStreetlights10ActionStreetlightIdDimChannel.reply(onRequest, onReplyError, nc
+      
+        ,streetlightId
+      );
+    }else{
+      return Promise.reject(new Error('Nats client is not connected, could not send message on channel smartylightingStreetlights10ActionStreetlightIdDim'))
+    }
   }
 
+
+}
