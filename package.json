@@ -26,18 +26,24 @@
 		"mocha": "^7.1.1"
 	},
 	"generator": {
-		"supportedProtocols": ["nats"],
+		"supportedProtocols": [
+			"nats"
+		],
 		"parameters": {
-		  "generateTestClient": {
-			"description": "Generate the test client",
-			"required": false
-		  },
-		  "promisifyReplyCallback": {
-			"description": "Use promises as callbacks for reply operation",
-			"required": false
-		  }
+			"generateTestClient": {
+				"description": "Generate the test client",
+				"default": "false",
+				"required": false
+			},
+			"promisifyReplyCallback": {
+				"description": "Use promises as callbacks for reply operation",
+				"default": "false",
+				"required": false
+			}
 		},
 		"generator": ">=0.50.0 <2.0.0",
-		"filters": [ "@asyncapi/generator-filters"]
+		"filters": [
+			"@asyncapi/generator-filters"
+		]
 	}
 }
