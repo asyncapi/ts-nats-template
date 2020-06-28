@@ -81,7 +81,7 @@ The following payload types are supported, this is limited to the underlying NAT
 
 ## Client Hooks
 
-The client support custom hooks used to control the flow of information outside the generated code. The hooks can be used to alter the payload before sending or after recieving any data i.e. encrypt, compress data, etc. It is possible to register as many hooks as you want, however remember that after the first call subsequently calls will include the already changed data and not the original. 
+The generated client support custom hooks used to control the flow of information outside the generated code. The hooks can be used to alter the payload before sending or after recieving any data i.e. encrypt, compress data, etc. It is possible to register as many hooks as you want, however remember that after the first call subsequently calls will include the already changed data and not the original. Also when using these hooks you are responsible for complying with the content type for the message being changed.
 
 These are the available hooks:
 |Hookname|Callback type|Description|

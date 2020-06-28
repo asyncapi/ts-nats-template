@@ -22,7 +22,7 @@
         ,{{channelParameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
-      return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
     }
   }
 {% endmacro %}

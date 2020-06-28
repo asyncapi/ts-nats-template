@@ -8,32 +8,33 @@ export function request(
   {% endif %}
   ): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
   return new Promise<{{subscribtionMessage.uid() | pascalCase}}Message>(async (resolve, reject) => {
-    if (nc) {
-      try {
-        let inbox = nc.createInbox();
-        await nc.subscribe(inbox, (err, msg) => {
-          if (err) {
-            reject(err);
-          } else {
-            let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
-            var processedDataReceived : any = msg.data;
-            for(let hook of receivedDataHooks){
-              processedDataReceived = hook(processedDataReceived);
-            }
-            resolve({{subscribtionMessage.uid() | pascalCase}}Message.toMessage(processedDataReceived));
-          }
-        }, { max: 1 });
-        let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
-        var requestData : any = requestMessage;
-        for(let hook of publishDataHooks){
-          requestData = hook(requestData);
-        }
-        nc.publish({{channelParameters | realizeChannelName(channelName)}}, requestData, inbox);
-      }catch(e){
-        reject(e);
+    try {
+      let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
+      var requestData : any = requestMessage;
+      for(let hook of publishDataHooks){
+        requestData = hook(requestData);
       }
-    } else {
-      reject(new Error("Nats client is not connected"));
+    }catch(e){
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+      return;
+    }
+    let msg;
+    try {
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, requestData)
+    }catch(e){
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+      return;
+    }
+    try{
+      let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+      var processedDataReceived: any = msg.data;
+      for(let hook of receivedDataHooks){
+        processedDataReceived = hook(processedDataReceived);
+      }
+      let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
+      resolve(publishedData);
+    }catch(e){
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
     }
   })
 }

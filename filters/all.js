@@ -1,6 +1,7 @@
 const filter = module.exports;
 const _ = require('lodash');
 
+
 /**
  * Figure out if our message content type or default content type matches a given payload.
  * @param {*} messageContentType to check
@@ -99,7 +100,6 @@ function pascalCase(string) {
 
 
 
-
 filter.firstLowerCase = string => {
 	return _.lowerFirst(string);
 }
@@ -108,6 +108,13 @@ filter.firstUpperCase = string => {
 }
 filter.pascalCase = string => {
 	return pascalCase(string);
+}
+filter.kebabCase = string => {
+	return _.kebabCase(string);
+}
+
+filter.camelCase = string => {
+	return camelCase(string);
 }
 
 

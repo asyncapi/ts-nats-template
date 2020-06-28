@@ -12,6 +12,8 @@ import {
   ServerInfo
   } from 'ts-nats';
 
+import {ErrorCode, NatsTypescriptTemplateError} from '#NatsTypescriptTemplateError';
+export {ErrorCode, NatsTypescriptTemplateError}
 {%- for channelName, _ in asyncapi.channels() %}
 import * as {{ channelName | camelCase }}Channel from "#testchannels/{{ channelName | pascalCase | firstUpperCase }}";
 {%- endfor %}
@@ -38,12 +40,12 @@ export enum AvailableEvents {
   yield = 'yield'
 }
 export declare interface NatsAsyncApiTestClient {
-  on(event: AvailableEvents.permissionError, listener: (error: NatsError) => void): this;
-  on(event: AvailableEvents.close, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
+  on(event: AvailableEvents.close, listener: (error: NatsTypescriptTemplateError) => void): this;
   on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
-  on(event: AvailableEvents.connecting, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.connecting, listener: (error: NatsTypescriptTemplateError) => void): this;
   on(event: AvailableEvents.disconnect, listener: (serverURL: string) => void): this;
-  on(event: AvailableEvents.error, listener: (error: NatsError) => void): this;
+  on(event: AvailableEvents.error, listener: (error: NatsTypescriptTemplateError) => void): this;
   on(event: AvailableEvents.pingcount, listener: () => void): this;
   on(event: AvailableEvents.pingtimer, listener: () => void): this;
   on(event: AvailableEvents.reconnect, listener: (connection: Client, serverURL: string, info: ServerInfo)=> void): this;
@@ -91,7 +93,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
         {%- endif %}
         resolve();
       }catch(e){
-        reject(e);
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       }
     })
   }
@@ -114,22 +116,22 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   
   private chainEvents(ns: Client){
       ns.on('permissionError', (e: NatsError) => {
-        this.emit(AvailableEvents.permissionError, e)
+        this.emit(AvailableEvents.permissionError, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
       });
       ns.on('close', (e: NatsError) => {
-        this.emit(AvailableEvents.close, e)
+        this.emit(AvailableEvents.close, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
       });
       ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) => {
         this.emit(AvailableEvents.connect, connection, serverURL, info)
       });
-      ns.on('connecting', (serverURL: NatsError) => {
+      ns.on('connecting', (serverURL: string) => {
         this.emit(AvailableEvents.connecting, serverURL)
       });
       ns.on('disconnect', (serverURL: string) => {
         this.emit(AvailableEvents.disconnect, serverURL)
       });
       ns.on('error', (e: NatsError) => {
-        this.emit(AvailableEvents.error, e)
+        this.emit(AvailableEvents.error, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
       });
       ns.on('pingcount', () => {
         this.emit(AvailableEvents.pingcount)

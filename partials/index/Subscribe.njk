@@ -4,7 +4,7 @@
   *  {{messageDescription}}
   * @param onDataCallback Called when message recieved.
   */
-  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsError, msg?: {{ message.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if channelParameters | length %}
+  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{ message.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
@@ -22,7 +22,7 @@
         ,{{channelParameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
-      return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
     }
   }
 {% endmacro %}

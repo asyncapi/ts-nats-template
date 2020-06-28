@@ -17,7 +17,8 @@
 			"#testchannels/*": ["tests/testclient/testchannels/*"],
 			"#hooks": ["hooks"],
 			"#testclient": ["tests/testclient/index"],
-			"#client": ["index"]
+			"#client": ["index"],
+			"#NatsTypescriptTemplateError": ["NatsTypescriptTemplateError"]
 		}
 	},
 	"include": ["src"],

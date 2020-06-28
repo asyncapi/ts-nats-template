@@ -1,29 +1,29 @@
 
 {% macro subscribe(channelName, channelParameters, subscribtionMessage, server) %}
 export function subscribe(
-  onDataCallback : (err?: NatsError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
+  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
   nc: Client,
   {% if channelParameters | length %}
     {{channelParameters | realizeParametersForChannel}}
   {% endif %}
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
-    try{
-      let subscribeOptions: SubscriptionOptions = {};
-      {%- if subscribtionMessage | hasNatsBindings %}
-      {%- if subscribtionMessage.bindings().nats().queue() | length %}
-      //If queue
-      subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue().name()}}';
-      {%- endif %}
-      {%- if subscribtionMessage.bindings().nats().unsubAfter() | length %}
-      //If unsubafter
-      subscribeOptions.max = {{subscribtionMessage.bindings().nats().unsubAfter()}};
-      {%- endif %}
-      {%- endif %}
+    let subscribeOptions: SubscriptionOptions = {};
+    {%- if subscribtionMessage | hasNatsBindings %}
+    {%- if subscribtionMessage.bindings().nats().queue() | length %}
+    //If queue
+    subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue().name()}}';
+    {%- endif %}
+    {%- if subscribtionMessage.bindings().nats().unsubAfter() | length %}
+    //If unsubafter
+    subscribeOptions.max = {{subscribtionMessage.bindings().nats().unsubAfter()}};
+    {%- endif %}
+    {%- endif %}
 
+    try{
       let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, (err, msg) => {
         if(err){
-          onDataCallback(err);
+          onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
         }else{
           {%- if channelParameters | length %}
           const unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters}}
@@ -35,10 +35,15 @@ export function subscribe(
             {%- endfor %}
           }
           {%- endif %}
-          let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
-          var processedDataReceived: any = msg.data;
-          for(let hook of receivedDataHooks){
-            processedDataReceived = hook(processedDataReceived);
+          try{
+            let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+            var processedDataReceived: any = msg.data;
+            for(let hook of receivedDataHooks){
+              processedDataReceived = hook(processedDataReceived);
+            }
+          }catch(e){
+            reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+            return;
           }
           let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
           onDataCallback(undefined, publishedData{% if channelParameters | length %},
@@ -52,7 +57,7 @@ export function subscribe(
       }, subscribeOptions);
       resolve(subscription);
     }catch(e){
-      reject(e);
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
     }
   })
 }

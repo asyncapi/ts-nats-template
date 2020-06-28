@@ -9,20 +9,21 @@ export function publish(
   {% endif %}
   ): Promise<void> {
   return new Promise<void>(async (resolve, reject) => {
-    if (nc) {
-      try{
-        let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
-        var dataToPublish : any = requestMessage;
-        for(let hook of publishDataHooks){
-          dataToPublish = hook(dataToPublish);
-        }
-        nc.publish({{channelParameters | realizeChannelName(channelName)}}, dataToPublish);
-        resolve();
-      }catch(e){
-        reject(e);
+    try{
+      let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
+      var dataToPublish : any = requestMessage;
+      for(let hook of publishDataHooks){
+        dataToPublish = hook(dataToPublish);
       }
-    }else{
-      reject(new Error("Nats client is not connected"));
+    }catch(e){
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+      return;
+    }
+    try{
+      nc.publish({{channelParameters | realizeChannelName(channelName)}}, dataToPublish);
+      resolve();
+    }catch(e){
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
     }
   });
 };

@@ -5,7 +5,7 @@
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ publishMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsError) => void 
+  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsTypescriptTemplateError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ publishMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
   {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
@@ -25,7 +25,7 @@
         ,{{channelParameters | realizeParametersForChannelWithoutType}}
       {% endif %});
     }else{
-      return Promise.reject(new Error('Nats client is not connected, could not send message on channel {{ channelName | camelCase }}'))
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
     }
   }
 {% endmacro %}
