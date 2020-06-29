@@ -4,15 +4,79 @@
 {%- from "../../partials/index/Request.njk" import request %}
 {%- from "../../partials/index/Subscribe.njk" import subscribe %}
 {%- from "../../partials/index/Standard.njk" import standard %}
-  {{standard(asyncapi)}}
 
+
+
+import {fromSeed} from 'ts-nkeys';
+import {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks} from '#hooks';
+export {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks}
+import * as TestClient from '#testclient';
+export {% raw %}{{% endraw %} TestClient {% raw %}}{% endraw %};
+import {ErrorCode, NatsTypescriptTemplateError} from '#NatsTypescriptTemplateError';
+export {ErrorCode, NatsTypescriptTemplateError}
+import { 
+  Client, 
+  NatsConnectionOptions, 
+  connect,
+  Payload, 
+  NatsError, 
+  Subscription, 
+  ServersChangedEvent, 
+  SubEvent, 
+  ServerInfo
+  } from 'ts-nats';
+
+{%- for channelName, _ in asyncapi.channels() %}
+import * as {{ channelName | camelCase }}Channel from "#channels/{{ channelName | pascalCase | firstUpperCase }}";
+export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
+{%- endfor %}
+
+{%- for messageName, _ in asyncapi.allMessages() %}
+import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
+export {% raw %}{{% endraw %}{{ messageName | pascalCase }}Message};
+{%- endfor %}
+import * as events from 'events';
+export enum AvailableEvents {
+  permissionError = 'permissionError',
+  close = 'close',
+  connect = 'connect',
+  connecting = 'connecting',
+  disconnect = 'disconnect',
+  error = 'error',
+  pingcount = 'pingcount',
+  pingtimer = 'pingtimer',
+  reconnect = 'reconnect',
+  reconnecting = 'reconnecting',
+  serversChanged = 'serversChanged',
+  subscribe = 'subscribe',
+  unsubscribe = 'unsubscribe',
+  yield = 'yield'
+}
+export declare interface NatsAsyncApiClient {
+  on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
+  on(event: AvailableEvents.close, listener: (error: NatsTypescriptTemplateError) => void): this;
+  on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
+  on(event: AvailableEvents.connecting, listener: (error: NatsTypescriptTemplateError) => void): this;
+  on(event: AvailableEvents.disconnect, listener: (serverURL: string) => void): this;
+  on(event: AvailableEvents.error, listener: (error: NatsTypescriptTemplateError) => void): this;
+  on(event: AvailableEvents.pingcount, listener: () => void): this;
+  on(event: AvailableEvents.pingtimer, listener: () => void): this;
+  on(event: AvailableEvents.reconnect, listener: (connection: Client, serverURL: string, info: ServerInfo)=> void): this;
+  on(event: AvailableEvents.reconnecting, listener: (serverURL: string) => void): this;
+  on(event: AvailableEvents.serversChanged, listener: (e: ServersChangedEvent) => void): this;
+  on(event: AvailableEvents.subscribe, listener: (e: SubEvent) => void): this;
+  on(event: AvailableEvents.unsubscribe, listener: (e: SubEvent) => void): this;
+  on(event: AvailableEvents.yield, listener:  () => void): this;
+}
+export class NatsAsyncApiClient extends events.EventEmitter{
+  {{standard(asyncapi)}}
   {%- for channelName, channel in asyncapi.channels() %}
     {%- if channel | isRequestReply %}
       {%- if channel | isRequester %}
-      {{reply(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters(), params)}}
+      {{request(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters())}}
       {%- endif %}
       {%- if channel | isReplier %}
-      {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
+      {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters(), params)}}
       {%- endif %}
     {%- endif %}
 

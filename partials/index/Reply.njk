@@ -5,7 +5,12 @@
   * @param onRequest Called when request recieved.
   * @param onReplyError Called when it was not possible to send the reply.
   */
-  public replyTo{{channelName | pascalCase }}(onRequest : (err?: NatsTypescriptTemplateError, msg?: {{ subscribeMessage.uid() | pascalCase }}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ publishMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
+  public replyTo{{channelName | pascalCase }}(
+    onRequest : (
+      err?: NatsTypescriptTemplateError, 
+      msg?: {{ subscribeMessage.uid() | pascalCase }}Message
+      {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
+    ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ publishMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
   {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {

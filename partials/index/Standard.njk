@@ -1,61 +1,6 @@
 
 {% macro standard(asyncapi) %}
-import { 
-  Client, 
-  NatsConnectionOptions, 
-  connect,
-  Payload, 
-  NatsError, 
-  Subscription, 
-  ServersChangedEvent, 
-  SubEvent, 
-  ServerInfo
-  } from 'ts-nats';
 
-import {ErrorCode, NatsTypescriptTemplateError} from '#NatsTypescriptTemplateError';
-export {ErrorCode, NatsTypescriptTemplateError}
-{%- for channelName, _ in asyncapi.channels() %}
-import * as {{ channelName | camelCase }}Channel from "#testchannels/{{ channelName | pascalCase | firstUpperCase }}";
-{%- endfor %}
-
-{%- for messageName, _ in asyncapi.allMessages() %}
-import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
-{%- endfor %}
-import {fromSeed} from 'ts-nkeys';
-import * as events from 'events';
-export enum AvailableEvents {
-  permissionError = 'permissionError',
-  close = 'close',
-  connect = 'connect',
-  connecting = 'connecting',
-  disconnect = 'disconnect',
-  error = 'error',
-  pingcount = 'pingcount',
-  pingtimer = 'pingtimer',
-  reconnect = 'reconnect',
-  reconnecting = 'reconnecting',
-  serversChanged = 'serversChanged',
-  subscribe = 'subscribe',
-  unsubscribe = 'unsubscribe',
-  yield = 'yield'
-}
-export declare interface NatsAsyncApiTestClient {
-  on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.close, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
-  on(event: AvailableEvents.connecting, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.disconnect, listener: (serverURL: string) => void): this;
-  on(event: AvailableEvents.error, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.pingcount, listener: () => void): this;
-  on(event: AvailableEvents.pingtimer, listener: () => void): this;
-  on(event: AvailableEvents.reconnect, listener: (connection: Client, serverURL: string, info: ServerInfo)=> void): this;
-  on(event: AvailableEvents.reconnecting, listener: (serverURL: string) => void): this;
-  on(event: AvailableEvents.serversChanged, listener: (e: ServersChangedEvent) => void): this;
-  on(event: AvailableEvents.subscribe, listener: (e: SubEvent) => void): this;
-  on(event: AvailableEvents.unsubscribe, listener: (e: SubEvent) => void): this;
-  on(event: AvailableEvents.yield, listener:  () => void): this;
-}
-export class NatsAsyncApiTestClient extends events.EventEmitter{
   public jsonClient?: Client;
   public stringClient?: Client;
   public binaryClient?: Client;
@@ -68,7 +13,6 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   constructor() {
     super();
   }
-
   /**
    * Try to connect to the NATS server with the different payloads.
    */
@@ -158,10 +102,47 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
         this.emit(AvailableEvents.yield)
       });
   }
+  
+  /**
+   * Try to connect to the NATS server with user credentials
+   */
+  async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
+    if(!options){
+      options = {};
+    }
+    options.userCreds = userCreds;
+    await this.connect(options);
+  }
+  /**
+   * Try to connect to the NATS server with user and password
+   */
+  async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
+    if(!options){
+      options = {};
+    }
+    options.user = user;
+    options.pass = pass;
+    await this.connect(options);
+  }
+  
+  /**
+   * Try to connect to the NATS server which has no authentication
+   */
+  async connectToHost(host: string, options?: NatsConnectionOptions){
+    if(!options){
+      options = {};
+    }
+    options.servers = [host];
+    await this.connect(options);
+  }
+
   /**
    * Try to connect to the NATS server with nkey authentication
    */
-  async connectWithNkey(options : NatsConnectionOptions, publicNkey: string, seed: string){
+  async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions){
+    if(!options){
+      options = {};
+    }
     options.nkey = publicNkey;
     options.nonceSigner = (nonce: string): Buffer => {
       const sk = fromSeed(Buffer.from(seed));
@@ -169,6 +150,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     }
     await this.connect(options);
   }
+
   /**
    * Set the default options based on the AsyncAPI file.
    * @param options to set
@@ -178,5 +160,4 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     options.encoding = 'utf8';
     return options;
   }
-
 {% endmacro %}

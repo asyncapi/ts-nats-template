@@ -32,7 +32,7 @@ export function reply(
           const receivedTopicParameters = {
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}
-              {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("${{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("${{'{'+parameterName+'}'}}")[1].length){%- if counter < (channelParameters | length) %},{%- endif %}
+              {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("{{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("{{'{'+parameterName+'}'}}")[1].length){%- if counter < (channelParameters | length) %},{%- endif %}
               {%- set counter = counter+1 %}
             {%- endfor %}
           }
