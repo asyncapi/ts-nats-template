@@ -4,17 +4,17 @@
   *  {{messageDescription}}
   * @param requestMessage The request message to send.
   */
-  public request{{channelName | pascalCase }}(requestMessage: {{ publishMessage.uid() | pascalCase }}Message 
+  public request{{channelName | pascalCase }}(requestMessage: {{ subscribeMessage.uid() | pascalCase }}Message 
   {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
-  {% endif %}): Promise<{{ subscribeMessage.uid() | pascalCase }}Message> {
-    {%- if publishMessage.contentType() | isBinaryPayload(defaultContentType) %}
+  {% endif %}): Promise<{{ publishMessage.uid() | pascalCase }}Message> {
+    {%- if subscribeMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
-    {%- if publishMessage.contentType() | isStringPayload(defaultContentType) %}
+    {%- if subscribeMessage.contentType() | isStringPayload(defaultContentType) %}
     const nc: Client = this.stringClient!;
     {%- endif %}
-    {%- if publishMessage.contentType() | isJsonPayload(defaultContentType) %}
+    {%- if subscribeMessage.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
     if(nc){

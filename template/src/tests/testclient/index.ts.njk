@@ -3,7 +3,7 @@
 {%- from "../../../../partials/index/Reply.njk" import reply %}
 {%- from "../../../../partials/index/Request.njk" import request %}
 {%- from "../../../../partials/index/Subscribe.njk" import subscribe %}
-{%- from "../../partials/index/Standard.njk" import standard %}
+{%- from "../../../../partials/index/Standard.njk" import standard %}
 
 import {fromSeed} from 'ts-nkeys';
 import {ErrorCode, NatsTypescriptTemplateError} from '#NatsTypescriptTemplateError';
@@ -28,6 +28,13 @@ export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
 import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
 export {% raw %}{{% endraw %}{{ messageName | pascalCase }}Message};
 {%- endfor %}
+
+{%- for schemaId, _ in (asyncapi | objectSchema) %}
+import {default as {{ schemaId | pascalCase }}Schema} from "#schemas/{{ schemaId | pascalCase }}";
+export {% raw %}{{% endraw %}{{ schemaId | pascalCase }}Schema };
+{%- endfor %}
+
+
 import * as events from 'events';
 export enum AvailableEvents {
   permissionError = 'permissionError',

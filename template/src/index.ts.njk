@@ -35,6 +35,13 @@ export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
 import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
 export {% raw %}{{% endraw %}{{ messageName | pascalCase }}Message};
 {%- endfor %}
+
+{%- for schemaId, _ in (asyncapi | objectSchema) %}
+import {default as {{ schemaId | pascalCase }}Schema} from "#schemas/{{ schemaId | pascalCase }}";
+export {% raw %}{{% endraw %}{{ schemaId | pascalCase }}Schema };
+{%- endfor %}
+
+    
 import * as events from 'events';
 export enum AvailableEvents {
   permissionError = 'permissionError',

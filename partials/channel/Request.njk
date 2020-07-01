@@ -1,13 +1,13 @@
 
 {% macro request(channelName, channelParameters, publishMessage, subscribtionMessage, server) %}
 export function request(
-  requestMessage: {{publishMessage.uid() | pascalCase}}Message,
+  requestMessage: {{subscribtionMessage.uid() | pascalCase}}Message,
   nc: Client,
   {% if channelParameters | length %}
     {{channelParameters | realizeParametersForChannel}}
   {% endif %}
-  ): Promise<{{subscribtionMessage.uid() | pascalCase}}Message> {
-  return new Promise<{{subscribtionMessage.uid() | pascalCase}}Message>(async (resolve, reject) => {
+  ): Promise<{{publishMessage.uid() | pascalCase}}Message> {
+  return new Promise<{{publishMessage.uid() | pascalCase}}Message>(async (resolve, reject) => {
     try {
       let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
       var requestData : any = requestMessage;
@@ -31,7 +31,7 @@ export function request(
       for(let hook of receivedDataHooks){
         processedDataReceived = hook(processedDataReceived);
       }
-      let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
+      let publishedData = {{publishMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
       resolve(publishedData);
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));

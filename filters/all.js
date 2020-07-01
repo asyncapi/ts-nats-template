@@ -145,6 +145,11 @@ function toTsType(jsonSchemaType, property) {
 }
 filter.toTsType = toTsType
 
+filter.objectSchema = (asyncapi) => {
+    const objectMap = {};
+	asyncapi.allSchemas().forEach((schema, schemaId) => { if (schema.type() === 'object') objectMap[schemaId] = schema; });
+	return objectMap;
+}
 filter.realizeChannelName = (parameters, channelName) => {
 	let returnString = '\`' + channelName + '\`';
 	returnString = returnString.replace(/\//g, `.`);

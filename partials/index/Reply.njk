@@ -8,19 +8,19 @@
   public replyTo{{channelName | pascalCase }}(
     onRequest : (
       err?: NatsTypescriptTemplateError, 
-      msg?: {{ subscribeMessage.uid() | pascalCase }}Message
+      msg?: {{ publishMessage.uid() | pascalCase }}Message
       {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
-    ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ publishMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
+    ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ subscribeMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
   {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
-    {%- if subscribeMessage.contentType() | isBinaryPayload(defaultContentType) %}
+    {%- if publishMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
-    {%- if subscribeMessage.contentType() | isStringPayload(defaultContentType) %}
+    {%- if publishMessage.contentType() | isStringPayload(defaultContentType) %}
     const nc: Client = this.stringClient!;
     {%- endif %}
-    {%- if subscribeMessage.contentType() | isJsonPayload(defaultContentType) %}
+    {%- if publishMessage.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
     

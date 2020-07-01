@@ -1,8 +1,8 @@
 
 {% macro reply(channelName, channelParameters, subscribtionMessage, publishMessage, server, params) %}
 export function reply(
-  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
-  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{publishMessage.uid() | pascalCase}}Message{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
+  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{publishMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
+  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{subscribtionMessage.uid() | pascalCase}}Message{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
   onReplyError: (err: NatsTypescriptTemplateError) => void,
   nc: Client,
   {% if channelParameters | length %}
@@ -12,14 +12,14 @@ export function reply(
   return new Promise(async (resolve, reject) => {
     try {
       let subscribeOptions: SubscriptionOptions = {};
-      {%- if subscribtionMessage | hasNatsBindings %}
-      {%- if subscribtionMessage.bindings().nats().queue() | length %}
+      {%- if publishMessage | hasNatsBindings %}
+      {%- if publishMessage.bindings().nats().queue() | length %}
       //If queue
-      subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue().name()}}';
+      subscribeOptions.queue = '{{publishMessage.bindings().nats().queue().name()}}';
       {%- endif %}
-      {%- if subscribtionMessage.bindings().nats().unsubAfter() | length %}
+      {%- if publishMessage.bindings().nats().unsubAfter() | length %}
       //If unsubafter
-      subscribeOptions.max = {{subscribtionMessage.bindings().nats().unsubAfter()}};
+      subscribeOptions.max = {{publishMessage.bindings().nats().unsubAfter()}};
       {%- endif %}
       {%- endif %}
 
@@ -47,7 +47,7 @@ export function reply(
             onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
             return;
           }
-          let requestData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
+          let requestData = {{publishMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
           let responseObject = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}
