@@ -289,7 +289,7 @@ filter.schemaConstructorParameters = schema => {
 		if (schema.properties() && schema.required()) {
 			for(const [propertyName, property] of Object.entries(schema.properties())){
 				if(property.required()){
-					returnString += `${camelCase(propertyName)}: ${toTsType(property.type(), property)},`;
+					returnString += `${propertyName}: ${toTsType(property.type(), property)},`;
 				}
 			}
 		}

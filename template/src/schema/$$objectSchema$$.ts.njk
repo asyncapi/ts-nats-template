@@ -18,7 +18,7 @@
 
   {%- if schema.type() == "object" %}
       {%- for propertyName, property in schema.properties() %}
-      {{ propertyName | camelCase}}{% if not required or not property.required() %}?{% endif %}: {{ property.type() | toTsType(property) }}
+      {{ propertyName}}{% if not required or not property.required() %}?{% endif %}: {{ property.type() | toTsType(property) }}
       {%- endfor %}
   {%- elif schema.type() | length %}
     type: {{ schema.type() | toTsType }}
@@ -54,7 +54,7 @@
 {%- endmacro %}
 
 {%- macro setProperty(propertyName) %}
-    this.{{propertyName | camelCase}} = {{propertyName | camelCase}};
+    this.{{propertyName}} = {{propertyName}};
 {% endmacro %}
 
 
