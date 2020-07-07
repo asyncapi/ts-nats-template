@@ -9,17 +9,7 @@
 		"preserveConstEnums": true,
 		"sourceMap": true,
 		"outDir": "dist/",
-		"baseUrl": "./src",
-		"paths": {
-			"#messages/*": ["messages/*"],
-			"#schemas/*": ["schema/*"],
-			"#channels/*": ["channels/*"],
-			"#testchannels/*": ["tests/testclient/testchannels/*"],
-			"#hooks": ["hooks"],
-			"#testclient": ["tests/testclient/index"],
-			"#client": ["index"],
-			"#NatsTypescriptTemplateError": ["NatsTypescriptTemplateError"]
-		}
+		"baseUrl": "./src"
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "**/*.spec.ts"]

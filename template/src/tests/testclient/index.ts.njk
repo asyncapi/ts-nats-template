@@ -6,7 +6,7 @@
 {%- from "../../../../partials/index/Standard.njk" import standard %}
 
 import {fromSeed} from 'ts-nkeys';
-import {ErrorCode, NatsTypescriptTemplateError} from '#NatsTypescriptTemplateError';
+import {ErrorCode, NatsTypescriptTemplateError} from '../../NatsTypescriptTemplateError';
 import { 
   Client, 
   NatsConnectionOptions, 
@@ -20,17 +20,17 @@ import {
   } from 'ts-nats';
 
 {%- for channelName, _ in asyncapi.channels() %}
-import * as {{ channelName | camelCase }}Channel from "#testchannels/{{ channelName | pascalCase | firstUpperCase }}";
+import * as {{ channelName | camelCase }}Channel from "./testchannels/{{ channelName | pascalCase | firstUpperCase }}";
 export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
 {%- endfor %}
 
 {%- for messageName, _ in asyncapi.allMessages() %}
-import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
+import {default as {{ messageName | pascalCase }}Message} from "../../messages/{{ messageName | pascalCase }}";
 export {% raw %}{{% endraw %}{{ messageName | pascalCase }}Message};
 {%- endfor %}
 
 {%- for schemaId, _ in (asyncapi | objectSchema) %}
-import {default as {{ schemaId | pascalCase }}Schema} from "#schemas/{{ schemaId | pascalCase }}";
+import {default as {{ schemaId | pascalCase }}Schema} from "../../schemas/{{ schemaId | pascalCase }}";
 export {% raw %}{{% endraw %}{{ schemaId | pascalCase }}Schema };
 {%- endfor %}
 

@@ -20,25 +20,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "watch": "tsc --watch",
-    "build": "tsc && npm run dopostinstall",
+    "build": "tsc",
     "start": "node src/api/index.js",
-    "dopostinstall": "link-module-alias",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
-  },
-  "_moduleAliasIgnoreWarning": true,
-  "_moduleAliases": {
-    "#messages": "dist/messages/",
-    "#schemas": "dist/schema/",
-    "#channels": "dist/channels/",
-    "#testchannels": "dist/tests/testclient/testchannels/",
-    "#hooks": "dist/hooks.js",
-    "#testclient": "dist/tests/testclient/index.js",
-    "#NatsTypescriptTemplateError": "dist/NatsTypescriptTemplateError.js"
   },
   "dependencies": {
 		"@types/klaw-sync": "^6.0.0",
 		"@types/node": "13.9.5",
-    "link-module-alias": "^1.2.0",
     "ts-nats": "1.2.4",
     "typescript": "3.4.3",
     "ts-nkeys":"1.0.16"

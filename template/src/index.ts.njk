@@ -8,11 +8,11 @@
 
 
 import {fromSeed} from 'ts-nkeys';
-import {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks} from '#hooks';
+import {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 export {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks}
-import * as TestClient from '#testclient';
+import * as TestClient from './tests/testclient/';
 export {% raw %}{{% endraw %} TestClient {% raw %}}{% endraw %};
-import {ErrorCode, NatsTypescriptTemplateError} from '#NatsTypescriptTemplateError';
+import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
 export {ErrorCode, NatsTypescriptTemplateError}
 import { 
   Client, 
@@ -27,17 +27,17 @@ import {
   } from 'ts-nats';
 
 {%- for channelName, _ in asyncapi.channels() %}
-import * as {{ channelName | camelCase }}Channel from "#channels/{{ channelName | pascalCase | firstUpperCase }}";
+import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | pascalCase | firstUpperCase }}";
 export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
 {%- endfor %}
 
 {%- for messageName, _ in asyncapi.allMessages() %}
-import {default as {{ messageName | pascalCase }}Message} from "#messages/{{ messageName | pascalCase }}";
+import {default as {{ messageName | pascalCase }}Message} from "./messages/{{ messageName | pascalCase }}";
 export {% raw %}{{% endraw %}{{ messageName | pascalCase }}Message};
 {%- endfor %}
 
 {%- for schemaId, _ in (asyncapi | objectSchema) %}
-import {default as {{ schemaId | pascalCase }}Schema} from "#schemas/{{ schemaId | pascalCase }}";
+import {default as {{ schemaId | pascalCase }}Schema} from "./schemas/{{ schemaId | pascalCase }}";
 export {% raw %}{{% endraw %}{{ schemaId | pascalCase }}Schema };
 {%- endfor %}
 

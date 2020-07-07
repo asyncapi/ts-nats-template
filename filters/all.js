@@ -138,9 +138,9 @@ function toTsType(jsonSchemaType, property) {
 			if(property){
 				return property.uid() + 'Schema';
 			}else{
-				return 'UndefinedObject';
+				return 'any';
 			}
-		default: return 'Undefined';
+		default: return 'any';
 	}
 }
 filter.toTsType = toTsType
@@ -233,7 +233,7 @@ function genericImports(schema, imports) {
 		}
 	}
 	if (schema.type() && schema.type() === "object"){
-		imports[schema.uid()] = `import { default as ${pascalCase(schema.uid())}Schema } from '#schemas/${pascalCase(schema.uid())}';`
+		imports[schema.uid()] = `import { default as ${pascalCase(schema.uid())}Schema } from '../schemas/${pascalCase(schema.uid())}';`
 	}
 	return imports;
 }
