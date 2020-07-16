@@ -2,7 +2,7 @@
 {% macro publish(channelName, channelParameters, publishMessage, server) %}
 
 export function publish(
-  requestMessage: {{publishMessage.uid() | pascalCase}}Message,
+  requestMessage: {{publishMessage.uid() | pascalCase}}Message.{{publishMessage.uid() | pascalCase}},
   nc: Client,
   {% if channelParameters | length %}
     {{channelParameters | realizeParametersForChannel}}

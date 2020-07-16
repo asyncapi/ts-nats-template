@@ -28,7 +28,9 @@ filter.isJsonPayload = (messageContentType, defaultContentType) => {
 	return containsPayload(messageContentType, defaultContentType, 'json');
 }
 
-
+filter.messageHasNotNullPayload = (messagePayload) => {
+	return messagePayload.type()+"" != "null";
+}
 
 /**
  * Figure out if a payload is located in the document.

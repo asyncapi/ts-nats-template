@@ -8,9 +8,9 @@
   public replyTo{{channelName | pascalCase }}(
     onRequest : (
       err?: NatsTypescriptTemplateError, 
-      msg?: {{ publishMessage.uid() | pascalCase }}Message
+      msg?: {{ publishMessage.uid() | pascalCase }}Message.{{ publishMessage.uid() | pascalCase }}
       {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
-    ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ subscribeMessage.uid() | pascalCase }}Message{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
+    ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{ subscribeMessage.uid() | pascalCase }}Message.{{ subscribeMessage.uid() | pascalCase }}{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
   {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {

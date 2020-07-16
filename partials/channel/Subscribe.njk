@@ -1,7 +1,7 @@
 
 {% macro subscribe(channelName, channelParameters, subscribtionMessage, server) %}
 export function subscribe(
-  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
+  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message.{{subscribtionMessage.uid() | pascalCase}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
   nc: Client,
   {% if channelParameters | length %}
     {{channelParameters | realizeParametersForChannel}}
@@ -45,7 +45,7 @@ export function subscribe(
             reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
             return;
           }
-          let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
+          let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.Convert.to{{subscribtionMessage.name() | pascalCase}}(processedDataReceived);
           onDataCallback(undefined, publishedData{% if channelParameters | length %},
               {%- set counter = 1 %}
               {%- for parameterName, parameter in channelParameters %}

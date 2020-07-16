@@ -1,8 +1,8 @@
 
 {% macro reply(channelName, channelParameters, subscribtionMessage, publishMessage, server, params) %}
 export function reply(
-  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{publishMessage.uid() | pascalCase}}Message{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
-  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{subscribtionMessage.uid() | pascalCase}}Message{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
+  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{publishMessage.uid() | pascalCase}}Message.{{publishMessage.uid() | pascalCase}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
+  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{subscribtionMessage.uid() | pascalCase}}Message.{{subscribtionMessage.uid() | pascalCase}}{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
   onReplyError: (err: NatsTypescriptTemplateError) => void,
   nc: Client,
   {% if channelParameters | length %}
@@ -47,7 +47,7 @@ export function reply(
             onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
             return;
           }
-          let requestData = {{publishMessage.name() | pascalCase}}Message.toMessage(processedDataReceived);
+          let requestData = {{publishMessage.name() | pascalCase}}Message.Convert.to{{publishMessage.name() | pascalCase}}(processedDataReceived);
           let responseObject = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}

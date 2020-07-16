@@ -19,20 +19,18 @@ import {
   ServerInfo
   } from 'ts-nats';
 
-{%- for channelName, _ in asyncapi.channels() %}
+{%- for channelName, message in asyncapi.channels() %}
 import * as {{ channelName | camelCase }}Channel from "./testchannels/{{ channelName | pascalCase | firstUpperCase }}";
 export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
 {%- endfor %}
 
-{%- for messageName, _ in asyncapi.allMessages() %}
-import {default as {{ messageName | pascalCase }}Message} from "../../messages/{{ messageName | pascalCase }}";
+{%- for messageName, message in asyncapi.allMessages() %}
+{%- if message.payload() | messageHasNotNullPayload %}
+import * as {{ messageName | pascalCase }}Message from "../../messages/{{ messageName | pascalCase }}";
 export {% raw %}{{% endraw %}{{ messageName | pascalCase }}Message};
+{%- endif %}
 {%- endfor %}
 
-{%- for schemaId, _ in (asyncapi | objectSchema) %}
-import {default as {{ schemaId | pascalCase }}Schema} from "../../schemas/{{ schemaId | pascalCase }}";
-export {% raw %}{{% endraw %}{{ schemaId | pascalCase }}Schema };
-{%- endfor %}
 
 
 import * as events from 'events';

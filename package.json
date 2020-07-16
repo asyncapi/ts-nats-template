@@ -18,7 +18,9 @@
 	"dependencies": {
 		"filenamify": "^4.1.0",
 		"lodash": "^4.17.15",
-		"@asyncapi/generator-filters": "^1.0.0"
+		"@asyncapi/generator-filters": "^1.0.0",
+		"quicktype-core": "6.0.66",
+		"is-url": "1.2.4"
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",

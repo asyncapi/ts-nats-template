@@ -108,9 +108,12 @@
    */
   async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
     if(!options){
-      options = {};
+      options = {
+        userCreds: userCreds
+      };
+    }else{
+      options.userCreds = userCreds;
     }
-    options.userCreds = userCreds;
     await this.connect(options);
   }
   /**
@@ -118,10 +121,14 @@
    */
   async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
     if(!options){
-      options = {};
+      options = {
+        user: user,
+        pass: pass
+      };
+    }else{
+      options.user = user;
+      options.pass = pass;
     }
-    options.user = user;
-    options.pass = pass;
     await this.connect(options);
   }
   
@@ -130,9 +137,12 @@
    */
   async connectToHost(host: string, options?: NatsConnectionOptions){
     if(!options){
-      options = {};
+      options = {
+        servers: [host]
+      };
+    }else{
+      options.servers = [host];
     }
-    options.servers = [host];
     await this.connect(options);
   }
 
@@ -141,12 +151,19 @@
    */
   async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions){
     if(!options){
-      options = {};
-    }
-    options.nkey = publicNkey;
-    options.nonceSigner = (nonce: string): Buffer => {
-      const sk = fromSeed(Buffer.from(seed));
-      return sk.sign(Buffer.from(nonce));
+      options = {
+        nkey: publicNkey,
+        nonceSigner: (nonce: string): Buffer => {
+          const sk = fromSeed(Buffer.from(seed));
+          return sk.sign(Buffer.from(nonce));
+        }
+      };
+    }else{
+      options.nkey = publicNkey;
+      options.nonceSigner = (nonce: string): Buffer => {
+        const sk = fromSeed(Buffer.from(seed));
+        return sk.sign(Buffer.from(nonce));
+      }
     }
     await this.connect(options);
   }

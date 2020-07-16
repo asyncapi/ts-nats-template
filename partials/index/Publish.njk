@@ -4,7 +4,7 @@
   *  {{messageDescription}}
   * @param requestMessage The message to publish.
   */
-  public publishTo{{channelName | pascalCase }}(requestMessage: {{ message.uid() | pascalCase }}Message {% if channelParameters | length %}
+  public publishTo{{channelName | pascalCase }}(requestMessage: {{ message.uid() | pascalCase }}Message.{{ message.uid() | pascalCase }} {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<void> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
