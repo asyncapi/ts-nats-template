@@ -31,6 +31,16 @@ filter.isJsonPayload = (messageContentType, defaultContentType) => {
 filter.messageHasNotNullPayload = (messagePayload) => {
 	return messagePayload.type()+"" != "null";
 }
+/**
+ * Because quicktype cant handle null provide custom message type.
+ */
+filter.getMessageType = (message) => {
+	if(message.payload().type()+"" == "null"){
+		return "null";
+	}else{
+		return `${this.pascalCase(message.uid())}Message.${this.pascalCase(message.uid())}`;
+	}
+}
 
 /**
  * Figure out if a payload is located in the document.

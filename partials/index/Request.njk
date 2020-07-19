@@ -4,10 +4,10 @@
   *  {{messageDescription}}
   * @param requestMessage The request message to send.
   */
-  public request{{channelName | pascalCase }}(requestMessage: {{ subscribeMessage.uid() | pascalCase }}Message.{{ subscribeMessage.uid() | pascalCase }} 
+  public request{{channelName | pascalCase }}(requestMessage:{{subscribeMessage | getMessageType}} 
   {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
-  {% endif %}): Promise<{{ publishMessage.uid() | pascalCase }}Message.{{ publishMessage.uid() | pascalCase }}> {
+  {% endif %}): Promise<{{publishMessage | getMessageType}}> {
     {%- if subscribeMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}

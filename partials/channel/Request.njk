@@ -1,41 +1,36 @@
 
-{% macro request(channelName, channelParameters, publishMessage, subscribtionMessage, server) %}
+{%- from "./OnSendingData.njk" import OnSendingData %}
+{%- from "./OnReceivingData.njk" import OnReceivingData %}
+{% macro request(channelName, channelParameters, recieveMessage, requestMessage, server) %}
 export function request(
-  requestMessage: {{subscribtionMessage.uid() | pascalCase}}Message.{{subscribtionMessage.uid() | pascalCase}},
+  message: {{requestMessage | getMessageType}},
   nc: Client,
   {% if channelParameters | length %}
     {{channelParameters | realizeParametersForChannel}}
   {% endif %}
-  ): Promise<{{publishMessage.uid() | pascalCase}}Message.{{publishMessage.uid() | pascalCase}}> {
+  ): Promise<{{recieveMessage | getMessageType}}> {
   return new Promise(async (resolve, reject) => {
-    try {
-      let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
-      var requestData : any = requestMessage;
-      for(let hook of publishDataHooks){
-        requestData = hook(requestData);
-      }
-    }catch(e){
-      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
-      return;
-    }
+    
     let msg;
     try {
-      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, requestData)
+      {%- if requestMessage.payload() | messageHasNotNullPayload %}
+      {{OnSendingData()}}
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, dataToSend)
+      {%- else %}
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, null)
+      {%- endif %}
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       return;
     }
-    try{
-      let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
-      var processedDataReceived: any = msg.data;
-      for(let hook of receivedDataHooks){
-        processedDataReceived = hook(processedDataReceived);
-      }
-      let publishedData = {{publishMessage.name() | pascalCase}}Message.Convert.to{{publishMessage.name() | pascalCase}}(processedDataReceived);
-      resolve(publishedData);
-    }catch(e){
-      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
-    }
+
+    {%- if recieveMessage.payload() | messageHasNotNullPayload %}
+    {{OnReceivingData(true)}}
+    let recievedData = {{recieveMessage.name() | pascalCase}}Message.Convert.to{{recieveMessage.name() | pascalCase}}(receivedData);
+    resolve(recievedData);
+    {%- else %}
+    resolve(null);
+    {%- endif %}
   })
 }
 

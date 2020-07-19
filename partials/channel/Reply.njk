@@ -1,8 +1,10 @@
 
-{% macro reply(channelName, channelParameters, subscribtionMessage, publishMessage, server, params) %}
+{%- from "./OnSendingData.njk" import OnSendingData %}
+{%- from "./OnReceivingData.njk" import OnReceivingData %}
+{% macro reply(channelName, channelParameters, replyMessage, recieveMessage, server, params) %}
 export function reply(
-  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{publishMessage.uid() | pascalCase}}Message.{{publishMessage.uid() | pascalCase}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
-  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{subscribtionMessage.uid() | pascalCase}}Message.{{subscribtionMessage.uid() | pascalCase}}{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
+  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{recieveMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
+  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{replyMessage | getMessageType}}{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
   onReplyError: (err: NatsTypescriptTemplateError) => void,
   nc: Client,
   {% if channelParameters | length %}
@@ -12,14 +14,14 @@ export function reply(
   return new Promise(async (resolve, reject) => {
     try {
       let subscribeOptions: SubscriptionOptions = {};
-      {%- if publishMessage | hasNatsBindings %}
-      {%- if publishMessage.bindings().nats().queue() | length %}
+      {%- if recieveMessage | hasNatsBindings %}
+      {%- if recieveMessage.bindings().nats().queue() | length %}
       //If queue
-      subscribeOptions.queue = '{{publishMessage.bindings().nats().queue().name()}}';
+      subscribeOptions.queue = '{{recieveMessage.bindings().nats().queue().name()}}';
       {%- endif %}
-      {%- if publishMessage.bindings().nats().unsubAfter() | length %}
+      {%- if recieveMessage.bindings().nats().unsubAfter() | length %}
       //If unsubafter
-      subscribeOptions.max = {{publishMessage.bindings().nats().unsubAfter()}};
+      subscribeOptions.max = {{recieveMessage.bindings().nats().unsubAfter()}};
       {%- endif %}
       {%- endif %}
 
@@ -37,38 +39,38 @@ export function reply(
             {%- endfor %}
           }
           {%- endif %}
-          try {
-            let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
-            var processedDataReceived : any = msg.data;
-            for(let hook of receivedDataHooks){
-              processedDataReceived = hook(processedDataReceived);
-            }
-          } catch (e) {
-            onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
-            return;
-          }
-          let requestData = {{publishMessage.name() | pascalCase}}Message.Convert.to{{publishMessage.name() | pascalCase}}(processedDataReceived);
-          let responseObject = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
+          
+          {%- if recieveMessage.payload() | messageHasNotNullPayload %}
+          {{OnReceivingData(false)}}
+          let requestData = {{recieveMessage.name() | pascalCase}}Message.Convert.to{{recieveMessage.name() | pascalCase}}(receivedData);
+          let message = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}
               receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
               {%- set counter = counter+1 %}
             {%- endfor %}
             {%- endif %});
+          {%- else %}
+          let message = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, null{% if channelParameters | length %},
+            {%- set counter = 1 %}
+            {%- for parameterName, parameter in channelParameters %}
+              receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
+              {%- set counter = counter+1 %}
+            {%- endfor %}
+            {%- endif %});
+          {%- endif %}
+          
           if (msg.reply) {
-            try {
-              let publishDataHooks = Hooks.getInstance().getBeforeSendingDataHook();
-              var dataToPublish : any = responseObject;
-              for(let hook of publishDataHooks){
-                dataToPublish = hook(dataToPublish);
-              }
-              nc.publish(msg.reply, dataToPublish);
-            } catch (e) {
-              onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
-            }
+            {%- if replyMessage.payload() | messageHasNotNullPayload %}
+            {{OnSendingData()}}
+            nc.publish({{channelParameters | realizeChannelName(channelName)}}, dataToSend);
+            {%- else %}
+            nc.publish({{channelParameters | realizeChannelName(channelName)}}, null);
+            {%- endif %}
           } else {
             let error = new NatsTypescriptTemplateError('Expected request to need a reply, did not..', '000');
             onReplyError(error)
+            return;
           }
         }
       }, subscribeOptions);

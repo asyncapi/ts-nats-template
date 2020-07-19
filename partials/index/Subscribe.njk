@@ -4,7 +4,7 @@
   *  {{messageDescription}}
   * @param onDataCallback Called when message recieved.
   */
-  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{ message.uid() | pascalCase }}Message.{{ message.uid() | pascalCase }}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if channelParameters | length %}
+  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{message | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if channelParameters | length %}
     ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}): Promise<Subscription> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}

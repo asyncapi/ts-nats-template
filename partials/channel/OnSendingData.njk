@@ -1,0 +1,13 @@
+
+{% macro OnSendingData() %}
+try{
+  let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
+  var dataToSend : any = message;
+  for(let hook of beforeSendingHooks){
+    dataToSend = hook(dataToSend);
+  }
+}catch(e){
+  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  return;
+}
+{% endmacro %}

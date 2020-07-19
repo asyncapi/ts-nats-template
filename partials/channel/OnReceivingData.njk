@@ -1,0 +1,18 @@
+
+{% macro OnReceivingData(promisfyErrors) %}
+try {
+  let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+  var receivedData : any = msg.data;
+  for(let hook of receivedDataHooks){
+    receivedData = hook(receivedData);
+  }
+} catch (e) {
+  {%- if promisfyErrors == true %}
+  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  return;
+  {%- else %}
+  onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
+  return;
+  {%- endif %}
+}
+{% endmacro %}

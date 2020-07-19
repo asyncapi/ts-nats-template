@@ -1,7 +1,7 @@
 
 {% macro subscribe(channelName, channelParameters, subscribtionMessage, server) %}
 export function subscribe(
-  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage.uid() | pascalCase}}Message.{{subscribtionMessage.uid() | pascalCase}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
+  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
   nc: Client,
   {% if channelParameters | length %}
     {{channelParameters | realizeParametersForChannel}}
@@ -35,6 +35,7 @@ export function subscribe(
             {%- endfor %}
           }
           {%- endif %}
+          {%- if subscribtionMessage.payload() | messageHasNotNullPayload %}
           try{
             let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
             var processedDataReceived: any = msg.data;
@@ -53,6 +54,15 @@ export function subscribe(
                 {%- set counter = counter+1 %}
               {%- endfor %}
               {%- endif %});
+          {%- else %}
+          onDataCallback(undefined, null{% if channelParameters | length %},
+              {%- set counter = 1 %}
+              {%- for parameterName, parameter in channelParameters %}
+                receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
+                {%- set counter = counter+1 %}
+              {%- endfor %}
+              {%- endif %});
+          {%- endif %}
         }
       }, subscribeOptions);
       resolve(subscription);
