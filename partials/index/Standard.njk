@@ -107,65 +107,44 @@
    * Try to connect to the NATS server with user credentials
    */
   async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
-    if(!options){
-      options = {
-        userCreds: userCreds
-      };
-    }else{
-      options.userCreds = userCreds;
-    }
-    await this.connect(options);
+    await this.connect({
+      userCreds: userCreds,
+      ... options
+    });
   }
   /**
    * Try to connect to the NATS server with user and password
    */
   async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
-    if(!options){
-      options = {
-        user: user,
-        pass: pass
-      };
-    }else{
-      options.user = user;
-      options.pass = pass;
-    }
-    await this.connect(options);
+    await this.connect({
+      user: user,
+      pass: pass,
+      ... options
+    });
   }
   
   /**
    * Try to connect to the NATS server which has no authentication
    */
   async connectToHost(host: string, options?: NatsConnectionOptions){
-    if(!options){
-      options = {
-        servers: [host]
-      };
-    }else{
-      options.servers = [host];
-    }
-    await this.connect(options);
+    await this.connect({
+      servers: [host],
+      ... options
+    });
   }
 
   /**
    * Try to connect to the NATS server with nkey authentication
    */
   async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions){
-    if(!options){
-      options = {
-        nkey: publicNkey,
-        nonceSigner: (nonce: string): Buffer => {
-          const sk = fromSeed(Buffer.from(seed));
-          return sk.sign(Buffer.from(nonce));
-        }
-      };
-    }else{
-      options.nkey = publicNkey;
-      options.nonceSigner = (nonce: string): Buffer => {
+    await this.connect({
+      nkey: publicNkey,
+      nonceSigner: (nonce: string): Buffer => {
         const sk = fromSeed(Buffer.from(seed));
         return sk.sign(Buffer.from(nonce));
-      }
-    }
-    await this.connect(options);
+      },
+      ... options
+    });
   }
 
   /**
