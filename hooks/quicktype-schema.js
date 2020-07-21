@@ -10,7 +10,10 @@ async function genSchema(schemaPath, schemaName, jsonSchema){
 	inputData.addInput(schemaInput)
 	//const { lines } = await quicktype({ lang: "java", inputData, rendererOptions: { 'justTypes': 'true', 'packageName': schemaName} });
 	const { lines } = await quicktype({ lang: "typescript", inputData });
-	fs.writeFileSync(schemaPath, lines.join("\n"));
+	await fs.promises.mkdir(schemaPath, { recursive: true }).catch(console.error);
+	fs.mkdirSync(schemaPath, { recursive: true });
+	fs.writeFileSync(Path.join(schemaPath, filters.pascalCase(schemaName)+".ts"), lines.join("\n"));
+
 }
 module.exports = {
 	'generate:after': async (generator) => {
@@ -18,7 +21,7 @@ module.exports = {
 		for (let [messageId, message] of allMessages) {
 			const payloadSchema = message.payload();
 			if(payloadSchema.type()+"" != "null"){
-				const filepath = Path.join(generator.targetDir, "src/messages/", filters.pascalCase(messageId)+".ts");
+				const filepath = Path.join(generator.targetDir, "src/messages/");
 				await genSchema(filepath, messageId, message.payload());
 			}
 		}
