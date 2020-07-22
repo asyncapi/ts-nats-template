@@ -1,5 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+
+/**
+ * 
+ * @param {string} dir to recursively rename files with njk extension 
+ */
 var renameAllSync = function(dir) {
 	files = fs.readdirSync(dir);
 	files.forEach(function(file) {
@@ -16,6 +21,10 @@ var renameAllSync = function(dir) {
 		}
 	});
 };
+
+/**
+ * Rename all the njk files to get the correct extensions
+ */
 module.exports = {
 	'generate:after': (generator) => {
 		renameAllSync(path.resolve(generator.targetDir));

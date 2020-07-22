@@ -1,6 +1,11 @@
 const fs = require('fs');
 const Path = require('path');
 
+/**
+ * Remove a folder recursively.
+ * 
+ * @param {string} path to recursively remove 
+ */
 const deleteFolderRecursive = function(path) {
 	if (fs.existsSync(path) && path !== "/") {
 	  fs.readdirSync(path).forEach((file, index) => {
@@ -13,7 +18,12 @@ const deleteFolderRecursive = function(path) {
 	  });
 	  fs.rmdirSync(path);
 	}
-  };
+};
+
+/**
+ * Since we cannot have a condition on a template whether to generate something 
+ * or not we have to remove the test client if its not specified. 
+ */
 module.exports = {
 	'generate:after': (generator) => {
 		if(generator.targetDir && generator.templateParams && !generator.templateParams.generateTestClient){
