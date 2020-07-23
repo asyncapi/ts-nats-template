@@ -1,0 +1,29 @@
+{
+      
+      
+  "name": "streetlight",
+  "description": "",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "start": "node src/api/index.js",
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
+  },
+  "dependencies": {
+		"@types/klaw-sync": "^6.0.0",
+		"@types/node": "13.9.5",
+    "ts-nats": "1.2.4",
+    "typescript": "3.4.3",
+    "ts-nkeys":"1.0.16"
+  },
+	"devDependencies": {
+		"@types/chai": "^4.2.11",
+		"@types/mocha": "^7.0.2",
+		"chai": "^4.2.0",
+		"mocha": "^7.1.1",
+		"ts-node": "^8.8.1"
+	}
+}
