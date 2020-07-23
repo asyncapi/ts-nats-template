@@ -25,7 +25,7 @@ import {
   SubEvent, 
   ServerInfo
   } from 'ts-nats';
-
+export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 {%- for channelName, message in asyncapi.channels() %}
 import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | pascalCase | firstUpperCase }}";
 export {% raw %}{{% endraw %}{{ channelName | camelCase }}Channel};
