@@ -1,9 +1,0 @@
-smartylightingMeasurement:
-  nats:
-    is: pubsub
-    queue:
-      name: smartylightingMeasurement
-    bindingVersion: '0.1.0'
-
-
-
