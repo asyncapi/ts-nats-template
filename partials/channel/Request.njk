@@ -26,7 +26,7 @@ export function request(
 
     {%- if recieveMessage.payload() | messageHasNotNullPayload %}
     {{OnReceivingData(true)}}
-    let recievedData = {{recieveMessage.name() | pascalCase}}Message.Convert.to{{recieveMessage.name() | pascalCase}}(receivedData);
+    let recievedData = {{recieveMessage.uid() | pascalCase}}Message.Convert.to{{recieveMessage.uid() | pascalCase}}(receivedData);
     resolve(recievedData);
     {%- else %}
     resolve(null);

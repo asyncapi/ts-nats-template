@@ -42,7 +42,7 @@ export function reply(
           
           {%- if recieveMessage.payload() | messageHasNotNullPayload %}
           {{OnReceivingData(false)}}
-          let requestData = {{recieveMessage.name() | pascalCase}}Message.Convert.to{{recieveMessage.name() | pascalCase}}(receivedData);
+          let requestData = {{recieveMessage.uid() | pascalCase}}Message.Convert.to{{recieveMessage.uid() | pascalCase}}(receivedData);
           let message = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}

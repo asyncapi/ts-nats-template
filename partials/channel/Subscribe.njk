@@ -46,7 +46,7 @@ export function subscribe(
             reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
             return;
           }
-          let publishedData = {{subscribtionMessage.name() | pascalCase}}Message.Convert.to{{subscribtionMessage.name() | pascalCase}}(processedDataReceived);
+          let publishedData = {{subscribtionMessage.uid() | pascalCase}}Message.Convert.to{{subscribtionMessage.uid() | pascalCase}}(processedDataReceived);
           onDataCallback(undefined, publishedData{% if channelParameters | length %},
               {%- set counter = 1 %}
               {%- for parameterName, parameter in channelParameters %}
