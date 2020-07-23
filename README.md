@@ -98,3 +98,10 @@ Hooks.getInstance().registerBeforeSendingData((messageToSend: any) => {
 ```
 
 ### Node.js example
+
+
+
+
+
+
+CANNOT HAVE EMPTY OBJECTS use null instead
