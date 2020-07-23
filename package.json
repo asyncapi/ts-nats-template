@@ -1,7 +1,7 @@
 {
 	"name": "@asyncapi/ts-nats-template",
 	"version": "0.1.0",
-	"description": "Nats typescript template for the AsyncAPI generator.",
+	"description": "NATS TypeScript/Node.js template for the AsyncAPI generator.",
 	"keywords": [
 		"asyncapi",
 		"generator",
@@ -10,7 +10,6 @@
 		"template"
 	],
 	"scripts": {
-		"test": "mocha",
 		"gen": "node ./generatorComparators"
 	},
 	"author": "Jonas Lagoni (jonas-lt@live.dk)",
@@ -21,11 +20,6 @@
 		"@asyncapi/generator-filters": "^1.0.0",
 		"quicktype-core": "6.0.66",
 		"is-url": "1.2.4"
-	},
-	"devDependencies": {
-		"chai": "^4.2.0",
-		"dir-compare": "^2.2.0",
-		"mocha": "^7.1.1"
 	},
 	"generator": {
 		"supportedProtocols": [
