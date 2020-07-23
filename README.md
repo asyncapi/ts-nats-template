@@ -57,6 +57,8 @@ or use it directly where needed.
 * Supports [test/mirror client](###test-client) for testing or other useful scenarios.
 * This template can be used as a javascript library as well since the generated code works directly in Node.js.
 
+# Connection options
+Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently the template does not care which security details you have defined in your AsyncAPI document. 
 
 # Available events
 The generated client can emit multiple events, all of these are directly from the [nats-ts](https://github.com/nats-io/nats.ts#notifications) library. Where the errors are wrapped in a custom `NatsTypescriptTemplateError` type.
