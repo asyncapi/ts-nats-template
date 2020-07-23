@@ -184,7 +184,11 @@ filter.realizeParametersForChannel = (parameters, required = true) => {
 
 filter.isPubsub = channel => {
 	const tempChannel = channel._json;
-	if (tempChannel.bindings && tempChannel.bindings.nats && tempChannel.bindings.nats.is == 'pubsub') {
+	if (
+		!tempChannel.bindings || 
+		!tempChannel.bindings.nats ||
+		!tempChannel.bindings.nats.is || 
+		tempChannel.bindings.nats.is == 'pubsub') {
 		return true;
 	}
 	return false;
