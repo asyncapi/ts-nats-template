@@ -6,9 +6,9 @@ import { Hooks } from '../hooks';
   
 export function publish(
   message: AnonymousMessage1Message.AnonymousMessage1,
-  nc: Client,
+  nc: Client
   
-    streetlight_id: string
+    ,streetlight_id: string
   
   ): Promise<void> {
   return new Promise<void>(async (resolve, reject) => {
@@ -21,11 +21,12 @@ try{
     dataToSend = hook(dataToSend);
   }
 }catch(e){
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
   return;
 }
 
-      nc.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend);
+      await nc.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend);
       resolve();
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));

@@ -1,14 +1,16 @@
 
-{% macro subscribe(channelName, channelParameters, subscribtionMessage, server) %}
+{%- from "./OnReceivingData.njk" import OnReceivingData %}
+{% macro subscribe(channelName, channelParameters, subscribtionMessage, server, defaultContentType) %}
 export function subscribe(
-  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
-  nc: Client,
-  {% if channelParameters | length %}
-    {{channelParameters | realizeParametersForChannel}}
-  {% endif %}
+    onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
+    nc: Client
+    {% if channelParameters | length %}
+      ,{{channelParameters | realizeParametersForChannel}}
+    {% endif %}, 
+    options?: SubscriptionOptions
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
-    let subscribeOptions: SubscriptionOptions = {};
+    let subscribeOptions: SubscriptionOptions = {... options};
     {%- if subscribtionMessage | hasNatsBindings %}
     {%- if subscribtionMessage.bindings().nats().queue() | length %}
     //If queue
@@ -36,18 +38,8 @@ export function subscribe(
           }
           {%- endif %}
           {%- if subscribtionMessage.payload() | messageHasNotNullPayload %}
-          try{
-            let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
-            var processedDataReceived: any = msg.data;
-            for(let hook of receivedDataHooks){
-              processedDataReceived = hook(processedDataReceived);
-            }
-          }catch(e){
-            reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
-            return;
-          }
-          let publishedData = {{subscribtionMessage.uid() | pascalCase}}Message.Convert.to{{subscribtionMessage.uid() | pascalCase}}(processedDataReceived);
-          onDataCallback(undefined, publishedData{% if channelParameters | length %},
+          {{OnReceivingData(true, subscribtionMessage, defaultContentType)}}
+          onDataCallback(undefined, receivedData{% if channelParameters | length %},
               {%- set counter = 1 %}
               {%- for parameterName, parameter in channelParameters %}
                 receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}

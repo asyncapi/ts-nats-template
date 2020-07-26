@@ -1,20 +1,20 @@
 export enum AvailableHooks {
-	RecievedData = 'RecievedData',
+	receivedData = 'receivedData',
 	BeforeSendingData = 'BeforeSendingData'
 }
-export type RecievedDataHook = (receivedData: any) => string;
+export type receivedDataHook = (receivedData: any) => string;
 export type BeforeSendingDataHook = (messageToSend: any) => string;
 export class Hooks {
 	private static instance: Hooks;
 	
 	private hooks: {
 		BeforeSendingData: BeforeSendingDataHook[];
-		RecievedData: RecievedDataHook[];
+		receivedData: receivedDataHook[];
 	};
 	private constructor() { 
 		this.hooks = {
 			BeforeSendingData: [],
-			RecievedData: []
+			receivedData: []
 		}
 	}
     public static getInstance(): Hooks {
@@ -40,15 +40,15 @@ export class Hooks {
 	 * Register a hook for BeforeSendingData
 	 * @param hook
 	 */
-	public async registerRecievedData(hook: RecievedDataHook) {
-		this.hooks[AvailableHooks.RecievedData]
-			? this.hooks[AvailableHooks.RecievedData].push(hook)
+	public async registerreceivedData(hook: receivedDataHook) {
+		this.hooks[AvailableHooks.receivedData]
+			? this.hooks[AvailableHooks.receivedData].push(hook)
 			: [hook];
 	}
 	
 	
-	public getRecievedDataHook(): RecievedDataHook[] {
-		return this.hooks[AvailableHooks.RecievedData];
+	public getreceivedDataHook(): receivedDataHook[] {
+		return this.hooks[AvailableHooks.receivedData];
 	}
 	
 	public getBeforeSendingDataHook(): BeforeSendingDataHook[] {

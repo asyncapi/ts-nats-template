@@ -2,11 +2,15 @@
 {% macro subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) %}
   /**
   *  {{messageDescription}}
-  * @param onDataCallback Called when message recieved.
+  * @param onDataCallback Called when message received.
   */
-  public subscribeTo{{channelName | pascalCase }}(onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{message | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void {% if channelParameters | length %}
-    ,{{channelParameters | realizeParametersForChannel}}
-  {% endif %}): Promise<Subscription> {
+  public subscribeTo{{channelName | pascalCase }}(
+      onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{message | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void
+      {% if channelParameters | length %}
+      ,{{channelParameters | realizeParametersForChannel}}
+      {% endif %}, 
+      options?: SubscriptionOptions
+    ): Promise<Subscription> {
     {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
@@ -17,10 +21,13 @@
     const nc: Client = this.jsonClient!;
     {%- endif %}
     if(nc){
-      return {{ channelName | camelCase }}Channel.subscribe(onDataCallback, nc
-      {% if channelParameters | length %}
-        ,{{channelParameters | realizeParametersForChannelWithoutType}}
-      {% endif %});
+      return {{ channelName | camelCase }}Channel.subscribe(
+        onDataCallback, nc
+        {% if channelParameters | length %}
+          ,{{channelParameters | realizeParametersForChannelWithoutType}}
+        {% endif %}, 
+        options
+      );
     }else{
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
     }

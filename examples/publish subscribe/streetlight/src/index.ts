@@ -3,8 +3,8 @@
 
 
 import {fromSeed} from 'ts-nkeys';
-import {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-export {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks}
+import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
+export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
 import * as TestClient from './tests/testclient/';
 export { TestClient };
 import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
@@ -18,14 +18,17 @@ import {
   Subscription, 
   ServersChangedEvent, 
   SubEvent, 
-  ServerInfo
+  ServerInfo,
+  SubscriptionOptions
   } from 'ts-nats';
+  
+export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
 export {streetlightStreetlightIdCommandTurnonChannel};
 import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";
 export {streetlightStreetlightIdEventTurnonChannel};
-import * as SubscribeToTurnonCommandMessage from "./messages/SubscribeToTurnonCommand";
-export {SubscribeToTurnonCommandMessage};
+import * as TurnonCommandMessage from "./messages/TurnonCommand";
+export {TurnonCommandMessage};
 import * as AnonymousMessage1Message from "./messages/AnonymousMessage1";
 export {AnonymousMessage1Message};
 
@@ -85,9 +88,11 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
       this.options = this.setDefaultOptions(options);
       try{
-        this.options.payload = Payload.JSON;
-        this.jsonClient = await connect(this.options);
-        this.chainEvents(this.jsonClient);
+        if(!this.jsonClient || this.jsonClient!.isClosed()){
+          this.options.payload = Payload.JSON;
+          this.jsonClient = await connect(this.options);
+          this.chainEvents(this.jsonClient);
+        }
         resolve();
       }catch(e){
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -95,12 +100,22 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     })
   }
 
+  /**
+   * Returns whether or not any of the clients are closed
+   */
+  isClosed(){
+    if (!this.jsonClient || this.jsonClient!.isClosed()){
+      return true;
+    }
+  }
 
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
-    this.jsonClient!.close()
+    if(this.jsonClient && !this.jsonClient!.isClosed()){
+      this.jsonClient!.close();
+    }
   }
   
   private chainEvents(ns: Client){
@@ -205,16 +220,23 @@ export class NatsAsyncApiClient extends events.EventEmitter{
       
   /**
   *  Channel for the turn on command which should turn on the streetlight
-  * @param onDataCallback Called when message recieved.
+  * @param onDataCallback Called when message received.
   */
-  public subscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback : (err?: NatsTypescriptTemplateError, msg?: SubscribeToTurnonCommandMessage.SubscribeToTurnonCommand, streetlight_id?: string) => void 
-    ,streetlight_id: string
-  ): Promise<Subscription> {
+  public subscribeToStreetlightStreetlightIdCommandTurnon(
+      onDataCallback : (err?: NatsTypescriptTemplateError, msg?: TurnonCommandMessage.TurnonCommand, streetlight_id?: string) => void
+      
+      ,streetlight_id: string
+      , 
+      options?: SubscriptionOptions
+    ): Promise<Subscription> {
     const nc: Client = this.jsonClient!;
     if(nc){
-      return streetlightStreetlightIdCommandTurnonChannel.subscribe(onDataCallback, nc
-      
-        ,streetlight_id
+      return streetlightStreetlightIdCommandTurnonChannel.subscribe(
+        onDataCallback, nc
+        
+          ,streetlight_id
+        , 
+        options
       );
     }else{
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
@@ -226,8 +248,11 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   *  Channel for when the streetlight is turned on
   * @param requestMessage The message to publish.
   */
-  public publishToStreetlightStreetlightIdEventTurnon(requestMessage: AnonymousMessage1Message.AnonymousMessage1 
-    ,streetlight_id: string
+  public publishToStreetlightStreetlightIdEventTurnon(
+    requestMessage: AnonymousMessage1Message.AnonymousMessage1 
+    
+      ,streetlight_id: string
+    
   ): Promise<void> {
     const nc: Client = this.jsonClient!;
     if(nc){

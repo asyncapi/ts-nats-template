@@ -8,8 +8,8 @@
 
 
 import {fromSeed} from 'ts-nkeys';
-import {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-export {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks}
+import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
+export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
 import * as TestClient from './tests/testclient/';
 export {% raw %}{{% endraw %} TestClient {% raw %}}{% endraw %};
 import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
@@ -23,8 +23,10 @@ import {
   Subscription, 
   ServersChangedEvent, 
   SubEvent, 
-  ServerInfo
+  ServerInfo,
+  SubscriptionOptions
   } from 'ts-nats';
+  
 export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 {%- for channelName, message in asyncapi.channels() %}
 import * as {{ channelName | camelCase }}Channel from "./channels/{{ channelName | pascalCase | firstUpperCase }}";
@@ -77,7 +79,7 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   {%- for channelName, channel in asyncapi.channels() %}
     {%- if channel | isRequestReply %}
       {%- if channel | isRequester %}
-      {{request(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters())}}
+      {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
       {%- endif %}
       {%- if channel | isReplier %}
       {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters(), params)}}

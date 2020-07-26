@@ -6,16 +6,18 @@ import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTem
 import { Hooks } from '../../../hooks';
   
 export function reply(
-  onRequest: (err?: NatsTypescriptTemplateError, msg?: GeneralReplyMessage.GeneralReply, streetlight_id?: string) =>Promise<AnonymousMessage3Message.AnonymousMessage3>, 
-  onReplyError: (err: NatsTypescriptTemplateError) => void,
-  nc: Client,
-  
-    streetlight_id: string
-  
+    onRequest: (err?: NatsTypescriptTemplateError, msg?: GeneralReplyMessage.GeneralReply, streetlight_id?: string) =>Promise<AnonymousMessage3Message.AnonymousMessage3>, 
+    onReplyError: (err: NatsTypescriptTemplateError) => void,
+    nc: Client
+    
+      ,streetlight_id: string
+    ,
+    options?: SubscriptionOptions
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
     try {
-      let subscribeOptions: SubscriptionOptions = {};
+      let subscribeOptions: SubscriptionOptions = {... options};
+      subscribeOptions.max = 1;
 
       let subscription = nc.subscribe(`streetlight.${streetlight_id}.event.turnon`,async (err, msg) => {
         if (err) {
@@ -27,18 +29,19 @@ export function reply(
           }
           
 try {
-  let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+  let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
   for(let hook of receivedDataHooks){
     receivedData = hook(receivedData);
   }
 } catch (e) {
-  onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  onReplyError(error);
   return;
 }
 
-          let requestData = GeneralReplyMessage.Convert.toGeneralReply(receivedData);
-          let message =await onRequest(undefined, requestData,
+
+          let message =await onRequest(undefined, receivedData,
               receivedTopicParameters['streetlight_id']);
           
           if (msg.reply) {
@@ -50,11 +53,13 @@ try{
     dataToSend = hook(dataToSend);
   }
 }catch(e){
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  onReplyError(error)
   return;
 }
 
-            nc.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend);
+            
+            await nc.publish(msg.reply, dataToSend);
           } else {
             let error = new NatsTypescriptTemplateError('Expected request to need a reply, did not..', '000');
             onReplyError(error)

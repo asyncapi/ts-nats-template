@@ -5,14 +5,15 @@ import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTem
 import { Hooks } from '../../../hooks';
   
 export function subscribe(
-  onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage1Message.AnonymousMessage1, streetlight_id?: string) => void, 
-  nc: Client,
-  
-    streetlight_id: string
-  
+    onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage1Message.AnonymousMessage1, streetlight_id?: string) => void, 
+    nc: Client
+    
+      ,streetlight_id: string
+    , 
+    options?: SubscriptionOptions
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
-    let subscribeOptions: SubscriptionOptions = {};
+    let subscribeOptions: SubscriptionOptions = {... options};
 
     try{
       let subscription = nc.subscribe(`streetlight.${streetlight_id}.event.turnon`, (err, msg) => {
@@ -21,20 +22,22 @@ export function subscribe(
         }else{
           const unmodifiedChannel = `streetlight.{streetlight_id}.event.turnon`
           const receivedTopicParameters = {
-              streetlight_id : msg.subject.slice(unmodifiedChannel.split("${streetlight_id}")[0].length, msg.subject.length-unmodifiedChannel.split("${streetlight_id}")[1].length)
+              streetlight_id : msg.subject.slice(unmodifiedChannel.split("{streetlight_id}")[0].length, msg.subject.length-unmodifiedChannel.split("{streetlight_id}")[1].length)
           }
-          try{
-            let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
-            var processedDataReceived: any = msg.data;
-            for(let hook of receivedDataHooks){
-              processedDataReceived = hook(processedDataReceived);
-            }
-          }catch(e){
-            reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
-            return;
-          }
-          let publishedData = AnonymousMessage1Message.Convert.toAnonymousMessage1(processedDataReceived);
-          onDataCallback(undefined, publishedData,
+          
+try {
+  let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
+  var receivedData : any = msg.data;
+  for(let hook of receivedDataHooks){
+    receivedData = hook(receivedData);
+  }
+} catch (e) {
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
+  return;
+}
+
+          onDataCallback(undefined, receivedData,
                 receivedTopicParameters['streetlight_id']);
         }
       }, subscribeOptions);

@@ -1,5 +1,5 @@
 
-import * as SubscribeToTurnonCommandMessage from '../../../messages/SubscribeToTurnonCommand';
+import * as TurnonCommandMessage from '../../../messages/TurnonCommand';
 import * as GeneralReplyMessage from '../../../messages/GeneralReply';
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTemplateError';
@@ -7,11 +7,11 @@ import { Hooks } from '../../../hooks';
   
 export function request(
   message: GeneralReplyMessage.GeneralReply,
-  nc: Client,
+  nc: Client
   
-    streetlight_id: string
+    ,streetlight_id: string
   
-  ): Promise<SubscribeToTurnonCommandMessage.SubscribeToTurnonCommand> {
+  ): Promise<TurnonCommandMessage.TurnonCommand> {
   return new Promise(async (resolve, reject) => {
     
     let msg;
@@ -24,10 +24,12 @@ try{
     dataToSend = hook(dataToSend);
   }
 }catch(e){
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
   return;
 }
 
+      
       msg = await nc.request(`streetlight.${streetlight_id}.command.turnon`, undefined, dataToSend)
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -35,18 +37,18 @@ try{
     }
     
 try {
-  let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+  let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
   for(let hook of receivedDataHooks){
     receivedData = hook(receivedData);
   }
 } catch (e) {
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
   return;
 }
 
-    let recievedData = SubscribeToTurnonCommandMessage.Convert.toSubscribeToTurnonCommand(receivedData);
-    resolve(recievedData);
+    resolve(receivedData);
   })
 }
 

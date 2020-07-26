@@ -11,14 +11,15 @@ import {
   Subscription, 
   ServersChangedEvent, 
   SubEvent, 
-  ServerInfo
+  ServerInfo,
+  SubscriptionOptions
   } from 'ts-nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";
 export {streetlightStreetlightIdCommandTurnonChannel};
 import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";
 export {streetlightStreetlightIdEventTurnonChannel};
-import * as SubscribeToTurnonCommandMessage from "../../messages/SubscribeToTurnonCommand";
-export {SubscribeToTurnonCommandMessage};
+import * as TurnonCommandMessage from "../../messages/TurnonCommand";
+export {TurnonCommandMessage};
 import * as AnonymousMessage1Message from "../../messages/AnonymousMessage1";
 export {AnonymousMessage1Message};
 
@@ -59,7 +60,6 @@ export declare interface NatsAsyncApiTestClient {
 }
 export class NatsAsyncApiTestClient extends events.EventEmitter{
   
-  
 
   public jsonClient?: Client;
   public stringClient?: Client;
@@ -80,9 +80,11 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
       this.options = this.setDefaultOptions(options);
       try{
-        this.options.payload = Payload.JSON;
-        this.jsonClient = await connect(this.options);
-        this.chainEvents(this.jsonClient);
+        if(!this.jsonClient || this.jsonClient!.isClosed()){
+          this.options.payload = Payload.JSON;
+          this.jsonClient = await connect(this.options);
+          this.chainEvents(this.jsonClient);
+        }
         resolve();
       }catch(e){
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -90,12 +92,22 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     })
   }
 
+  /**
+   * Returns whether or not any of the clients are closed
+   */
+  isClosed(){
+    if (!this.jsonClient || this.jsonClient!.isClosed()){
+      return true;
+    }
+  }
 
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
-    this.jsonClient!.close()
+    if(this.jsonClient && !this.jsonClient!.isClosed()){
+      this.jsonClient!.close();
+    }
   }
   
   private chainEvents(ns: Client){
@@ -202,8 +214,11 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   *  Channel for the turn on command which should turn on the streetlight
   * @param requestMessage The message to publish.
   */
-  public publishToStreetlightStreetlightIdCommandTurnon(requestMessage: SubscribeToTurnonCommandMessage.SubscribeToTurnonCommand 
-    ,streetlight_id: string
+  public publishToStreetlightStreetlightIdCommandTurnon(
+    requestMessage: TurnonCommandMessage.TurnonCommand 
+    
+      ,streetlight_id: string
+    
   ): Promise<void> {
     const nc: Client = this.jsonClient!;
     if(nc){
@@ -219,16 +234,23 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
       
   /**
   *  Channel for when the streetlight is turned on
-  * @param onDataCallback Called when message recieved.
+  * @param onDataCallback Called when message received.
   */
-  public subscribeToStreetlightStreetlightIdEventTurnon(onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage1Message.AnonymousMessage1, streetlight_id?: string) => void 
-    ,streetlight_id: string
-  ): Promise<Subscription> {
+  public subscribeToStreetlightStreetlightIdEventTurnon(
+      onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage1Message.AnonymousMessage1, streetlight_id?: string) => void
+      
+      ,streetlight_id: string
+      , 
+      options?: SubscriptionOptions
+    ): Promise<Subscription> {
     const nc: Client = this.jsonClient!;
     if(nc){
-      return streetlightStreetlightIdEventTurnonChannel.subscribe(onDataCallback, nc
-      
-        ,streetlight_id
+      return streetlightStreetlightIdEventTurnonChannel.subscribe(
+        onDataCallback, nc
+        
+          ,streetlight_id
+        , 
+        options
       );
     }else{
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));

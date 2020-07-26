@@ -3,8 +3,8 @@
 
 
 import {fromSeed} from 'ts-nkeys';
-import {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-export {AvailableHooks, RecievedDataHook, BeforeSendingDataHook, Hooks}
+import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
+export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
 import * as TestClient from './tests/testclient/';
 export { TestClient };
 import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
@@ -18,14 +18,17 @@ import {
   Subscription, 
   ServersChangedEvent, 
   SubEvent, 
-  ServerInfo
+  ServerInfo,
+  SubscriptionOptions
   } from 'ts-nats';
+  
+export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
 export {streetlightStreetlightIdCommandTurnonChannel};
 import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";
 export {streetlightStreetlightIdEventTurnonChannel};
-import * as SubscribeToTurnonCommandMessage from "./messages/SubscribeToTurnonCommand";
-export {SubscribeToTurnonCommandMessage};
+import * as TurnonCommandMessage from "./messages/TurnonCommand";
+export {TurnonCommandMessage};
 import * as GeneralReplyMessage from "./messages/GeneralReply";
 export {GeneralReplyMessage};
 import * as AnonymousMessage3Message from "./messages/AnonymousMessage3";
@@ -87,9 +90,11 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
       this.options = this.setDefaultOptions(options);
       try{
-        this.options.payload = Payload.JSON;
-        this.jsonClient = await connect(this.options);
-        this.chainEvents(this.jsonClient);
+        if(!this.jsonClient || this.jsonClient!.isClosed()){
+          this.options.payload = Payload.JSON;
+          this.jsonClient = await connect(this.options);
+          this.chainEvents(this.jsonClient);
+        }
         resolve();
       }catch(e){
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -97,12 +102,22 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     })
   }
 
+  /**
+   * Returns whether or not any of the clients are closed
+   */
+  isClosed(){
+    if (!this.jsonClient || this.jsonClient!.isClosed()){
+      return true;
+    }
+  }
 
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
-    this.jsonClient!.close()
+    if(this.jsonClient && !this.jsonClient!.isClosed()){
+      this.jsonClient!.close();
+    }
   }
   
   private chainEvents(ns: Client){
@@ -207,23 +222,31 @@ export class NatsAsyncApiClient extends events.EventEmitter{
       
   /**
   *  Channel for the turn on command which should turn on the streetlight
-  * @param onRequest Called when request recieved.
+  * @param onRequest Called when request received.
   * @param onReplyError Called when it was not possible to send the reply.
   */
   public replyToStreetlightStreetlightIdCommandTurnon(
-    onRequest : (
-      err?: NatsTypescriptTemplateError, 
-      msg?: SubscribeToTurnonCommandMessage.SubscribeToTurnonCommand,streetlight_id?: string
-    ) =>Promise<GeneralReplyMessage.GeneralReply>, onReplyError : (err: NatsTypescriptTemplateError) => void 
-  
-    ,streetlight_id: string
-  ): Promise<Subscription> {
+      onRequest : (
+        err?: NatsTypescriptTemplateError, 
+        msg?: TurnonCommandMessage.TurnonCommand,streetlight_id?: string
+      ) =>Promise<GeneralReplyMessage.GeneralReply>, 
+      onReplyError : (err: NatsTypescriptTemplateError) => void 
+      
+        ,streetlight_id: string
+      , 
+      options?: SubscriptionOptions
+    ): Promise<Subscription> {
     const nc: Client = this.jsonClient!;
     
     if(nc){
-      return streetlightStreetlightIdCommandTurnonChannel.reply(onRequest, onReplyError, nc
+      return streetlightStreetlightIdCommandTurnonChannel.reply(
+        onRequest, 
+        onReplyError, 
+        nc
       
         ,streetlight_id
+      ,
+        options
       );
     }else{
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
@@ -235,15 +258,20 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   *  Channel for when the streetlight is turned on
   * @param requestMessage The request message to send.
   */
-  public requestStreetlightStreetlightIdEventTurnon(requestMessage:AnonymousMessage3Message.AnonymousMessage3 
-  
-    ,streetlight_id: string
+  public requestStreetlightStreetlightIdEventTurnon(
+    requestMessage:AnonymousMessage3Message.AnonymousMessage3 
+    
+      ,streetlight_id: string
+    
   ): Promise<GeneralReplyMessage.GeneralReply> {
     const nc: Client = this.jsonClient!;
     if(nc){
-      return streetlightStreetlightIdEventTurnonChannel.request(requestMessage, nc
-      
-        ,streetlight_id
+      return streetlightStreetlightIdEventTurnonChannel.request(
+        requestMessage, 
+        nc
+        
+          ,streetlight_id
+        
       );
     }else{
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));

@@ -1,20 +1,21 @@
 
 {%- from "./OnSendingData.njk" import OnSendingData %}
 {%- from "./OnReceivingData.njk" import OnReceivingData %}
-{% macro request(channelName, channelParameters, recieveMessage, requestMessage, server) %}
+{% macro request(channelName, channelParameters, requestMessage, receiveMessage, server, defaultContentType) %}
 export function request(
   message: {{requestMessage | getMessageType}},
-  nc: Client,
+  nc: Client
   {% if channelParameters | length %}
-    {{channelParameters | realizeParametersForChannel}}
+    ,{{channelParameters | realizeParametersForChannel}}
   {% endif %}
-  ): Promise<{{recieveMessage | getMessageType}}> {
+  ): Promise<{{receiveMessage | getMessageType}}> {
   return new Promise(async (resolve, reject) => {
     
     let msg;
     try {
       {%- if requestMessage.payload() | messageHasNotNullPayload %}
-      {{OnSendingData()}}
+      {{OnSendingData(true, requestMessage, defaultContentType)}}
+      
       msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, dataToSend)
       {%- else %}
       msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, null)
@@ -24,10 +25,9 @@ export function request(
       return;
     }
 
-    {%- if recieveMessage.payload() | messageHasNotNullPayload %}
-    {{OnReceivingData(true)}}
-    let recievedData = {{recieveMessage.uid() | pascalCase}}Message.Convert.to{{recieveMessage.uid() | pascalCase}}(receivedData);
-    resolve(recievedData);
+    {%- if receiveMessage.payload() | messageHasNotNullPayload %}
+    {{OnReceivingData(true, receiveMessage, defaultContentType)}}
+    resolve(receivedData);
     {%- else %}
     resolve(null);
     {%- endif %}

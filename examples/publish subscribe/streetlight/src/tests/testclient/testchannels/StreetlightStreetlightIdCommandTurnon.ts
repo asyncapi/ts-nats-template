@@ -1,14 +1,14 @@
 
-import * as SubscribeToTurnonCommandMessage from '../../../messages/SubscribeToTurnonCommand';
+import * as TurnonCommandMessage from '../../../messages/TurnonCommand';
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTemplateError';
 import { Hooks } from '../../../hooks';
   
 export function publish(
-  message: SubscribeToTurnonCommandMessage.SubscribeToTurnonCommand,
-  nc: Client,
+  message: TurnonCommandMessage.TurnonCommand,
+  nc: Client
   
-    streetlight_id: string
+    ,streetlight_id: string
   
   ): Promise<void> {
   return new Promise<void>(async (resolve, reject) => {
@@ -21,11 +21,12 @@ try{
     dataToSend = hook(dataToSend);
   }
 }catch(e){
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
   return;
 }
 
-      nc.publish(`streetlight.${streetlight_id}.command.turnon`, dataToSend);
+      await nc.publish(`streetlight.${streetlight_id}.command.turnon`, dataToSend);
       resolve();
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));

@@ -1,34 +1,42 @@
 
-{% macro reply(defaultContentType, channelName, subscribeMessage, publishMessage, messageDescription, channelParameters, params) %}
+{% macro reply(defaultContentType, channelName, replyMessage, requestMessage, messageDescription, channelParameters, params) %}
   /**
   *  {{messageDescription}}
-  * @param onRequest Called when request recieved.
+  * @param onRequest Called when request received.
   * @param onReplyError Called when it was not possible to send the reply.
   */
   public replyTo{{channelName | pascalCase }}(
-    onRequest : (
-      err?: NatsTypescriptTemplateError, 
-      msg?: {{publishMessage | getMessageType}}
-      {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
-    ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{subscribeMessage | getMessageType}}{%- if params.promisifyReplyCallback | length %}>{%- endif %}, onReplyError : (err: NatsTypescriptTemplateError) => void 
-  {% if channelParameters | length %}
-    ,{{channelParameters | realizeParametersForChannel}}
-  {% endif %}): Promise<Subscription> {
-    {%- if publishMessage.contentType() | isBinaryPayload(defaultContentType) %}
+      onRequest : (
+        err?: NatsTypescriptTemplateError, 
+        msg?: {{requestMessage | getMessageType}}
+        {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
+      ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{replyMessage | getMessageType}}{%- if params.promisifyReplyCallback | length %}>{%- endif %}, 
+      onReplyError : (err: NatsTypescriptTemplateError) => void 
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannel}}
+      {% endif %}, 
+      options?: SubscriptionOptions
+    ): Promise<Subscription> {
+    {%- if requestMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
-    {%- if publishMessage.contentType() | isStringPayload(defaultContentType) %}
+    {%- if requestMessage.contentType() | isStringPayload(defaultContentType) %}
     const nc: Client = this.stringClient!;
     {%- endif %}
-    {%- if publishMessage.contentType() | isJsonPayload(defaultContentType) %}
+    {%- if requestMessage.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
     
     if(nc){
-      return {{ channelName | camelCase }}Channel.reply(onRequest, onReplyError, nc
+      return {{ channelName | camelCase }}Channel.reply(
+        onRequest, 
+        onReplyError, 
+        nc
       {% if channelParameters | length %}
         ,{{channelParameters | realizeParametersForChannelWithoutType}}
-      {% endif %});
+      {% endif %},
+        options
+      );
     }else{
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
     }

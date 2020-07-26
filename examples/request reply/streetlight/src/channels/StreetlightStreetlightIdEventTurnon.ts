@@ -7,9 +7,9 @@ import { Hooks } from '../hooks';
   
 export function request(
   message: AnonymousMessage3Message.AnonymousMessage3,
-  nc: Client,
+  nc: Client
   
-    streetlight_id: string
+    ,streetlight_id: string
   
   ): Promise<GeneralReplyMessage.GeneralReply> {
   return new Promise(async (resolve, reject) => {
@@ -24,10 +24,12 @@ try{
     dataToSend = hook(dataToSend);
   }
 }catch(e){
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
   return;
 }
 
+      
       msg = await nc.request(`streetlight.${streetlight_id}.event.turnon`, undefined, dataToSend)
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -35,18 +37,18 @@ try{
     }
     
 try {
-  let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+  let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
   for(let hook of receivedDataHooks){
     receivedData = hook(receivedData);
   }
 } catch (e) {
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  reject(error);
   return;
 }
 
-    let recievedData = GeneralReplyMessage.Convert.toGeneralReply(receivedData);
-    resolve(recievedData);
+    resolve(receivedData);
   })
 }
 

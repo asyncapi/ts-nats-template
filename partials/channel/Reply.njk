@@ -1,29 +1,27 @@
 
 {%- from "./OnSendingData.njk" import OnSendingData %}
 {%- from "./OnReceivingData.njk" import OnReceivingData %}
-{% macro reply(channelName, channelParameters, replyMessage, recieveMessage, server, params) %}
+{% macro reply(channelName, channelParameters, replyMessage, receiveMessage, server, params, defaultContentType) %}
 export function reply(
-  onRequest: (err?: NatsTypescriptTemplateError, msg?: {{recieveMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
-  {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{replyMessage | getMessageType}}{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
-  onReplyError: (err: NatsTypescriptTemplateError) => void,
-  nc: Client,
-  {% if channelParameters | length %}
-    {{channelParameters | realizeParametersForChannel}}
-  {% endif %}
+    onRequest: (err?: NatsTypescriptTemplateError, msg?: {{receiveMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => 
+    {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{replyMessage | getMessageType}}{%-if params.promisifyReplyCallback | length %}>{%- endif %}, 
+    onReplyError: (err: NatsTypescriptTemplateError) => void,
+    nc: Client
+    {% if channelParameters | length %}
+      ,{{channelParameters | realizeParametersForChannel}}
+    {% endif %},
+    options?: SubscriptionOptions
   ): Promise<Subscription> {
   return new Promise(async (resolve, reject) => {
     try {
-      let subscribeOptions: SubscriptionOptions = {};
-      {%- if recieveMessage | hasNatsBindings %}
-      {%- if recieveMessage.bindings().nats().queue() | length %}
+      let subscribeOptions: SubscriptionOptions = {... options};
+      {%- if receiveMessage | hasNatsBindings %}
+      {%- if receiveMessage.bindings().nats().queue() | length %}
       //If queue
-      subscribeOptions.queue = '{{recieveMessage.bindings().nats().queue().name()}}';
-      {%- endif %}
-      {%- if recieveMessage.bindings().nats().unsubAfter() | length %}
-      //If unsubafter
-      subscribeOptions.max = {{recieveMessage.bindings().nats().unsubAfter()}};
+      subscribeOptions.queue = '{{receiveMessage.bindings().nats().queue().name()}}';
       {%- endif %}
       {%- endif %}
+      subscribeOptions.max = 1;
 
       let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, {%- if params.promisifyReplyCallback | length %}async{%- endif %} (err, msg) => {
         if (err) {
@@ -40,10 +38,10 @@ export function reply(
           }
           {%- endif %}
           
-          {%- if recieveMessage.payload() | messageHasNotNullPayload %}
-          {{OnReceivingData(false)}}
-          let requestData = {{recieveMessage.uid() | pascalCase}}Message.Convert.to{{recieveMessage.uid() | pascalCase}}(receivedData);
-          let message = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, requestData{% if channelParameters | length %},
+          {%- if receiveMessage.payload() | messageHasNotNullPayload %}
+          {{OnReceivingData(false, receiveMessage, defaultContentType)}}
+
+          let message = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, receivedData{% if channelParameters | length %},
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}
               receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
@@ -62,10 +60,11 @@ export function reply(
           
           if (msg.reply) {
             {%- if replyMessage.payload() | messageHasNotNullPayload %}
-            {{OnSendingData()}}
-            nc.publish({{channelParameters | realizeChannelName(channelName)}}, dataToSend);
+            {{OnSendingData(false, replyMessage, defaultContentType)}}
+            
+            await nc.publish(msg.reply, dataToSend);
             {%- else %}
-            nc.publish({{channelParameters | realizeChannelName(channelName)}}, null);
+            await nc.publish(msg.reply, null);
             {%- endif %}
           } else {
             let error = new NatsTypescriptTemplateError('Expected request to need a reply, did not..', '000');

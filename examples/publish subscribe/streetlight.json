@@ -19,7 +19,7 @@
 			"publish": {
 				"operationId": "Listen when to turn on the streetlight",
 				"message": {
-					"name": "subscribeToTurnonCommand",
+					"name": "TurnonCommand",
 					"payload": {
 						"type": "object",
 						"required": ["lumen"],

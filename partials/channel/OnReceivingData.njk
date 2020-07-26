@@ -1,18 +1,30 @@
 
-{% macro OnReceivingData(promisfyErrors) %}
+{% macro OnReceivingData(promisfyErrors, message, defaultContentType) %}
 try {
-  let receivedDataHooks = Hooks.getInstance().getRecievedDataHook();
+  let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
   for(let hook of receivedDataHooks){
     receivedData = hook(receivedData);
   }
-} catch (e) {
-  {%- if promisfyErrors == true %}
-  reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e));
-  return;
-  {%- else %}
-  onReplyError(NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e))
-  return;
+  {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
+  if(receivedDataHooks.length == 0 ){
+    let error = new NatsTypescriptTemplateError('Missing hooks to convert binary data', '000');
+    onReplyError(error);
+    return;
+  }
   {%- endif %}
+  {%- if message.contentType() | isStringPayload(defaultContentType) %}
+  if(receivedDataHooks.length == 0){
+    receivedData = {{message.uid() | pascalCase}}Message.Convert.to{{message.uid() | pascalCase}}(receivedData);
+  }
+  {%- endif %}
+} catch (e) {
+  const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
+  {%- if promisfyErrors == true %}
+  reject(error);
+  {%- else %}
+  onReplyError(error);
+  {%- endif %}
+  return;
 }
 {% endmacro %}

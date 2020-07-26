@@ -21,19 +21,25 @@
       this.options = this.setDefaultOptions(options);
       try{
         {%- if asyncapi | containsBinaryPayload %}
-        this.options.payload = Payload.BINARY;
-        this.binaryClient = await connect(this.options);
-        this.chainEvents(this.binaryClient);
+        if(!this.binaryClient || this.binaryClient!.isClosed()){
+          this.options.payload = Payload.BINARY;
+          this.binaryClient = await connect(this.options);
+          this.chainEvents(this.binaryClient);
+        }
         {%- endif %}
         {%- if asyncapi | containsStringPayload %}
-        this.options.payload = Payload.STRING;
-        this.stringClient = await connect(this.options);
-        this.chainEvents(this.stringClient);
+        if(!this.stringClient || this.stringClient!.isClosed()){
+          this.options.payload = Payload.STRING;
+          this.stringClient = await connect(this.options);
+          this.chainEvents(this.stringClient);
+        }
         {%- endif %}
         {%- if asyncapi | containsJsonPayload %}
-        this.options.payload = Payload.JSON;
-        this.jsonClient = await connect(this.options);
-        this.chainEvents(this.jsonClient);
+        if(!this.jsonClient || this.jsonClient!.isClosed()){
+          this.options.payload = Payload.JSON;
+          this.jsonClient = await connect(this.options);
+          this.chainEvents(this.jsonClient);
+        }
         {%- endif %}
         resolve();
       }catch(e){
@@ -42,19 +48,45 @@
     })
   }
 
+  /**
+   * Returns whether or not any of the clients are closed
+   */
+  isClosed(){
+    {%- if asyncapi | containsBinaryPayload %}
+    if (!this.binaryClient || this.binaryClient!.isClosed()){
+      return true;
+    }
+    {%- endif %}
+    {%- if asyncapi | containsStringPayload %}
+    if (!this.stringClient || this.stringClient!.isClosed()){
+      return true;
+    }
+    {%- endif %}
+    {%- if asyncapi | containsJsonPayload %}
+    if (!this.jsonClient || this.jsonClient!.isClosed()){
+      return true;
+    }
+    {%- endif %}
+  }
 
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
     {%- if asyncapi | containsBinaryPayload %}
-    this.binaryClient!.close()
+    if(this.binaryClient && !this.binaryClient!.isClosed()){
+      this.binaryClient!.close();
+    }
     {%- endif %}
     {%- if asyncapi | containsStringPayload %}
-    this.stringClient!.close()
+    if(this.stringClient && !this.stringClient!.isClosed()){
+      this.stringClient!.close();
+    }
     {%- endif %}
     {%- if asyncapi | containsJsonPayload %}
-    this.jsonClient!.close()
+    if(this.jsonClient && !this.jsonClient!.isClosed()){
+      this.jsonClient!.close();
+    }
     {%- endif %}
   }
   
