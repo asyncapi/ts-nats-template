@@ -59,7 +59,7 @@ connect();
 
 # Restrictions 
 * Empty objects are not supported, use `null` types instead.
-* This template has not been tested with payloads with different specs other then JSON Schema draft 7.
+* This template has not been tested with payloads with different specs other than JSON Schema draft 7.
 
 # Connection options
 Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently the template does not care which security details you have defined in your AsyncAPI document. 
