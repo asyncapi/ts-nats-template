@@ -62,7 +62,7 @@ connect();
 * This template has not been tested with payloads with different specs other than JSON Schema draft 7.
 
 # Connection options
-Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently the template does not care which security details you have defined in your AsyncAPI document. 
+Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently, the template does not care which security details you have defined in your AsyncAPI document. 
 
 # Available events
 The generated client can emit multiple events, all of these are directly from the [nats-ts](https://github.com/nats-io/nats.ts#notifications) library. Where the errors are wrapped in a custom `NatsTypescriptTemplateError` type.
