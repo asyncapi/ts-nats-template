@@ -248,4 +248,4 @@ Binary payloads are a bit special since you are required to at least provide 1. 
 The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return the correct message type.
 
 ### String payloads
-The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.
+The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.
