@@ -31,8 +31,9 @@ filter.isJsonPayload = (messageContentType, defaultContentType) => {
 filter.messageHasNotNullPayload = (messagePayload) => {
 	return messagePayload.type()+"" != "null";
 }
+
 /**
- * Because quicktype cant handle null provide custom message type.
+ * Because quicktype cant handle null types we have to ensure if it is null thats 
  */
 filter.getMessageType = (message) => {
 	if(message.payload().type()+"" == "null"){
@@ -43,7 +44,7 @@ filter.getMessageType = (message) => {
 }
 
 /**
- * Figure out if a payload is located in the document.
+ * Figure out if a content type is located in the document.
  * @param {*} document to look through
  * @param {*} payload to find
  */
@@ -117,6 +118,11 @@ filter.camelCase = string => {
 	return camelCase(string);
 }
 
+/**
+ * Convert JSON schema draft 7 types to typescript types 
+ * @param {*} jsonSchemaType 
+ * @param {*} property 
+ */
 function toTsType(jsonSchemaType, property) {
 	switch (jsonSchemaType.toLowerCase()) {
 		case 'string':
@@ -136,6 +142,9 @@ function toTsType(jsonSchemaType, property) {
 	}
 }
 
+/**
+ * Convert RFC 6570 URI with parameters to NATS topic. 
+ */
 filter.realizeChannelName = (parameters, channelName) => {
 	let returnString = '\`' + channelName + '\`';
 	returnString = returnString.replace(/\//g, `.`);
@@ -144,20 +153,14 @@ filter.realizeChannelName = (parameters, channelName) => {
 	}
 	return returnString;
 }
+
 filter.realizeChannelNameWithoutParameters = (channelName) => {
-	return toNatsChannel(channelName, null)
+	return realizeChannelName(null, channelName);
 }
 
-function toNatsChannel(channelName, parameters){
-	let returnString = '\`' + channelName + '\`';
-	returnString = returnString.replace(/\//g, `.`);
-	if(parameters){
-		for (paramName in parameters) {
-			returnString = returnString.replace(`{${paramName}}`, `\${${paramName}}`);
-		}
-	}
-	return returnString;
-}
+/**
+ * Realize parameters without using types without trailing comma
+ */
 filter.realizeParametersForChannelWithoutType = (parameters) => {
 	let returnString = '';
 	for (paramName in parameters) {
@@ -168,6 +171,10 @@ filter.realizeParametersForChannelWithoutType = (parameters) => {
 	}
 	return returnString;
 }
+
+/**
+ * Realize parameters using types without trailing comma
+ */
 filter.realizeParametersForChannel = (parameters, required = true) => {
 	let returnString = '';
 	const requiredType = !required ? '?' : ''
@@ -182,6 +189,16 @@ filter.realizeParametersForChannel = (parameters, required = true) => {
 	return returnString;
 }
 
+/**
+ * Does an object have bindings
+ */
+filter.hasNatsBindings = obj => {
+	return obj.bindings && obj.bindings.nats;
+}
+
+/**
+ * is the channel a publish and subscribe type if nothing is specified default to being pubsub type 
+ */
 filter.isPubsub = channel => {
 	const tempChannel = channel._json;
 	if (
@@ -193,9 +210,10 @@ filter.isPubsub = channel => {
 	}
 	return false;
 }
-filter.hasNatsBindings = obj => {
-	return obj.bindings && obj.bindings.nats;
-}
+
+/**
+ * is the channel a request and reply
+ */
 filter.isRequestReply = channel => {
 	let tempChannel = channel._json;
 	if (
@@ -207,12 +225,14 @@ filter.isRequestReply = channel => {
 	}
 	return false;
 }
+
+/**
+ * Is the request reply a requester
+ */
 filter.isRequester = channel => {
 	let tempChannel = channel._json;
 	if (
-		tempChannel.bindings &&
-		tempChannel.bindings.nats &&
-		tempChannel.bindings.nats.is == 'requestReply' &&
+		isRequestReply(channel) &&
 		tempChannel.bindings.nats.requestReply &&
 		tempChannel.bindings.nats.requestReply.is == 'requester'
 	) {
@@ -220,12 +240,14 @@ filter.isRequester = channel => {
 	}
 	return false;
 }
+
+/**
+ * Is the request reply a replier
+ */
 filter.isReplier = channel => {
 	let tempChannel = channel._json;
 	if (
-		tempChannel.bindings &&
-		tempChannel.bindings.nats &&
-		tempChannel.bindings.nats.is == 'requestReply' &&
+		isRequestReply(channel) &&
 		tempChannel.bindings.nats.requestReply &&
 		tempChannel.bindings.nats.requestReply.is == 'replier'
 	) {
