@@ -10,15 +10,21 @@ export function request(
   {% endif %}
   ): Promise<{{receiveMessage | getMessageType}}> {
   return new Promise(async (resolve, reject) => {
-    
+    var timeout = undefined;
+    {%- if requestMessage | hasNatsBindings %}
+    {%- if requestMessage.bindings().nats().requestReply() | length %}
+    {%- if requestMessage.bindings().nats().requestReply().timeout() | length %}
+    timeout = '{{requestMessage.bindings().nats().requestReply().timeout()}}';
+    {%- endif %}
+    {%- endif %}
+    {%- endif %}
     let msg;
     try {
       {%- if requestMessage.payload() | messageHasNotNullPayload %}
       {{OnSendingData(true, requestMessage, defaultContentType)}}
-      
-      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, dataToSend)
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, timeout, dataToSend)
       {%- else %}
-      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, undefined, null)
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, timeout, null)
       {%- endif %}
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));

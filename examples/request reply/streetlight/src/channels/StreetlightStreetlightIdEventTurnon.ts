@@ -13,7 +13,7 @@ export function request(
   
   ): Promise<GeneralReplyMessage.GeneralReply> {
   return new Promise(async (resolve, reject) => {
-    
+    var timeout = undefined;
     let msg;
     try {
       
@@ -29,8 +29,7 @@ try{
   return;
 }
 
-      
-      msg = await nc.request(`streetlight.${streetlight_id}.event.turnon`, undefined, dataToSend)
+      msg = await nc.request(`streetlight.${streetlight_id}.event.turnon`, timeout, dataToSend)
     }catch(e){
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       return;

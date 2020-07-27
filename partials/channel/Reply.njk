@@ -18,10 +18,13 @@ export function reply(
       {%- if receiveMessage | hasNatsBindings %}
       {%- if receiveMessage.bindings().nats().queue() | length %}
       //If queue
-      subscribeOptions.queue = '{{receiveMessage.bindings().nats().queue().name()}}';
+      subscribeOptions.queue = '{{receiveMessage.bindings().nats().queue()}}';
+      {%- endif %}
+      {%- if receiveMessage.bindings().nats().unsubAfter() | length %}
+      //If unsubafter
+      subscribeOptions.max = {{receiveMessage.bindings().nats().unsubAfter()}};
       {%- endif %}
       {%- endif %}
-      subscribeOptions.max = 1;
 
       let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, {%- if params.promisifyReplyCallback | length %}async{%- endif %} (err, msg) => {
         if (err) {

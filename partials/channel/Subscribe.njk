@@ -14,7 +14,7 @@ export function subscribe(
     {%- if subscribtionMessage | hasNatsBindings %}
     {%- if subscribtionMessage.bindings().nats().queue() | length %}
     //If queue
-    subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue().name()}}';
+    subscribeOptions.queue = '{{subscribtionMessage.bindings().nats().queue()}}';
     {%- endif %}
     {%- if subscribtionMessage.bindings().nats().unsubAfter() | length %}
     //If unsubafter

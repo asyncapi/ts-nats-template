@@ -17,7 +17,6 @@ export function reply(
   return new Promise(async (resolve, reject) => {
     try {
       let subscribeOptions: SubscriptionOptions = {... options};
-      subscribeOptions.max = 1;
 
       let subscription = nc.subscribe(`streetlight.${streetlight_id}.command.turnon`,async (err, msg) => {
         if (err) {
