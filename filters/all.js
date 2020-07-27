@@ -216,7 +216,7 @@ filter.isPubsub = channel => {
 /**
  * is the channel a request and reply
  */
-filter.isRequestReply = channel => {
+function isRequestReply(channel){
 	let tempChannel = channel._json;
 	if (
 		tempChannel.bindings &&
@@ -227,6 +227,7 @@ filter.isRequestReply = channel => {
 	}
 	return false;
 }
+filter.isRequestReply = isRequestReply;
 
 /**
  * Is the request reply a requester
