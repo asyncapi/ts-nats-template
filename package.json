@@ -37,7 +37,7 @@
 				"required": false
 			}
 		},
-		"generator": ">=0.50.0 <2.0.0",
+		"generator": ">=0.50.0 <=1.0.0-rc.5",
 		"filters": [
 			"@asyncapi/generator-filters"
 		]

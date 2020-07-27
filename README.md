@@ -8,7 +8,7 @@ This template is for generating a TypeScript/Node.js NATS client based on an Asy
 # How to use
 Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example as well as [request and reply](./examples/request%20reply).
 ## Requirements
-* @asyncapi/generator v1.0.0
+* @asyncapi/generator <= v1.0.0-rc.5 
 
 Install the generator through [npm or run it from docker official installer](https://github.com/asyncapi/generator#install).
 
