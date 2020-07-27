@@ -18,7 +18,7 @@
    */
   connect(options : NatsConnectionOptions): Promise<void>{
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
-      this.options = this.setDefaultOptions(options);
+      this.options = options;
       try{
         {%- if asyncapi | containsBinaryPayload %}
         if(!this.binaryClient || this.binaryClient!.isClosed()){
@@ -179,13 +179,4 @@
     });
   }
 
-  /**
-   * Set the default options based on the AsyncAPI file.
-   * @param options to set
-   */
-  private setDefaultOptions(options: NatsConnectionOptions){
-    //If server binding options sat set the options
-    options.encoding = 'utf8';
-    return options;
-  }
 {% endmacro %}
