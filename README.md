@@ -51,13 +51,15 @@ async function connect(){
 connect();
 ```
 
-or use it directly where needed.
-
 # Features
 * Supports wildcard channels. AsyncAPI describes the channel path to be defined as [RFC 6570 URI](https://www.asyncapi.com/docs/specifications/2.0.0/#a-name-channelsobject-a-channels-object). So a channel containing a wildcard needs to be defined as `smartylighting/streetlights/*`. This also works with parameters such as `smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured`, ensure to define the type of the parameter as a String if you want to use wildcards.
 * Supports [test/mirror client](#test-client) for testing or other useful scenarios.
 * This template can be used as a javascript library as well since the generated code works directly in Node.js.
 * This template uses [quicktype](https://quicktype.io/) to generate the corresponding message payloads.
+
+# Restrictions 
+* Empty objects are not supported, use `null` types instead.
+* This template has not been tested with payloads with different specs other then JSON Schema draft 7.
 
 # Connection options
 Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently the template does not care which security details you have defined in your AsyncAPI document. 
@@ -191,7 +193,7 @@ natsClient.on(AvailableEvents.yield, () => {
 These are the available template parameters:
 |Parameter|Type|Description|
 |---|---|---|
-| generateTestClient | Boolean | Use this parameter to generate the [test client](###test-client). Add the following to the CLI when generating your code `--param "generateTestClient=true"`
+| generateTestClient | Boolean | Use this parameter to generate the [test client](#test-client). Add the following to the CLI when generating your code `--param "generateTestClient=true"`
 | promisifyReplyCallback | Boolean | Use this parameter to change from the default regular callback when using the request operation. Add the following to the CLI when generating your code `--param "promisifyReplyCallback=true"`
 
 # Test Client
@@ -206,7 +208,7 @@ The following payload types are supported, this is limited to the underlying NAT
 
 # Client Hooks
 
-Sometimes to you want to change the data before sending or reciving it. For this purpose hooks has been added to control the flow of information outside the generated code. The hooks can be used to alter the payload before sending or after recieving any data i.e. encrypt, compress data, etc. It is possible to register as many hooks as you want however there are certain restrictions.
+Sometimes to you want to change the data before sending or reciving it. For this purpose hooks has been added to control the flow of information outside the generated code. The hooks can be used to alter the payload before sending or after recieving any data i.e. encrypt, compress data, etc. It is possible to register as many hooks as you want however there are certain restrictions, see [hook restrictions](#Hook-restrictions).
 
 
 These are the available hooks:
@@ -248,8 +250,3 @@ The first hook always receive the message type as is. Any intermediary hooks can
 ### String payloads
 The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.
 
-
-# Restrictions 
-* Empty objects are not supported, use `null` types instead.
-* This template has not been tested with payloads with different specs other then JSON Schema draft 7.
-* 
