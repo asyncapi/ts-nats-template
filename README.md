@@ -245,7 +245,7 @@ There are different hook restrictions based on the payload type.
 Binary payloads are a bit special since you are required to at least provide 1. hook for both receiving data and when sending data since no standard way of converting a message type to a buffer has been implemented. The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return the buffer representation of the message.
 
 ### JSON payloads
-The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return the correct message type.
+The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return the correct message type.
 
 ### String payloads
 The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.
