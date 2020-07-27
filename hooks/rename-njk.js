@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 /**
+ * Rename all the generated files whos extension is .njk
  * 
  * @param {string} dir to recursively rename files with njk extension 
  */
