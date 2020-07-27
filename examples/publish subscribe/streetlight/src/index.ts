@@ -86,7 +86,8 @@ export class NatsAsyncApiClient extends events.EventEmitter{
    */
   connect(options : NatsConnectionOptions): Promise<void>{
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
-      this.options = this.setDefaultOptions(options);
+      this.options = options;
+      console.log(this.options)
       try{
         if(!this.jsonClient || this.jsonClient!.isClosed()){
           this.options.payload = Payload.JSON;
@@ -207,15 +208,6 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     });
   }
 
-  /**
-   * Set the default options based on the AsyncAPI file.
-   * @param options to set
-   */
-  private setDefaultOptions(options: NatsConnectionOptions){
-    //If server binding options sat set the options
-    options.encoding = 'utf8';
-    return options;
-  }
 
       
   /**

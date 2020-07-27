@@ -145,7 +145,7 @@ function toTsType(jsonSchemaType, property) {
 /**
  * Convert RFC 6570 URI with parameters to NATS topic. 
  */
-filter.realizeChannelName = (parameters, channelName) => {
+function realizeChannelName(parameters, channelName){
 	let returnString = '\`' + channelName + '\`';
 	returnString = returnString.replace(/\//g, `.`);
 	for (paramName in parameters) {
@@ -153,6 +153,8 @@ filter.realizeChannelName = (parameters, channelName) => {
 	}
 	return returnString;
 }
+
+filter.realizeChannelName = realizeChannelName;
 
 filter.realizeChannelNameWithoutParameters = (channelName) => {
 	return realizeChannelName(null, channelName);
