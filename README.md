@@ -28,11 +28,11 @@ Afterward, `cd` into the generated folder `nats-client` and run the commands `np
 import * as GeneratedClient from "./nats-client";
 const natsClient = new GeneratedClient.NatsAsyncApiClient();
 async function connect(){
-	try{
-		await natsClient.connect({url: "nats://demo.nats.io:4222", reconnectTimeWait: 1000, reconnect: true, maxReconnectAttempts: -1});
-	}catch(e){
-		console.log(e);
-	}
+  try{
+    await natsClient.connect({url: "nats://demo.nats.io:4222", reconnectTimeWait: 1000, reconnect: true, maxReconnectAttempts: -1});
+  }catch(e){
+    console.log(e);
+  }
 }
 connect();
 ```
@@ -42,11 +42,11 @@ connect();
 const GeneratedClient = require("./nats-client");
 const natsClient = new GeneratedClient.NatsAsyncApiClient();
 async function connect(){
-	try{
-		await natsClient.connect({url: "nats://demo.nats.io:4222", reconnectTimeWait: 1000, reconnect: true, maxReconnectAttempts: -1});
-	}catch(e){
-		console.log(e);
-	}
+  try{
+    await natsClient.connect({url: "nats://demo.nats.io:4222", reconnectTimeWait: 1000, reconnect: true, maxReconnectAttempts: -1});
+  }catch(e){
+    console.log(e);
+  }
 }
 connect();
 ```
@@ -73,57 +73,57 @@ import {AvailableEvents, NatsAsyncApiClient, NatsTypescriptTemplateError, Client
 const natsClient = new NatsAsyncApiClient();
 
 natsClient.on(AvailableEvents.permissionError, (e: NatsTypescriptTemplateError) => {
-	console.log("NatsAsyncApiClient permissionError");
-	console.log(e);
+  console.log("NatsAsyncApiClient permissionError");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.close, (e: NatsTypescriptTemplateError) => {
-	console.log("NatsAsyncApiClient close");
-	console.log(e);
+  console.log("NatsAsyncApiClient close");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.connect, (connection: Client, serverURL: string, info: ServerInfo) => {
-	console.log("NatsAsyncApiTestClient connect");
-	console.log({connection, serverURL, info});
+  console.log("NatsAsyncApiTestClient connect");
+  console.log({connection, serverURL, info});
 });
 natsClient.on(AvailableEvents.connecting, (serverURL: string) => {
-	console.log("NatsAsyncApiClient connecting");
-	console.log(serverURL);
+  console.log("NatsAsyncApiClient connecting");
+  console.log(serverURL);
 });
 natsClient.on(AvailableEvents.disconnect, (serverURL: string) => {
-	console.log("NatsAsyncApiClient disconnect");
-	console.log(serverURL);
+  console.log("NatsAsyncApiClient disconnect");
+  console.log(serverURL);
 });
 natsClient.on(AvailableEvents.error, (e: NatsTypescriptTemplateError) => {
-	console.log("NatsAsyncApiClient error");
-	console.log(e);
+  console.log("NatsAsyncApiClient error");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.pingcount, () => {
-	console.log("NatsAsyncApiClient pingcount");
+  console.log("NatsAsyncApiClient pingcount");
 });
 natsClient.on(AvailableEvents.pingtimer, () => {
-	console.log("NatsAsyncApiClient pingtimer");
+  console.log("NatsAsyncApiClient pingtimer");
 });
 natsClient.on(AvailableEvents.reconnect, (connection: Client, serverURL: string, info: ServerInfo) => {
-	console.log("NatsAsyncApiClient reconnect");
-	console.log({connection, serverURL, info});
+  console.log("NatsAsyncApiClient reconnect");
+  console.log({connection, serverURL, info});
 });
 natsClient.on(AvailableEvents.reconnecting, (serverURL: string) => {
-	console.log("NatsAsyncApiClient reconnecting");
-	console.log(serverURL);
+  console.log("NatsAsyncApiClient reconnecting");
+  console.log(serverURL);
 });
 natsClient.on(AvailableEvents.serversChanged, (e: ServersChangedEvent) => {
-	console.log("NatsAsyncApiClient serversChanged");
-	console.log(e);
+  console.log("NatsAsyncApiClient serversChanged");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.subscribe, (e: SubEvent) => {
-	console.log("NatsAsyncApiClient subscribe");
-	console.log(e);
+  console.log("NatsAsyncApiClient subscribe");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.unsubscribe, (e: SubEvent) => {
-	console.log("NatsAsyncApiClient unsubscribe");
-	console.log(e);
+  console.log("NatsAsyncApiClient unsubscribe");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.yield, () => {
-	console.log("NatsAsyncApiClient yield");
+  console.log("NatsAsyncApiClient yield");
 });
 ``` 
 ## Node.js example
@@ -131,61 +131,61 @@ natsClient.on(AvailableEvents.yield, () => {
 const {AvailableEvents, NatsAsyncApiClient} = require("nats-client");
 const natsClient = new NatsAsyncApiClient();
 natsClient.on(AvailableEvents.permissionError, (e) => {
-	console.log("NatsAsyncApiClient permissionError");
-	console.log(e);
+  console.log("NatsAsyncApiClient permissionError");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.close, (e) => {
-	console.log("NatsAsyncApiClient close");
-	console.log(e);
+  console.log("NatsAsyncApiClient close");
+  console.log(e);
 });
 natsTestClient.on(AvailableEvents.connect, async (connection, serverURL, info) => {
-	console.log("NatsAsyncApiTestClient connect");
-	console.log({connection, serverURL, info});
+  console.log("NatsAsyncApiTestClient connect");
+  console.log({connection, serverURL, info});
 });
 natsClient.on(AvailableEvents.connect, (connection, serverURL, info) => {
-	console.log("NatsAsyncApiClient connect");
-	console.log({connection, serverURL, info});
+  console.log("NatsAsyncApiClient connect");
+  console.log({connection, serverURL, info});
 });
 natsClient.on(AvailableEvents.connecting, (serverURL) => {
-	console.log("NatsAsyncApiClient connecting");
-	console.log(serverURL);
+  console.log("NatsAsyncApiClient connecting");
+  console.log(serverURL);
 });
 natsClient.on(AvailableEvents.disconnect, (serverURL) => {
-	console.log("NatsAsyncApiClient disconnect");
-	console.log(serverURL);
+  console.log("NatsAsyncApiClient disconnect");
+  console.log(serverURL);
 });
 natsClient.on(AvailableEvents.error, (e) => {
-	console.log("NatsAsyncApiClient error");
-	console.log(e);
+  console.log("NatsAsyncApiClient error");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.pingcount, () => {
-	console.log("NatsAsyncApiClient pingcount");
+  console.log("NatsAsyncApiClient pingcount");
 });
 natsClient.on(AvailableEvents.pingtimer, () => {
-	console.log("NatsAsyncApiClient pingtimer");
+  console.log("NatsAsyncApiClient pingtimer");
 });
 natsClient.on(AvailableEvents.reconnect, (connection, serverURL, info) => {
-	console.log("NatsAsyncApiClient reconnect");
-	console.log({connection, serverURL, info});
+  console.log("NatsAsyncApiClient reconnect");
+  console.log({connection, serverURL, info});
 });
 natsClient.on(AvailableEvents.reconnecting, (serverURL) => {
-	console.log("NatsAsyncApiClient reconnecting");
-	console.log(serverURL);
+  console.log("NatsAsyncApiClient reconnecting");
+  console.log(serverURL);
 });
 natsClient.on(AvailableEvents.serversChanged, (e) => {
-	console.log("NatsAsyncApiClient serversChanged");
-	console.log(e);
+  console.log("NatsAsyncApiClient serversChanged");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.subscribe, (e) => {
-	console.log("NatsAsyncApiClient subscribe");
-	console.log(e);
+  console.log("NatsAsyncApiClient subscribe");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.unsubscribe, (e) => {
-	console.log("NatsAsyncApiClient unsubscribe");
-	console.log(e);
+  console.log("NatsAsyncApiClient unsubscribe");
+  console.log(e);
 });
 natsClient.on(AvailableEvents.yield, () => {
-	console.log("NatsAsyncApiClient yield");
+  console.log("NatsAsyncApiClient yield");
 });
 ``` 
 
@@ -224,16 +224,16 @@ const {AvailableEvents, NatsAsyncApiClient, Hooks} = require("nats-client");
 const natsClient = new NatsAsyncApiClient();
 const msgpack = require("msgpack-lite");
 function encode(msg){
-	console.log("encode");
-	console.log(msg);
-	// encode from JS Object to MessagePack (Buffer)
-	return msgpack.encode(msg);
+  console.log("encode");
+  console.log(msg);
+  // encode from JS Object to MessagePack (Buffer)
+  return msgpack.encode(msg);
 }
 function decode(msg){
-	// decode from MessagePack (Buffer) to JS Object
-	console.log("Decoding");
-	console.log(msg);
-	return msgpack.decode(msg.data); // => {"foo": "bar"}
+  // decode from MessagePack (Buffer) to JS Object
+  console.log("Decoding");
+  console.log(msg);
+  return msgpack.decode(msg.data); // => {"foo": "bar"}
 }
 Hooks.getInstance().registerBeforeSendingData(encode);
 Hooks.getInstance().registerreceivedData(decode);
