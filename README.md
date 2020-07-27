@@ -20,7 +20,7 @@ Given any AsyncAPI file (`AsyncAPI.yml`) first generate the client with the [Asy
 ag --install --output ./nats-client ./AsyncAPI.yml @asyncapi/ts-nats-template --force-write --param "generateTestClient=true"  --param "promisifyReplyCallback=true"
 ```
 
-Afterwards `cd` into the generated folder `nats-client` and run the commands `npm i` and `npm run build`. The generated NATS client is now ready to be used in either TypeScript or Node.js.
+Afterward, `cd` into the generated folder `nats-client` and run the commands `npm i` and `npm run build`. The generated NATS client is now ready to be used in either TypeScript or Node.js.
 
 ### TypeScript 
 
@@ -249,4 +249,3 @@ The first hook always receive the message type as is. Any intermediary hooks can
 
 ### String payloads
 The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.
-
