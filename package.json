@@ -9,9 +9,6 @@
 		"nats",
 		"template"
 	],
-	"scripts": {
-		"gen": "node ./generatorComparators"
-	},
 	"author": "Jonas Lagoni (jonas-lt@live.dk)",
 	"license": "Apache-2.0",
 	"dependencies": {
