@@ -242,7 +242,7 @@ Hooks.getInstance().registerreceivedData(decode);
 There are different hook restrictions based on the payload type.
 
 ### Binary payloads
-Binary payloads are a bit special since you are required to at least provide 1. hook for both receiving data and when sending data since no standard way of converting a message type to a buffer has been implemented. The first hook always receive the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return the buffer representation of the message.
+The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a buffer to transmit.
 
 ### JSON payloads
 The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return the correct message type.

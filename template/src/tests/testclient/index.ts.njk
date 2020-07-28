@@ -72,10 +72,10 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   {%- for channelName, channel in asyncapi.channels() %}
     {%- if channel | isRequestReply %}
       {%- if channel | isRequester %}
-      {{ reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0),channel.publish().message(0), channel.description(), channel.parameters(), params)}}
+      {{ reply(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters(), params)}}
       {%- endif %}
       {%- if channel | isReplier %}
-      {{ request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
+      {{ request(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.subscribe().message(0), channel.description(), channel.parameters())}}
       {%- endif %}
     {%- endif %}
 

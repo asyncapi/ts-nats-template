@@ -7,14 +7,12 @@ try{
     dataToSend = hook(dataToSend);
   }
   {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
-  if(receivedDataHooks.length == 0 ){
-    let error = new NatsTypescriptTemplateError('Missing hooks to convert binary data', '000');
-    onReplyError(error);
-    return;
+  if(beforeSendingHooks.length == 0){
+    dataToSend = Buffer.from({{message.uid() | pascalCase}}Message.Convert.{{message.uid() | camelCase}}ToJson(dataToSend));
   }
   {%- endif %}
   {%- if message.contentType() | isStringPayload(defaultContentType) %}
-  if(receivedDataHooks.length == 0 ){
+  if(beforeSendingHooks.length == 0 ){
     dataToSend = {{message.uid() | pascalCase}}Message.Convert.{{message.uid() | camelCase}}ToJson(dataToSend);
   }
   {%- endif %}

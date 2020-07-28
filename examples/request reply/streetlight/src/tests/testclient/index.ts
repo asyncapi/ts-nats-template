@@ -208,11 +208,11 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   * @param requestMessage The request message to send.
   */
   public requestStreetlightStreetlightIdCommandTurnon(
-    requestMessage:GeneralReplyMessage.GeneralReply 
+    requestMessage:TurnonCommandMessage.TurnonCommand 
     
       ,streetlight_id: string
     
-  ): Promise<TurnonCommandMessage.TurnonCommand> {
+  ): Promise<GeneralReplyMessage.GeneralReply> {
     const nc: Client = this.jsonClient!;
     if(nc){
       return streetlightStreetlightIdCommandTurnonChannel.request(
@@ -236,8 +236,8 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   public replyToStreetlightStreetlightIdEventTurnon(
       onRequest : (
         err?: NatsTypescriptTemplateError, 
-        msg?: GeneralReplyMessage.GeneralReply,streetlight_id?: string
-      ) =>Promise<AnonymousMessage3Message.AnonymousMessage3>, 
+        msg?: AnonymousMessage3Message.AnonymousMessage3,streetlight_id?: string
+      ) =>Promise<GeneralReplyMessage.GeneralReply>, 
       onReplyError : (err: NatsTypescriptTemplateError) => void 
       
         ,streetlight_id: string

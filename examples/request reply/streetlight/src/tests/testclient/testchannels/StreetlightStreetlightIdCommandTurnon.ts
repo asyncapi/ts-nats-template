@@ -6,12 +6,12 @@ import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTem
 import { Hooks } from '../../../hooks';
   
 export function request(
-  message: GeneralReplyMessage.GeneralReply,
+  message: TurnonCommandMessage.TurnonCommand,
   nc: Client
   
     ,streetlight_id: string
   
-  ): Promise<TurnonCommandMessage.TurnonCommand> {
+  ): Promise<GeneralReplyMessage.GeneralReply> {
   return new Promise(async (resolve, reject) => {
     var timeout = undefined;
     let msg;

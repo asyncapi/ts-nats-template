@@ -7,10 +7,8 @@ try {
     receivedData = hook(receivedData);
   }
   {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
-  if(receivedDataHooks.length == 0 ){
-    let error = new NatsTypescriptTemplateError('Missing hooks to convert binary data', '000');
-    onReplyError(error);
-    return;
+  if(receivedDataHooks.length == 0){
+    receivedData = {{message.uid() | pascalCase}}Message.Convert.to{{message.uid() | pascalCase}}(receivedData.toString());
   }
   {%- endif %}
   {%- if message.contentType() | isStringPayload(defaultContentType) %}

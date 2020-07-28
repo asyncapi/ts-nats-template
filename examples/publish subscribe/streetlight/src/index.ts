@@ -87,7 +87,6 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   connect(options : NatsConnectionOptions): Promise<void>{
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
       this.options = options;
-      console.log(this.options)
       try{
         if(!this.jsonClient || this.jsonClient!.isClosed()){
           this.options.payload = Payload.JSON;

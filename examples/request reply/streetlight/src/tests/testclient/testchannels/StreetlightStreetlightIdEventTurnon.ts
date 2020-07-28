@@ -6,7 +6,7 @@ import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTem
 import { Hooks } from '../../../hooks';
   
 export function reply(
-    onRequest: (err?: NatsTypescriptTemplateError, msg?: GeneralReplyMessage.GeneralReply, streetlight_id?: string) =>Promise<AnonymousMessage3Message.AnonymousMessage3>, 
+    onRequest: (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage3Message.AnonymousMessage3, streetlight_id?: string) =>Promise<GeneralReplyMessage.GeneralReply>, 
     onReplyError: (err: NatsTypescriptTemplateError) => void,
     nc: Client
     

@@ -1,5 +1,5 @@
 
-{% macro reply(defaultContentType, channelName, replyMessage, requestMessage, messageDescription, channelParameters, params) %}
+{% macro reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) %}
   /**
   *  {{messageDescription}}
   * @param onRequest Called when request received.
@@ -8,7 +8,7 @@
   public replyTo{{channelName | pascalCase }}(
       onRequest : (
         err?: NatsTypescriptTemplateError, 
-        msg?: {{requestMessage | getMessageType}}
+        msg?: {{receiveMessage | getMessageType}}
         {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
       ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{replyMessage | getMessageType}}{%- if params.promisifyReplyCallback | length %}>{%- endif %}, 
       onReplyError : (err: NatsTypescriptTemplateError) => void 
@@ -17,13 +17,13 @@
       {% endif %}, 
       options?: SubscriptionOptions
     ): Promise<Subscription> {
-    {%- if requestMessage.contentType() | isBinaryPayload(defaultContentType) %}
+    {%- if receiveMessage.contentType() | isBinaryPayload(defaultContentType) %}
     const nc: Client = this.binaryClient!;
     {%- endif %}
-    {%- if requestMessage.contentType() | isStringPayload(defaultContentType) %}
+    {%- if receiveMessage.contentType() | isStringPayload(defaultContentType) %}
     const nc: Client = this.stringClient!;
     {%- endif %}
-    {%- if requestMessage.contentType() | isJsonPayload(defaultContentType) %}
+    {%- if receiveMessage.contentType() | isJsonPayload(defaultContentType) %}
     const nc: Client = this.jsonClient!;
     {%- endif %}
     

@@ -18,18 +18,18 @@ import {ErrorCode, NatsTypescriptTemplateError} from '../NatsTypescriptTemplateE
 import { Hooks } from '../hooks';
 {%- if channel | isRequestReply %}
   {%- if channel | isRequester %}
-  {{ request(channelName, channel.parameters(), channel.subscribe().message(0), channel.publish().message(0), asyncapi.server(params.server), defaultContentType) }}
+  {{ request(channelName, channel.parameters(), channel.subscribe().message(0), channel.publish().message(0), asyncapi.server(params.server), asyncapi.defaultContentType()) }}
   {%- endif %}
   {%- if channel | isReplier %}
-  {{ reply(channelName, channel.parameters(), channel.subscribe().message(0), channel.publish().message(0), asyncapi.server(params.server), params, defaultContentType) }}
+  {{ reply(channelName, channel.parameters(), channel.subscribe().message(0), channel.publish().message(0), asyncapi.server(params.server), params, asyncapi.defaultContentType()) }}
   {%- endif %}
 {%- endif %}
 
 {%- if channel | isPubsub %}
   {%- if channel.hasSubscribe() %}
-  {{ publish(channelName, channel.parameters(), channel.subscribe().message(0), asyncapi.server(params.server), defaultContentType) }}
+  {{ publish(channelName, channel.parameters(), channel.subscribe().message(0), asyncapi.server(params.server), asyncapi.defaultContentType()) }}
   {%- endif %}
   {%- if channel.hasPublish() %}
-  {{ subscribe(channelName, channel.parameters(), channel.publish().message(0), asyncapi.server(params.server), defaultContentType) }}
+  {{ subscribe(channelName, channel.parameters(), channel.publish().message(0), asyncapi.server(params.server), asyncapi.defaultContentType()) }}
   {%- endif %}
 {%- endif %}
