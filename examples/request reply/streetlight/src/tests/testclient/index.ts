@@ -22,8 +22,8 @@ import * as TurnonCommandMessage from "../../messages/TurnonCommand";
 export {TurnonCommandMessage};
 import * as GeneralReplyMessage from "../../messages/GeneralReply";
 export {GeneralReplyMessage};
-import * as AnonymousMessage3Message from "../../messages/AnonymousMessage3";
-export {AnonymousMessage3Message};
+import * as AnonymousMessage4Message from "../../messages/AnonymousMessage4";
+export {AnonymousMessage4Message};
 
 
 
@@ -236,7 +236,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   public replyToStreetlightStreetlightIdEventTurnon(
       onRequest : (
         err?: NatsTypescriptTemplateError, 
-        msg?: AnonymousMessage3Message.AnonymousMessage3,streetlight_id?: string
+        msg?: AnonymousMessage4Message.AnonymousMessage4,streetlight_id?: string
       ) =>Promise<GeneralReplyMessage.GeneralReply>, 
       onReplyError : (err: NatsTypescriptTemplateError) => void 
       

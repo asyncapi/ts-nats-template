@@ -1,11 +1,11 @@
 
-import * as AnonymousMessage1Message from '../messages/AnonymousMessage1'
+import * as AnonymousMessage2Message from '../messages/AnonymousMessage2'
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../NatsTypescriptTemplateError';
 import { Hooks } from '../hooks';
   
 export function publish(
-  message: AnonymousMessage1Message.AnonymousMessage1,
+  message: AnonymousMessage2Message.AnonymousMessage2,
   nc: Client
   
     ,streetlight_id: string

@@ -1,12 +1,12 @@
 
 import * as GeneralReplyMessage from '../messages/GeneralReply'
-import * as AnonymousMessage3Message from '../messages/AnonymousMessage3'
+import * as AnonymousMessage4Message from '../messages/AnonymousMessage4'
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../NatsTypescriptTemplateError';
 import { Hooks } from '../hooks';
   
 export function request(
-  message: AnonymousMessage3Message.AnonymousMessage3,
+  message: AnonymousMessage4Message.AnonymousMessage4,
   nc: Client
   
     ,streetlight_id: string

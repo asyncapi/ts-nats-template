@@ -29,8 +29,8 @@ import * as streetlightStreetlightIdEventTurnonChannel from "./channels/Streetli
 export {streetlightStreetlightIdEventTurnonChannel};
 import * as TurnonCommandMessage from "./messages/TurnonCommand";
 export {TurnonCommandMessage};
-import * as AnonymousMessage1Message from "./messages/AnonymousMessage1";
-export {AnonymousMessage1Message};
+import * as AnonymousMessage2Message from "./messages/AnonymousMessage2";
+export {AnonymousMessage2Message};
 
     
 import * as events from 'events';
@@ -240,7 +240,7 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   * @param requestMessage The message to publish.
   */
   public publishToStreetlightStreetlightIdEventTurnon(
-    requestMessage: AnonymousMessage1Message.AnonymousMessage1 
+    requestMessage: AnonymousMessage2Message.AnonymousMessage2 
     
       ,streetlight_id: string
     

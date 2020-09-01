@@ -31,8 +31,8 @@ import * as TurnonCommandMessage from "./messages/TurnonCommand";
 export {TurnonCommandMessage};
 import * as GeneralReplyMessage from "./messages/GeneralReply";
 export {GeneralReplyMessage};
-import * as AnonymousMessage3Message from "./messages/AnonymousMessage3";
-export {AnonymousMessage3Message};
+import * as AnonymousMessage4Message from "./messages/AnonymousMessage4";
+export {AnonymousMessage4Message};
 
     
 import * as events from 'events';
@@ -250,7 +250,7 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   * @param requestMessage The request message to send.
   */
   public requestStreetlightStreetlightIdEventTurnon(
-    requestMessage:AnonymousMessage3Message.AnonymousMessage3 
+    requestMessage:AnonymousMessage4Message.AnonymousMessage4 
     
       ,streetlight_id: string
     

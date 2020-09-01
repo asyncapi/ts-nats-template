@@ -1,11 +1,11 @@
 
-import * as AnonymousMessage1Message from '../../../messages/AnonymousMessage1';
+import * as AnonymousMessage2Message from '../../../messages/AnonymousMessage2';
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTemplateError';
 import { Hooks } from '../../../hooks';
   
 export function subscribe(
-    onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage1Message.AnonymousMessage1, streetlight_id?: string) => void, 
+    onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage2Message.AnonymousMessage2, streetlight_id?: string) => void, 
     nc: Client
     
       ,streetlight_id: string
@@ -20,10 +20,19 @@ export function subscribe(
         if(err){
           onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
         }else{
-          const unmodifiedChannel = `streetlight.{streetlight_id}.event.turnon`
-          const receivedTopicParameters = {
-              streetlight_id : msg.subject.slice(unmodifiedChannel.split("{streetlight_id}")[0].length, msg.subject.length-unmodifiedChannel.split("{streetlight_id}")[1].length)
-          }
+          
+var unmodifiedChannel = `streetlight.{streetlight_id}.event.turnon`;
+var channel = msg.subject;
+	var streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
+
+const splits = [
+		streetlightIdSplit[0],
+		streetlightIdSplit[1]
+];
+channel = channel.substring(splits[0].length);
+var streetlightIdEnd = channel.indexOf(splits[1]);
+var streetlightIdParam = channel.substring(0, streetlightIdEnd);
+
           
 try {
   let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
@@ -38,7 +47,7 @@ try {
 }
 
           onDataCallback(undefined, receivedData,
-                receivedTopicParameters['streetlight_id']);
+                streetlightIdParam);
         }
       }, subscribeOptions);
       resolve(subscription);

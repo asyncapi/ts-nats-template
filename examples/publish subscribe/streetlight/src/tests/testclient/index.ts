@@ -20,8 +20,8 @@ import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/Stre
 export {streetlightStreetlightIdEventTurnonChannel};
 import * as TurnonCommandMessage from "../../messages/TurnonCommand";
 export {TurnonCommandMessage};
-import * as AnonymousMessage1Message from "../../messages/AnonymousMessage1";
-export {AnonymousMessage1Message};
+import * as AnonymousMessage2Message from "../../messages/AnonymousMessage2";
+export {AnonymousMessage2Message};
 
 
 
@@ -228,7 +228,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
   * @param onDataCallback Called when message received.
   */
   public subscribeToStreetlightStreetlightIdEventTurnon(
-      onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage1Message.AnonymousMessage1, streetlight_id?: string) => void
+      onDataCallback : (err?: NatsTypescriptTemplateError, msg?: AnonymousMessage2Message.AnonymousMessage2, streetlight_id?: string) => void
       
       ,streetlight_id: string
       , 
