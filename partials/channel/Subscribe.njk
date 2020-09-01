@@ -1,5 +1,6 @@
 
 {%- from "./OnReceivingData.njk" import OnReceivingData %}
+{%- from "./ChannelParameterUnwrap.njk" import unwrap %}
 {% macro subscribe(channelName, channelParameters, subscribtionMessage, server, defaultContentType) %}
 export function subscribe(
     onDataCallback : (err?: NatsTypescriptTemplateError, msg?: {{subscribtionMessage | getMessageType}}{% if channelParameters | length %}, {{channelParameters | realizeParametersForChannel(false)}}{% endif %}) => void, 
@@ -28,21 +29,14 @@ export function subscribe(
           onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
         }else{
           {%- if channelParameters | length %}
-          const unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters}}
-          const receivedTopicParameters = {
-            {%- set counter = 1 %}
-            {%- for parameterName, parameter in channelParameters %}
-              {{parameterName}} : msg.subject.slice(unmodifiedChannel.split("{{'{'+ parameterName+ '}'}}")[0].length, msg.subject.length-unmodifiedChannel.split("{{'{'+parameterName+'}'}}")[1].length){%- if counter < (channelParameters | length) %},{%- endif %}
-              {%- set counter = counter+1 %}
-            {%- endfor %}
-          }
+          {{unwrap(channelName, channelParameters)}}
           {%- endif %}
           {%- if subscribtionMessage.payload() | messageHasNotNullPayload %}
           {{OnReceivingData(true, subscribtionMessage, defaultContentType)}}
           onDataCallback(undefined, receivedData{% if channelParameters | length %},
               {%- set counter = 1 %}
               {%- for parameterName, parameter in channelParameters %}
-                receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
+                {{parameterName | camelCase}}Param{%- if counter < (channelParameters | length) %},{%- endif %}
                 {%- set counter = counter+1 %}
               {%- endfor %}
               {%- endif %});
@@ -50,7 +44,7 @@ export function subscribe(
           onDataCallback(undefined, null{% if channelParameters | length %},
               {%- set counter = 1 %}
               {%- for parameterName, parameter in channelParameters %}
-                receivedTopicParameters['{{parameterName}}']{%- if counter < (channelParameters | length) %},{%- endif %}
+                {{parameterName | camelCase}}Param{%- if counter < (channelParameters | length) %},{%- endif %}
                 {%- set counter = counter+1 %}
               {%- endfor %}
               {%- endif %});

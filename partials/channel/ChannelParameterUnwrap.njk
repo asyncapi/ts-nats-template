@@ -1,0 +1,45 @@
+
+{% macro unwrap(channelName, channelParameters) %}
+
+{%- if channelParameters | length %}
+var unmodifiedChannel = {{channelName | realizeChannelNameWithoutParameters | safe}};
+var channel = msg.subject;
+
+{%- for parameterName, parameter in channelParameters %}
+{%- if prevParameterName | length %}
+	var {{parameterName | camelCase}}Split = {{prevParameterName}}Split[1].split("{{'{'+ parameterName + '}'}}");
+{%- else %}
+	var {{parameterName | camelCase}}Split = unmodifiedChannel.split("{{'{'+ parameterName + '}'}}");
+{%- endif %}
+{%- set prevParameterName = (parameterName | camelCase) %}
+{%- endfor %}
+
+const splits = [
+	{%- set counter = 1 %}
+	{%- for parameterName, parameter in channelParameters %}
+	{%- if counter == (channelParameters | length) %}
+		{{parameterName | camelCase}}Split[0],
+		{{parameterName | camelCase}}Split[1]
+	{%- else %}
+		{{parameterName | camelCase}}Split[0],
+	{%- endif %}
+	{%- set counter = counter + 1 %}
+	{%- endfor %}
+];
+
+
+{%- set counter = 0 %}
+{%- set prevParameterName = null %}
+{%- for parameterName, parameter in channelParameters %}
+{%- if counter == 0 %}
+channel = channel.substring(splits[{{counter}}].length);
+{%- else %}
+channel = channel.substring({{prevParameterName}}End+splits[{{counter}}].length);
+{%- endif %}
+var {{parameterName | camelCase}}End = channel.indexOf(splits[{{counter+1}}]);
+var {{parameterName | camelCase}}Param = channel.substring(0, {{parameterName | camelCase}}End);
+{%- set counter = counter + 1 %}
+{%- set prevParameterName = (parameterName | camelCase) %}
+{%- endfor %}
+{%- endif %}
+{% endmacro %}
