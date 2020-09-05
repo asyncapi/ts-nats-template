@@ -142,6 +142,27 @@ function toTsType(jsonSchemaType, property) {
 	}
 }
 
+
+/**
+ * Cast JSON schema variable to typescript type
+ * 
+ * @param {*} jsonSchemaType 
+ * @param {*} variableToCast 
+ */
+function castToTsType(jsonSchemaType, variableToCast) {
+	switch (jsonSchemaType.toLowerCase()) {
+		case 'string':
+			return `"" + ${variableToCast}`;
+		case 'integer':
+		case 'number':
+			return `Number(${variableToCast})`;
+		case 'boolean':
+			return `Boolean(${variableToCast})`;
+		default: throw new Error("Parameter type not supported - " + jsonSchemaType);
+	}
+}
+filter.castToTsType = castToTsType;
+
 /**
  * Convert RFC 6570 URI with parameters to NATS topic. 
  */

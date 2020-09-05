@@ -37,7 +37,8 @@ channel = channel.substring(splits[{{counter}}].length);
 channel = channel.substring({{prevParameterName}}End+splits[{{counter}}].length);
 {%- endif %}
 var {{parameterName | camelCase}}End = channel.indexOf(splits[{{counter+1}}]);
-var {{parameterName | camelCase}}Param = channel.substring(0, {{parameterName | camelCase}}End);
+{%- set paramVarToCast = 'channel.substring(0, ' + (parameterName | camelCase) + 'End)' %}
+var {{parameterName | camelCase}}Param = {{parameter.schema().type() | castToTsType(paramVarToCast) | safe}};
 {%- set counter = counter + 1 %}
 {%- set prevParameterName = (parameterName | camelCase) %}
 {%- endfor %}
