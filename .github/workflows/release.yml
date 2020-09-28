@@ -20,7 +20,7 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
-      - name: Re generate examples
+      - name: Re-generate examples
         run: npm generate:examples
       - name: Get version from package.json before release step
         id: initversion
