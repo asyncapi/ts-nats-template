@@ -33,7 +33,7 @@ const splits = [
 ];
 channel = channel.substring(splits[0].length);
 var streetlightIdEnd = channel.indexOf(splits[1]);
-var streetlightIdParam = channel.substring(0, streetlightIdEnd);
+var streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
 
           
 try {
