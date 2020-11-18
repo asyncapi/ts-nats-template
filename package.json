@@ -10,16 +10,16 @@
 		"template"
 	],
 	"repository": {
-	  "type": "git",
-	  "url": "git+https://github.com/asyncapi/ts-nats-template.git"
+		"type": "git",
+		"url": "git+https://github.com/asyncapi/ts-nats-template.git"
 	},
 	"bugs": {
-	  "url": "https://github.com/asyncapi/ts-nats-template/issues"
+		"url": "https://github.com/asyncapi/ts-nats-template/issues"
 	},
 	"homepage": "https://github.com/asyncapi/ts-nats-template#readme",
 	"author": "Jonas Lagoni (jonas-lt@live.dk)",
 	"license": "Apache-2.0",
-	"scripts": { 
+	"scripts": {
 		"generate:examples": "npm run generate:examples:pubSub && npm run generate:examples:requestReply",
 		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && sh generate.sh",
 		"generate:examples:requestReply": "cd \"examples/request reply\" && sh generate.sh",
@@ -29,43 +29,43 @@
 		"get-version": "echo $npm_package_version"
 	},
 	"dependencies": {
-		"filenamify": "^4.1.0",
-		"lodash": "^4.17.15",
 		"@asyncapi/generator-filters": "^1.0.0",
-		"quicktype-core": "6.0.66",
-		"is-url": "1.2.4"
+		"filenamify": "^4.1.0",
+		"is-url": "1.2.4",
+		"lodash": "^4.17.20",
+		"quicktype-core": "6.0.66"
 	},
 	"publishConfig": {
-	  "access": "public"
+		"access": "public"
 	},
 	"devDependencies": {
-	  "@semantic-release/commit-analyzer": "^8.0.1",
-	  "@semantic-release/github": "^7.0.4",
-	  "@semantic-release/npm": "^7.0.3",
-	  "@semantic-release/release-notes-generator": "^9.0.1",
-	  "conventional-changelog-conventionalcommits": "^4.2.3",
-	  "semantic-release": "^17.0.4"
+		"@semantic-release/commit-analyzer": "^8.0.1",
+		"@semantic-release/github": "^7.0.4",
+		"@semantic-release/npm": "^7.0.3",
+		"@semantic-release/release-notes-generator": "^9.0.1",
+		"conventional-changelog-conventionalcommits": "^4.2.3",
+		"semantic-release": "^17.0.4"
 	},
 	"release": {
-	  "branches": [
-		"master"
-	  ],
-	  "plugins": [
-		[
-		  "@semantic-release/commit-analyzer",
-		  {
-			"preset": "conventionalcommits"
-		  }
+		"branches": [
+			"master"
 		],
-		[
-		  "@semantic-release/release-notes-generator",
-		  {
-			"preset": "conventionalcommits"
-		  }
-		],
-		"@semantic-release/npm",
-		"@semantic-release/github"
-	  ]
+		"plugins": [
+			[
+				"@semantic-release/commit-analyzer",
+				{
+					"preset": "conventionalcommits"
+				}
+			],
+			[
+				"@semantic-release/release-notes-generator",
+				{
+					"preset": "conventionalcommits"
+				}
+			],
+			"@semantic-release/npm",
+			"@semantic-release/github"
+		]
 	},
 	"generator": {
 		"supportedProtocols": [
@@ -83,7 +83,7 @@
 				"required": false
 			}
 		},
-		"generator": ">=1.0.0-rc.11",
+		"generator": ">=2.0.0",
 		"filters": [
 			"@asyncapi/generator-filters"
 		]
