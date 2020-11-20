@@ -61,10 +61,10 @@ export declare interface NatsAsyncApiTestClient {
 export class NatsAsyncApiTestClient extends events.EventEmitter{
   
 
-  public jsonClient?: Client;
-  public stringClient?: Client;
-  public binaryClient?: Client;
-  public options?: NatsConnectionOptions;
+  private jsonClient?: Client;
+  private stringClient?: Client;
+  private binaryClient?: Client;
+  private options?: NatsConnectionOptions;
 
 	/**
 	 *
@@ -99,6 +99,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     if (!this.jsonClient || this.jsonClient!.isClosed()){
       return true;
     }
+    return false;
   }
 
   /**

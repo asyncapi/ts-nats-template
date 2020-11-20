@@ -141,6 +141,7 @@ function toTsType(jsonSchemaType, property) {
 		default: return 'any';
 	}
 }
+filter.toTsType = toTsType;
 
 
 /**
@@ -182,12 +183,12 @@ filter.realizeChannelNameWithoutParameters = (channelName) => {
 }
 
 /**
- * Realize parameters without using types without trailing comma
+ * Realize parameters without using types and without trailing comma
  */
 filter.realizeParametersForChannelWithoutType = (parameters) => {
 	let returnString = '';
 	for (paramName in parameters) {
-		returnString += `${paramName},`;
+		returnString += `${filter.realizeParameterForChannelWithoutType(paramName)},`;
 	}
 	if (returnString.length >= 1) {
 		returnString = returnString.slice(0, -1);
@@ -195,16 +196,23 @@ filter.realizeParametersForChannelWithoutType = (parameters) => {
 	return returnString;
 }
 
+filter.realizeParameterForChannelWithoutType = (parameterName) => {
+	return `${parameterName}`;
+}
+filter.realizeParameterForChannelWithType = (parameterName, parameter, required = true) => {
+	const requiredType = !required ? '?' : ''
+	return `${parameterName}${requiredType}: ${toTsType(
+		parameter.schema().type()
+	)}`;
+}
+
 /**
  * Realize parameters using types without trailing comma
  */
 filter.realizeParametersForChannel = (parameters, required = true) => {
 	let returnString = '';
-	const requiredType = !required ? '?' : ''
 	for (paramName in parameters) {
-		returnString += `${paramName}${requiredType}: ${toTsType(
-			parameters[paramName].schema().type()
-		)},`;
+		returnString += filter.realizeParameterForChannelWithType(paramName, parameters[paramName], required) + ",";
 	}
 	if (returnString.length >= 1) {
 		returnString = returnString.slice(0, -1);

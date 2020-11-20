@@ -1,0 +1,42 @@
+
+{% macro reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) %}
+var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
+var receivedMsg: TestClient.{{receiveMessage | getMessageType}} | undefined = undefined;
+{%- for paramName, param in channelParameters %}
+var recieved{{paramName | pascalCase }} : {{param.schema().type() | toTsType}} | undefined = undefined
+{% endfor %}
+
+var replyMessage: Client.{{replyMessage | getMessageType}} = {{replyMessage.payload().json() | generateExample | safe}};
+var receiveMessage: TestClient.{{receiveMessage | getMessageType}}  = {{receiveMessage.payload().json() | generateExample | safe}};
+{%- for paramName, param in channelParameters %}
+var {{paramName | pascalCase }}ToSend: {{param.schema().type() | toTsType}} = {{param.schema().json() | generateExample | safe}}
+{% endfor %}
+
+const replySubscription = await client.replyTo{{channelName | pascalCase}}((err, msg 
+        {% if channelParameters | length %}
+          ,{{channelParameters | realizeParametersForChannelWithoutType}}
+        {% endif %}) => {
+    return new Promise((resolve, reject) => {
+        receivedError = err;
+        receivedMsg = msg;
+        {%- for paramName, param in channelParameters %}
+        recieved{{paramName | realizeParameterForChannelWithoutType | pascalCase }} = {{paramName}}
+        {% endfor %}
+        resolve(replyMessage);
+    })},
+    (err) => {console.log(err)}
+    {%- for paramName, param in channelParameters %}
+    , {{paramName | pascalCase }}ToSend
+    {% endfor %}
+);
+var reply = await testClient.request{{channelName | pascalCase}}(receiveMessage 
+    {%- for paramName, param in channelParameters %}
+    , {{paramName | pascalCase }}ToSend
+    {% endfor %});
+expect(reply).to.be.deep.equal(replyMessage)
+expect(receivedError).to.be.undefined;
+expect(receivedMsg).to.be.deep.equal(receiveMessage);
+{%- for paramName, param in channelParameters %}
+expect(recieved{{paramName | realizeParameterForChannelWithoutType | pascalCase }}).to.be.equal({{paramName | pascalCase }}ToSend);
+{% endfor %}
+{% endmacro %}

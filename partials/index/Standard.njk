@@ -1,10 +1,10 @@
 
 {% macro standard(asyncapi) %}
 
-  public jsonClient?: Client;
-  public stringClient?: Client;
-  public binaryClient?: Client;
-  public options?: NatsConnectionOptions;
+  private jsonClient?: Client;
+  private stringClient?: Client;
+  private binaryClient?: Client;
+  private options?: NatsConnectionOptions;
 
 	/**
 	 *
@@ -67,6 +67,7 @@
       return true;
     }
     {%- endif %}
+    return false;
   }
 
   /**

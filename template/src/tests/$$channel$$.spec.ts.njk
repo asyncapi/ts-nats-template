@@ -1,0 +1,58 @@
+
+{%- from "../../../partials/tests/integration/Publish.njk" import publish %}
+{%- from "../../../partials/tests/integration/Reply.njk" import reply %}
+{%- from "../../../partials/tests/integration/Request.njk" import request %}
+{%- from "../../../partials/tests/integration/Subscribe.njk" import subscribe %}
+
+import {describe, it} from 'mocha';
+import {expect} from 'chai';
+import * as Client from '../index'
+import * as TestClient from './testclient/index'
+import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
+
+describe('{{channelName}} can talk to it self', () => {
+    var client: Client.NatsAsyncApiClient;
+    var testClient: TestClient.NatsAsyncApiTestClient;
+    before(async () => {
+        client = new Client.NatsAsyncApiClient();
+        testClient = new TestClient.NatsAsyncApiTestClient();
+        const natsHost = process.env.NATS_HOST || "0.0.0.0"
+        const natsPort = process.env.NATS_PORT || "4222"
+        const natsUrl = `${natsHost}:${natsPort}`
+        await client.connectToHost(natsUrl);
+        await testClient.connectToHost(natsUrl);
+    });
+    
+    it('Clients can connect', () => {
+        expect(client.isClosed()).to.be.false;
+        expect(testClient.isClosed()).to.be.false;
+    });
+
+    it('can send message', async () => {
+    {%- if channel | isRequestReply %}
+      {%- if channel | isRequester %}
+      {{request(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters())}}
+      {%- endif %}
+      {%- if channel | isReplier %}
+      {{reply(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.publish().message(0), channel.description(), channel.parameters(), params)}}
+      {%- endif %}
+    {%- endif %}
+
+    {%- if channel | isPubsub %}
+      {%- if channel.hasSubscribe() %}
+      {{publish(asyncapi.defaultContentType(), channelName, channel.subscribe().message(0), channel.description(), channel.parameters())}}
+      {%- endif %}
+      {%- if channel.hasPublish() %}
+      {{subscribe(asyncapi.defaultContentType(), channelName, channel.publish().message(0), channel.description(), channel.parameters())}}
+      {%- endif %}
+    {%- endif %}
+    });
+
+    it('Can shutdown', async () => {
+        await client.disconnect()
+        await testClient.disconnect()
+        expect(client.isClosed()).to.be.true;
+        expect(testClient.isClosed()).to.be.true;
+    });
+
+});
