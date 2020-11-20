@@ -54,12 +54,12 @@ connect();
 # Features
 * Supports wildcard channels. AsyncAPI describes the channel path to be defined as [RFC 6570 URI](https://www.asyncapi.com/docs/specifications/2.0.0/#a-name-channelsobject-a-channels-object). So a channel containing a wildcard needs to be defined with parameters such as `smartylighting/streetlights/{wildcard}`.
 * Supports [test/mirror client](#test-client) for testing or other useful scenarios.
-* This template can be used as a javascript library as well since the generated code works directly in Node.js.
+* This template can be used as a NodeJS library.
 * This template uses [quicktype](https://quicktype.io/) to generate the corresponding message payloads.
 
 # Restrictions 
 * Empty objects are not supported, use `null` types instead.
-* Recursive objects are not currently supported
+* Recursive objects are not currently supported.
 
 # Connection options
 Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently, the template does not care which security details you have defined in your AsyncAPI document. 
