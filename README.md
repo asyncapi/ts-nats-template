@@ -8,7 +8,7 @@ This template is for generating a TypeScript/Node.js NATS client based on an Asy
 # How to use
 Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example as well as [request and reply](./examples/request%20reply).
 ## Requirements
-* @asyncapi/generator <= v1.0.0-rc.11
+* @asyncapi/generator < v2.0.0 >v1.0.0
 
 Install the generator through [npm or run it from docker official installer](https://github.com/asyncapi/generator#install).
 
@@ -17,10 +17,10 @@ The leading examples are both in TypeScript and in Node.js since this template c
 
 Given any AsyncAPI file (`AsyncAPI.yml`) first generate the client with the [AsyncAPI generator](https://github.com/asyncapi/generator) such as 
 ```bash
-ag --install --output ./nats-client ./AsyncAPI.yml @asyncapi/ts-nats-template --force-write --param "generateTestClient=true"  --param "promisifyReplyCallback=true"
+ag --install --output ./nats-client ./AsyncAPI.yml @asyncapi/ts-nats-template --param "generateTestClient=true"  --param "promisifyReplyCallback=true"
 ```
 
-Afterward, `cd` into the generated folder `nats-client` and run the commands `npm i` and `npm run build`. The generated NATS client is now ready to be used in either TypeScript or Node.js.
+Afterward, go into the generated folder `nats-client` and run the commands `npm i` and `npm run build`. The generated NATS client is now ready to be used in either TypeScript or Node.js.
 
 ### TypeScript 
 
@@ -59,7 +59,7 @@ connect();
 
 # Restrictions 
 * Empty objects are not supported, use `null` types instead.
-* This template has not been tested with payloads with different specs other than JSON Schema draft 7.
+* Recursive objects are not currently supported
 
 # Connection options
 Currently the generated client offers 4 standard methods of connecting to your NATS server `connectWithUserCreds`, `connectWithUserPass`, `connectToHost` and `connectWithNkey`. If you need something customized use the standard `connect` method with your custom options. Currently, the template does not care which security details you have defined in your AsyncAPI document. 
@@ -242,10 +242,16 @@ Hooks.getInstance().registerreceivedData(decode);
 There are different hook restrictions based on the payload type.
 
 ### Binary payloads
-The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a buffer to transmit.
+If you only have 1 hook then you must ensure that it returns a buffer.
+
+If you have multiple hooks then the following applies: The first hook always receives the message type as is. Any intermediary hooks receives what the last hook returned and can return any type of your choosing. The last hook is required to return a buffer to transmit.
 
 ### JSON payloads
-The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a JSON message.
+If you only have 1 hook then you must ensure that it returns a JSON object.
+
+If you have multiple hooks then the following applies: The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a JSON object.
 
 ### String payloads
-The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.
+If you only have 1 hook then you must ensure that it returns a string.
+
+If you have multiple hooks then the following applies: The first hook always receives the message type as is. Any intermediary hooks can return any type of your choosing. The last hook is required to return a string representation of the message.

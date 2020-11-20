@@ -1,7 +1,8 @@
 name: Pull request integration testing
 
-on:
-  pull_request, synchronize
+on: 
+  pull_request:
+    types: [synchronize]
 
 jobs:
   test:

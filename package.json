@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@asyncapi/generator-filters": "^1.0.0",
+		"@lagoni/asyncapi-quicktype-filter": "^1.2.3",
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
 		"is-url": "1.2.4",
@@ -87,7 +88,7 @@
 				"required": false
 			}
 		},
-		"generator": "<=2.0.0",
+		"generator": "<2.0.0 >1.0.0",
 		"filters": [
 			"@asyncapi/generator-filters"
 		]
