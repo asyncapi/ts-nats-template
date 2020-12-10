@@ -14,7 +14,6 @@ jobs:
         image: nats
         ports:
           - 4222
-        restart: unless-stopped
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
