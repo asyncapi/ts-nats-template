@@ -37,4 +37,7 @@ jobs:
           npm run test:examples:integration:requestReply
         env: 
           NATS_HOST: nats
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
   
