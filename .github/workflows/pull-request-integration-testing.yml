@@ -12,6 +12,8 @@ jobs:
     services:
       nats:
         image: nats
+        ports:
+          - 4222:4222
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
