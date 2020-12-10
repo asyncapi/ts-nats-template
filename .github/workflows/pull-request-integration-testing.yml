@@ -15,6 +15,7 @@ jobs:
         ports:
           - 4222:4222
         env:
+          listen: "nats:4222"
           trace: "true"
     steps:
       - name: Checkout repo
