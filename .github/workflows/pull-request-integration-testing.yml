@@ -27,5 +27,5 @@ jobs:
         run: npm run test:examples:integration
         env: 
           NATS_HOST: nats
-          NATS_PORT: ${{ job.services.redis.ports['6379'] }}
+          NATS_PORT: ${{ job.services.nats.ports['4222'] }}
   
