@@ -24,7 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Generate and build examples
-        run: npm run test:examples:integration
+        run: |
+          npm run generate:examples
+          npm run test:examples:integration
         env: 
           NATS_HOST: nats
           NATS_PORT: ${{ job.services.nats.ports['4222'] }}
