@@ -1,0 +1,44 @@
+
+{% macro publish(defaultContentType, channelName, message, messageDescription, channelParameters) %}
+  
+var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
+var receivedMsg: TestClient.{{message | getMessageType}} | undefined = undefined;
+{%- for paramName, param in channelParameters %}
+var recieved{{paramName | pascalCase }} : {{param.schema().type() | toTsType}} | undefined = undefined
+{% endfor %}
+
+var publishMessage: TestClient.{{message | getMessageType}}  = {{message.payload().json() | generateExample | safe}};
+{%- for paramName, param in channelParameters %}
+var {{paramName | pascalCase }}ToSend: {{param.schema().type() | toTsType}} = {{param.schema().json() | generateExample | safe}}
+{% endfor %}
+
+const tryAndWaitForResponse = new Promise(resolve => {
+    setTimeout(resolve, 100);
+});
+
+
+const replySubscription = await testClient.subscribeTo{{channelName | pascalCase}}((err, msg 
+        {% if channelParameters | length %}
+          ,{{channelParameters | realizeParametersForChannelWithoutType}}
+        {% endif %}) => {
+        receivedError = err;
+        receivedMsg = msg;
+        {%- for paramName, param in channelParameters %}
+        recieved{{paramName | realizeParameterForChannelWithoutType | pascalCase }} = {{paramName}}
+        {% endfor %}
+    }
+    {%- for paramName, param in channelParameters %}
+    , {{paramName | pascalCase }}ToSend
+    {% endfor %}
+);
+await client.publishTo{{channelName | pascalCase}}(publishMessage 
+    {%- for paramName, param in channelParameters %}
+    , {{paramName | pascalCase }}ToSend
+    {% endfor %});
+await tryAndWaitForResponse;
+expect(receivedError).to.be.undefined;
+expect(receivedMsg).to.be.deep.equal(publishMessage);
+{%- for paramName, param in channelParameters %}
+expect(recieved{{paramName | realizeParameterForChannelWithoutType | pascalCase }}).to.be.equal({{paramName | pascalCase }}ToSend);
+{% endfor %}
+{% endmacro %}

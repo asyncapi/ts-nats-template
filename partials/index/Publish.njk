@@ -1,0 +1,31 @@
+
+{% macro publish(defaultContentType, channelName, message, messageDescription, channelParameters) %}
+  /**
+  *  {{messageDescription}}
+  * @param requestMessage The message to publish.
+  */
+  public publishTo{{channelName | pascalCase }}(
+    requestMessage: {{message | getMessageType}} 
+    {% if channelParameters | length %}
+      ,{{channelParameters | realizeParametersForChannel}}
+    {% endif %}
+  ): Promise<void> {
+    {%- if message.contentType() | isBinaryPayload(defaultContentType) %}
+    const nc: Client = this.binaryClient!;
+    {%- endif %}
+    {%- if message.contentType() | isStringPayload(defaultContentType) %}
+    const nc: Client = this.stringClient!;
+    {%- endif %}
+    {%- if message.contentType() | isJsonPayload(defaultContentType) %}
+    const nc: Client = this.jsonClient!;
+    {%- endif %}
+    if(nc){
+      return {{ channelName | camelCase }}Channel.publish(requestMessage, nc
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannelWithoutType}}
+      {% endif %});
+    }else{
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+{% endmacro %}

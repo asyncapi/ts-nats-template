@@ -1,0 +1,44 @@
+
+{% macro reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) %}
+  /**
+  *  {{messageDescription}}
+  * @param onRequest Called when request received.
+  * @param onReplyError Called when it was not possible to send the reply.
+  */
+  public replyTo{{channelName | pascalCase }}(
+      onRequest : (
+        err?: NatsTypescriptTemplateError, 
+        msg?: {{receiveMessage | getMessageType}}
+        {%- if channelParameters | length %},{{channelParameters | realizeParametersForChannel(false)}}{% endif %}
+      ) => {%- if params.promisifyReplyCallback | length %}Promise<{%- endif %}{{replyMessage | getMessageType}}{%- if params.promisifyReplyCallback | length %}>{%- endif %}, 
+      onReplyError : (err: NatsTypescriptTemplateError) => void 
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannel}}
+      {% endif %}, 
+      options?: SubscriptionOptions
+    ): Promise<Subscription> {
+    {%- if receiveMessage.contentType() | isBinaryPayload(defaultContentType) %}
+    const nc: Client = this.binaryClient!;
+    {%- endif %}
+    {%- if receiveMessage.contentType() | isStringPayload(defaultContentType) %}
+    const nc: Client = this.stringClient!;
+    {%- endif %}
+    {%- if receiveMessage.contentType() | isJsonPayload(defaultContentType) %}
+    const nc: Client = this.jsonClient!;
+    {%- endif %}
+    
+    if(nc){
+      return {{ channelName | camelCase }}Channel.reply(
+        onRequest, 
+        onReplyError, 
+        nc
+      {% if channelParameters | length %}
+        ,{{channelParameters | realizeParametersForChannelWithoutType}}
+      {% endif %},
+        options
+      );
+    }else{
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+{% endmacro %}

@@ -1,0 +1,43 @@
+
+{%- from "./OnSendingData.njk" import OnSendingData %}
+{%- from "./OnReceivingData.njk" import OnReceivingData %}
+{% macro request(channelName, channelParameters, requestMessage, receiveMessage, server, defaultContentType) %}
+export function request(
+  message: {{requestMessage | getMessageType}},
+  nc: Client
+  {% if channelParameters | length %}
+    ,{{channelParameters | realizeParametersForChannel}}
+  {% endif %}
+  ): Promise<{{receiveMessage | getMessageType}}> {
+  return new Promise(async (resolve, reject) => {
+    var timeout = undefined;
+    {%- if requestMessage | hasNatsBindings %}
+    {%- if requestMessage.bindings().nats().requestReply() | length %}
+    {%- if requestMessage.bindings().nats().requestReply().timeout() | length %}
+    timeout = '{{requestMessage.bindings().nats().requestReply().timeout()}}';
+    {%- endif %}
+    {%- endif %}
+    {%- endif %}
+    let msg;
+    try {
+      {%- if requestMessage.payload() | messageHasNotNullPayload %}
+      {{OnSendingData(true, requestMessage, defaultContentType)}}
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, timeout, dataToSend)
+      {%- else %}
+      msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, timeout, null)
+      {%- endif %}
+    }catch(e){
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+      return;
+    }
+
+    {%- if receiveMessage.payload() | messageHasNotNullPayload %}
+    {{OnReceivingData(true, receiveMessage, defaultContentType)}}
+    resolve(receivedData);
+    {%- else %}
+    resolve(null);
+    {%- endif %}
+  })
+}
+
+{% endmacro %}

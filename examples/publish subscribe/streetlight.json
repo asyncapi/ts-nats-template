@@ -1,0 +1,63 @@
+{
+	"asyncapi": "2.0.0",
+	"info": {
+		"title": "Streetlight",
+		"version": "1.0.0"
+	},
+	"defaultContentType": "json",
+	"channels": {
+		"streetlight/{streetlight_id}/command/turnon": {
+			"description": "Channel for the turn on command which should turn on the streetlight",
+			"parameters": {
+				"streetlight_id": {
+					"description": "The ID of the streetlight",
+					"schema": {
+						"type": "string"
+					}
+				}
+			},
+			"publish": {
+				"operationId": "Listen when to turn on the streetlight",
+				"message": {
+					"name": "TurnonCommand",
+					"payload": {
+						"type": "object",
+						"required": ["lumen"],
+						"properties": {
+							"lumen": {
+								"type": "integer",
+								"description": "How bright should the light be."
+							}
+						}
+					}
+				}
+			}
+		},
+		"streetlight/{streetlight_id}/event/turnon": {
+			"description": "Channel for when the streetlight is turned on",
+			"parameters": {
+				"streetlight_id": {
+					"description": "The ID of the streetlight",
+					"schema": {
+						"type": "string"
+					}
+				}
+			},
+			"subscribe": {
+				"operationId": "Publish when the streetlight gets turned on",
+				"message": {
+					"payload": {
+						"type": "object",
+						"required": ["lumen"],
+						"properties": {
+							"lumen": {
+								"type": "integer",
+								"description": "How bright should the light be."
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
