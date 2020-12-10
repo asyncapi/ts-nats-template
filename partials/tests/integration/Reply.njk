@@ -11,7 +11,6 @@ var receiveMessage: TestClient.{{receiveMessage | getMessageType}}  = {{receiveM
 {%- for paramName, param in channelParameters %}
 var {{paramName | pascalCase }}ToSend: {{param.schema().type() | toTsType}} = {{param.schema().json() | generateExample | safe}}
 {% endfor %}
-
 const replySubscription = await client.replyTo{{channelName | pascalCase}}((err, msg 
         {% if channelParameters | length %}
           ,{{channelParameters | realizeParametersForChannelWithoutType}}

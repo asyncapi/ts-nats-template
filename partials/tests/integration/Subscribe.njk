@@ -11,11 +11,6 @@ var publishMessage: Client.{{message | getMessageType}}  = {{message.payload().j
 {%- for paramName, param in channelParameters %}
 var {{paramName | pascalCase }}ToSend: {{param.schema().type() | toTsType}} = {{param.schema().json() | generateExample | safe}}
 {% endfor %}
-
-const tryAndWaitForResponse = new Promise(resolve => {
-    setTimeout(resolve, 100);
-});
-
 const replySubscription = await client.subscribeTo{{channelName | pascalCase}}((err, msg 
         {% if channelParameters | length %}
           ,{{channelParameters | realizeParametersForChannelWithoutType}}
@@ -30,6 +25,20 @@ const replySubscription = await client.subscribeTo{{channelName | pascalCase}}((
     , {{paramName | pascalCase }}ToSend
     {% endfor %}
 );
+const tryAndWaitForResponse = new Promise((resolve, reject) => {
+    let isReturned = false;
+    setTimeout(() => {
+        if(!isReturned){
+            reject("timeout");
+        }
+    }, 3000)
+    setInterval(async () => {
+        if(replySubscription.getReceived() === 1){
+            resolve();
+            isReturned = true
+        }
+    }, 100);
+});
 await testClient.publishTo{{channelName | pascalCase}}(publishMessage 
     {%- for paramName, param in channelParameters %}
     , {{paramName | pascalCase }}ToSend

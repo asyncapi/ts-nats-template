@@ -17,12 +17,7 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to it self', () => 
         const natsUrl = `${natsHost}:${natsPort}`
         await client.connectToHost(natsUrl);
         await testClient.connectToHost(natsUrl);
-    });
-    
-    it('Clients can connect', () => {
-        expect(client.isClosed()).to.be.false;
-        expect(testClient.isClosed()).to.be.false;
-    });
+    });    
 
     it('can send message', async () => {
       
@@ -37,12 +32,6 @@ var publishMessage: TestClient.AnonymousMessage2Message.AnonymousMessage2  = {
 };
 var StreetlightIdToSend: string = "string"
 
-
-const tryAndWaitForResponse = new Promise(resolve => {
-    setTimeout(resolve, 100);
-});
-
-
 const replySubscription = await testClient.subscribeToStreetlightStreetlightIdEventTurnon((err, msg 
         
           ,streetlight_id
@@ -55,6 +44,20 @@ const replySubscription = await testClient.subscribeToStreetlightStreetlightIdEv
     , StreetlightIdToSend
     
 );
+const tryAndWaitForResponse = new Promise((resolve, reject) => {
+    let isReturned = false;
+    setTimeout(() => {
+        if(!isReturned){
+            reject("timeout");
+        }
+    }, 3000)
+    setInterval(async () => {
+        if(replySubscription.getReceived() === 1){
+            resolve();
+            isReturned = true
+        }
+    }, 100);
+});
 await client.publishToStreetlightStreetlightIdEventTurnon(publishMessage
     , StreetlightIdToSend
     );
@@ -66,11 +69,9 @@ expect(recievedStreetlightId).to.be.equal(StreetlightIdToSend);
 
     });
 
-    it('Can shutdown', async () => {
-        await client.disconnect()
-        await testClient.disconnect()
-        expect(client.isClosed()).to.be.true;
-        expect(testClient.isClosed()).to.be.true;
+    after( async () => {
+        await client.disconnect();
+        await testClient.disconnect();
     });
 
 });

@@ -69,26 +69,22 @@
     {%- endif %}
     return false;
   }
-
+  
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
-    {%- if asyncapi | containsBinaryPayload %}
-    if(this.binaryClient && !this.binaryClient!.isClosed()){
-      this.binaryClient!.close();
+    if(!this.isClosed()){
+      {%- if asyncapi | containsBinaryPayload %}
+      await this.binaryClient!.drain();
+      {%- endif %}
+      {%- if asyncapi | containsStringPayload %}
+      await this.stringClient!.drain();
+      {%- endif %}
+      {%- if asyncapi | containsJsonPayload %}
+      await this.jsonClient!.drain();
+      {%- endif %}
     }
-    {%- endif %}
-    {%- if asyncapi | containsStringPayload %}
-    if(this.stringClient && !this.stringClient!.isClosed()){
-      this.stringClient!.close();
-    }
-    {%- endif %}
-    {%- if asyncapi | containsJsonPayload %}
-    if(this.jsonClient && !this.jsonClient!.isClosed()){
-      this.jsonClient!.close();
-    }
-    {%- endif %}
   }
   
   private chainEvents(ns: Client){

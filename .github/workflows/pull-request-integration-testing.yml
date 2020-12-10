@@ -23,10 +23,17 @@ jobs:
           node-version: 13
       - name: Install dependencies
         run: npm ci
-      - name: Build examples and test they can talk to each other
+      - name: Build pubsub example and test clients can talk to each other
         run: |
-          npm run generate:examples
-          npm run test:examples:integration
+          npm run generate:examples:pubSub
+          npm run test:examples:integration:pubSub
+        env: 
+          NATS_HOST: nats
+          NATS_PORT: ${{ job.services.nats.ports['4222'] }}
+      - name: Build request/reply example and test clients can talk to each other
+        run: |
+          npm run generate:examples:requestReply
+          npm run test:examples:integration:requestReply
         env: 
           NATS_HOST: nats
           NATS_PORT: ${{ job.services.nats.ports['4222'] }}

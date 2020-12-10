@@ -26,9 +26,9 @@
 		"release": "semantic-release",
 		"lint": "echo \"No linter specified yet\"",
 		"test": "echo \"No tests specified yet\"",
-		"test:examples:integration": "npm run test:examples:integration:pubsub && npm run test:examples:integration:requestreply",
-		"test:examples:integration:pubsub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
-		"test:examples:integration:requestreply": "cd \"examples/request reply\" && sh ./Test.sh",
+		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
+		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
+		"test:examples:integration:requestReply": "cd \"examples/request reply\" && sh ./Test.sh",
 		"get-version": "echo $npm_package_version"
 	},
 	"dependencies": {

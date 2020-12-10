@@ -30,10 +30,25 @@ const replySubscription = await testClient.replyTo{{channelName | pascalCase}}((
     , {{paramName | pascalCase }}ToSend
     {% endfor %}
 );
+const tryAndWaitForResponse = new Promise((resolve, reject) => {
+    let isReturned = false;
+    setTimeout(() => {
+        if(!isReturned){
+            reject("timeout");
+        }
+    }, 3000)
+    setInterval(async () => {
+        if(replySubscription.getReceived() === 1){
+            resolve();
+            isReturned = true
+        }
+    }, 100);
+});
 var reply = await client.request{{channelName | pascalCase}}(requestMessage 
     {%- for paramName, param in channelParameters %}
     , {{paramName | pascalCase }}ToSend
     {% endfor %});
+await tryAndWaitForResponse;
 expect(reply).to.be.deep.equal(replyMessage)
 expect(receivedError).to.be.undefined;
 expect(receivedMsg).to.be.deep.equal(requestMessage);

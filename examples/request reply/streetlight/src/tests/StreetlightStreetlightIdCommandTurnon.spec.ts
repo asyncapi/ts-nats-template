@@ -17,12 +17,7 @@ describe('streetlight/{streetlight_id}/command/turnon can talk to it self', () =
         const natsUrl = `${natsHost}:${natsPort}`
         await client.connectToHost(natsUrl);
         await testClient.connectToHost(natsUrl);
-    });
-    
-    it('Clients can connect', () => {
-        expect(client.isClosed()).to.be.false;
-        expect(testClient.isClosed()).to.be.false;
-    });
+    });    
 
     it('can send message', async () => {
       
@@ -39,7 +34,6 @@ var receiveMessage: TestClient.TurnonCommandMessage.TurnonCommand  = {
   "lumen": 0
 };
 var StreetlightIdToSend: string = "string"
-
 
 const replySubscription = await client.replyToStreetlightStreetlightIdCommandTurnon((err, msg 
         
@@ -67,11 +61,9 @@ expect(recievedStreetlightId).to.be.equal(StreetlightIdToSend);
 
     });
 
-    it('Can shutdown', async () => {
-        await client.disconnect()
-        await testClient.disconnect()
-        expect(client.isClosed()).to.be.true;
-        expect(testClient.isClosed()).to.be.true;
+    after( async () => {
+        await client.disconnect();
+        await testClient.disconnect();
     });
 
 });

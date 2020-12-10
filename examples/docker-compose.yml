@@ -5,3 +5,4 @@ services:
     ports:
       - 4222:4222
     restart: unless-stopped
+    command: ["--trace"]

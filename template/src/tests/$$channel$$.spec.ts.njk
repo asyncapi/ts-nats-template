@@ -21,12 +21,7 @@ describe('{{channelName}} can talk to it self', () => {
         const natsUrl = `${natsHost}:${natsPort}`
         await client.connectToHost(natsUrl);
         await testClient.connectToHost(natsUrl);
-    });
-    
-    it('Clients can connect', () => {
-        expect(client.isClosed()).to.be.false;
-        expect(testClient.isClosed()).to.be.false;
-    });
+    });    
 
     it('can send message', async () => {
     {%- if channel | isRequestReply %}
@@ -48,11 +43,9 @@ describe('{{channelName}} can talk to it self', () => {
     {%- endif %}
     });
 
-    it('Can shutdown', async () => {
-        await client.disconnect()
-        await testClient.disconnect()
-        expect(client.isClosed()).to.be.true;
-        expect(testClient.isClosed()).to.be.true;
+    after( async () => {
+        await client.disconnect();
+        await testClient.disconnect();
     });
 
 });

@@ -101,13 +101,13 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     }
     return false;
   }
-
+  
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
-    if(this.jsonClient && !this.jsonClient!.isClosed()){
-      this.jsonClient!.close();
+    if(!this.isClosed()){
+      await this.jsonClient!.drain();
     }
   }
   
