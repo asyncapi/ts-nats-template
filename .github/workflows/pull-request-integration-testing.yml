@@ -14,9 +14,8 @@ jobs:
         image: nats
         ports:
           - 4222:4222
-        env:
-          listen: "nats:4222"
-          trace: "true"
+        volumes: 
+          - examples/nats.conf:/nats-server.conf
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
