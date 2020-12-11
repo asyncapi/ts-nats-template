@@ -19,7 +19,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-        ref: ${{ github.event.pull_request.head.sha }}
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
