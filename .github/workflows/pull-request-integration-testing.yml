@@ -15,10 +15,11 @@ jobs:
         ports:
           - 4222:4222
         volumes: 
-          - ./examples/nats.conf:/nats-server.conf
+          - ${{ github.workspace }}/examples/nats.conf:/nats-server.conf
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
