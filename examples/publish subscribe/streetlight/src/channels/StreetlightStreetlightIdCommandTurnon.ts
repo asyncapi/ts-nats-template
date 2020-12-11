@@ -16,7 +16,7 @@ export function subscribe(
     let subscribeOptions: SubscriptionOptions = {... options};
 
     try{
-      let subscription = nc.subscribe(`streetlight.${streetlight_id}.command.turnon`, (err, msg) => {
+      let subscription = await nc.subscribe(`streetlight.${streetlight_id}.command.turnon`, (err, msg) => {
         if(err){
           onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
         }else{
@@ -42,8 +42,7 @@ try {
   }
 } catch (e) {
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  reject(error);
-  return;
+  throw error;
 }
 
           onDataCallback(undefined, receivedData,

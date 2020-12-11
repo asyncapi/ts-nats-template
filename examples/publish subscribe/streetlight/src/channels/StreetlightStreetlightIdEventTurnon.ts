@@ -22,8 +22,7 @@ try{
   }
 }catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  reject(error);
-  return;
+  throw error;
 }
 
       await nc.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend);

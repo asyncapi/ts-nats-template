@@ -18,7 +18,7 @@ export function reply(
     try {
       let subscribeOptions: SubscriptionOptions = {... options};
 
-      let subscription = nc.subscribe(`streetlight.${streetlight_id}.command.turnon`,async (err, msg) => {
+      let subscription = await nc.subscribe(`streetlight.${streetlight_id}.command.turnon`,async (err, msg) => {
         if (err) {
           onRequest(err);
         } else {
@@ -44,8 +44,7 @@ try {
   }
 } catch (e) {
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  onReplyError(error);
-  return;
+  throw error;
 }
 
 
@@ -62,8 +61,7 @@ try{
   }
 }catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  onReplyError(error)
-  return;
+  throw error;
 }
 
             

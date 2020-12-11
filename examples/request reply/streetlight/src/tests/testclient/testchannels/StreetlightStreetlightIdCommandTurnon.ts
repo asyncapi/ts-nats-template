@@ -25,8 +25,7 @@ try{
   }
 }catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  reject(error);
-  return;
+  throw error;
 }
 
       msg = await nc.request(`streetlight.${streetlight_id}.command.turnon`, timeout, dataToSend)
@@ -43,8 +42,7 @@ try {
   }
 } catch (e) {
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  reject(error);
-  return;
+  throw error;
 }
 
     resolve(receivedData);

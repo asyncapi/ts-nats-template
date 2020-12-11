@@ -48,7 +48,7 @@ const tryAndWaitForResponse = new Promise((resolve, reject) => {
     let isReturned = false;
     setTimeout(() => {
         if(!isReturned){
-            reject("timeout");
+            reject(new Error("Timeout"));
         }
     }, 3000)
     setInterval(async () => {

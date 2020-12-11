@@ -18,11 +18,6 @@ try{
   {%- endif %}
 }catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  {%- if promisfyErrors == true %}
-  reject(error);
-  {%- else %}
-  onReplyError(error)
-  {%- endif %}
-  return;
+  throw error;
 }
 {% endmacro %}
