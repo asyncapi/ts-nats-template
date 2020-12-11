@@ -15,7 +15,7 @@ jobs:
         ports:
           - 4222:4222
         volumes: 
-          - ${{ github.workspace }}/examples/nats.conf:/nats-server.conf
+          - ./examples/nats.conf:/nats-server.conf
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
