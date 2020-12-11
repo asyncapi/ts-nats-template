@@ -15,7 +15,7 @@ jobs:
         ports:
           - 4222:4222
         volumes: 
-          - examples/nats.conf:/nats-server.conf
+          - ${{ github.workspace }}/examples/nats.conf:/nats-server.conf
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -31,12 +31,14 @@ jobs:
           npm run test:examples:integration:pubSub
         env: 
           NATS_HOST: nats
+          NATS_PORT: ${{ job.services.nats.ports[4222] }}
       - name: Build request/reply example and test clients can talk to each other
         run: |
           npm run generate:examples:requestReply
           npm run test:examples:integration:requestReply
         env: 
           NATS_HOST: nats
+          NATS_PORT: ${{ job.services.nats.ports[4222] }}
       - name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v1
