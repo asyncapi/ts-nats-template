@@ -21,7 +21,7 @@ export function request(
     let msg;
     try {
       {%- if requestMessage.payload() | messageHasNotNullPayload %}
-      {{OnSendingData(true, requestMessage, defaultContentType)}}
+      {{OnSendingData(requestMessage, defaultContentType)}}
       msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, timeout, dataToSend)
       {%- else %}
       msg = await nc.request({{channelParameters | realizeChannelName(channelName)}}, timeout, null)
@@ -32,7 +32,12 @@ export function request(
     }
 
     {%- if receiveMessage.payload() | messageHasNotNullPayload %}
-    {{OnReceivingData(true, receiveMessage, defaultContentType)}}
+    try{
+      {{OnReceivingData(receiveMessage, defaultContentType)}}
+    }catch(e){
+      reject(e)
+      return;
+    }
     resolve(receivedData);
     {%- else %}
     resolve(null);

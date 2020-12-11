@@ -1,5 +1,5 @@
 
-{% macro OnReceivingData(promisfyErrors, message, defaultContentType) %}
+{% macro OnReceivingData(message, defaultContentType) %}
 try {
   let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;

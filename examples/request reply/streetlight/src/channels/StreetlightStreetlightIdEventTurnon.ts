@@ -17,13 +17,13 @@ export function request(
     let msg;
     try {
       
-try{
+try {
   let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
   var dataToSend : any = message;
   for(let hook of beforeSendingHooks){
     dataToSend = hook(dataToSend);
   }
-}catch(e){
+} catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
   throw error;
 }
@@ -33,7 +33,8 @@ try{
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       return;
     }
-    
+    try{
+      
 try {
   let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
@@ -45,6 +46,10 @@ try {
   throw error;
 }
 
+    }catch(e){
+      reject(e)
+      return;
+    }
     resolve(receivedData);
   })
 }

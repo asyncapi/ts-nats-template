@@ -32,7 +32,12 @@ export function subscribe(
           {{unwrap(channelName, channelParameters)}}
           {%- endif %}
           {%- if subscribtionMessage.payload() | messageHasNotNullPayload %}
-          {{OnReceivingData(true, subscribtionMessage, defaultContentType)}}
+          try{
+            {{OnReceivingData(subscribtionMessage, defaultContentType)}}
+          }catch(e){
+            onDataCallback(e)
+            return;
+          }
           onDataCallback(undefined, receivedData{% if channelParameters | length %},
               {%- set counter = 1 %}
               {%- for parameterName, parameter in channelParameters %}

@@ -35,7 +35,8 @@ channel = channel.substring(splits[0].length);
 var streetlightIdEnd = channel.indexOf(splits[1]);
 var streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
 
-          
+          try{
+            
 try {
   let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
@@ -47,23 +48,31 @@ try {
   throw error;
 }
 
-
+          }catch(e){
+            onReplyError(e)
+            return;
+          }
           let message =await onRequest(undefined, receivedData,
               streetlightIdParam);
           
           if (msg.reply) {
-            
-try{
+            try{
+              
+try {
   let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
   var dataToSend : any = message;
   for(let hook of beforeSendingHooks){
     dataToSend = hook(dataToSend);
   }
-}catch(e){
+} catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
   throw error;
 }
 
+            }catch(e){
+              onReplyError(e)
+              return;
+            }
             
             await nc.publish(msg.reply, dataToSend);
           } else {

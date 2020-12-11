@@ -221,18 +221,27 @@ export class NatsAsyncApiClient extends events.EventEmitter{
       , 
       options?: SubscriptionOptions
     ): Promise<Subscription> {
+    return new Promise(async (resolve, reject) => {
     const nc: Client = this.jsonClient!;
-    if(nc){
-      return streetlightStreetlightIdCommandTurnonChannel.subscribe(
-        onDataCallback, nc
-        
-          ,streetlight_id
-        , 
-        options
-      );
-    }else{
-      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
-    }
+      if (nc) {
+        try {
+          const sub = await streetlightStreetlightIdCommandTurnonChannel.subscribe(
+            onDataCallback, nc
+            
+              ,streetlight_id
+            , 
+            options
+          );
+          this.jsonClient!.flush(() => {
+            resolve(sub);
+          });
+        } catch (e) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
   }
 
       

@@ -36,8 +36,12 @@ export function reply(
           {%- endif %}
           
           {%- if receiveMessage.payload() | messageHasNotNullPayload %}
-          {{OnReceivingData(false, receiveMessage, defaultContentType)}}
-
+          try{
+            {{OnReceivingData(receiveMessage, defaultContentType)}}
+          }catch(e){
+            onReplyError(e)
+            return;
+          }
           let message = {%-if params.promisifyReplyCallback | length %}await{%- endif %} onRequest(undefined, receivedData{% if channelParameters | length %},
             {%- set counter = 1 %}
             {%- for parameterName, parameter in channelParameters %}
@@ -57,7 +61,12 @@ export function reply(
           
           if (msg.reply) {
             {%- if replyMessage.payload() | messageHasNotNullPayload %}
-            {{OnSendingData(false, replyMessage, defaultContentType)}}
+            try{
+              {{OnSendingData(replyMessage, defaultContentType)}}
+            }catch(e){
+              onReplyError(e)
+              return;
+            }
             
             await nc.publish(msg.reply, dataToSend);
             {%- else %}
