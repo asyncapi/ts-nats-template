@@ -27,7 +27,7 @@ export function reply(
       {%- endif %}
       {%- endif %}
 
-      let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, {%- if params.promisifyReplyCallback | length %}async{%- endif %} (err, msg) => {
+      let subscription = await nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, {%- if params.promisifyReplyCallback | length %}async{%- endif %} (err, msg) => {
         if (err) {
           onRequest(err);
         } else {

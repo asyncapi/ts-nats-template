@@ -24,7 +24,7 @@ export function subscribe(
     {%- endif %}
 
     try{
-      let subscription = nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, (err, msg) => {
+      let subscription = await nc.subscribe({{channelParameters | realizeChannelName(channelName)}}, (err, msg) => {
         if(err){
           onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
         }else{
