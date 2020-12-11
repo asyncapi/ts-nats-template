@@ -48,7 +48,8 @@ const replySubscription = await client.replyToStreetlightStreetlightIdCommandTur
     })},
     (err) => {console.log(err)}
     , StreetlightIdToSend
-    
+    ,
+    true
 );
 var reply = await testClient.requestStreetlightStreetlightIdCommandTurnon(receiveMessage
     , StreetlightIdToSend

@@ -23,7 +23,8 @@ const replySubscription = await client.subscribeTo{{channelName | pascalCase}}((
     }
     {%- for paramName, param in channelParameters %}
     , {{paramName | pascalCase }}ToSend
-    {% endfor %}
+    {% endfor %},
+    true
 );
 const tryAndWaitForResponse = new Promise((resolve, reject) => {
     let isReturned = false;

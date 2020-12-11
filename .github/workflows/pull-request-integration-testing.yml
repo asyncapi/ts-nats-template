@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     if: github.event.pull_request.draft == false
-    name: 'Run linter and tests'
+    name: 'Run example tests'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo

@@ -50,7 +50,8 @@ const replySubscription = await testClient.replyToStreetlightStreetlightIdEventT
     })},
     (err) => {console.log(err)}
     , StreetlightIdToSend
-    
+    ,
+    true
 );
 const tryAndWaitForResponse = new Promise((resolve, reject) => {
     let isReturned = false;

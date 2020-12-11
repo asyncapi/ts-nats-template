@@ -233,6 +233,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
       
       ,streetlight_id: string
       , 
+      flush?: boolean,
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {
@@ -246,9 +247,13 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
             , 
             options
           );
-          this.jsonClient!.flush(() => {
+          if(flush){
+            this.jsonClient!.flush(() => {
+              resolve(sub);
+            });
+          }else{
             resolve(sub);
-          });
+          }
         } catch (e) {
           reject(e);
         }

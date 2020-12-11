@@ -9,6 +9,7 @@
       {% if channelParameters | length %}
       ,{{channelParameters | realizeParametersForChannel}}
       {% endif %}, 
+      flush?: boolean,
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {
@@ -30,9 +31,13 @@
             {% endif %}, 
             options
           );
-          this.jsonClient!.flush(() => {
+          if(flush){
+            this.jsonClient!.flush(() => {
+              resolve(sub);
+            });
+          }else{
             resolve(sub);
-          });
+          }
         } catch (e) {
           reject(e);
         }

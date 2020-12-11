@@ -42,7 +42,8 @@ const replySubscription = await client.subscribeToStreetlightStreetlightIdComman
         
     }
     , StreetlightIdToSend
-    
+    ,
+    true
 );
 const tryAndWaitForResponse = new Promise((resolve, reject) => {
     let isReturned = false;

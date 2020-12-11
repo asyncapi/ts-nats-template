@@ -26,7 +26,8 @@ const replySubscription = await client.replyTo{{channelName | pascalCase}}((err,
     (err) => {console.log(err)}
     {%- for paramName, param in channelParameters %}
     , {{paramName | pascalCase }}ToSend
-    {% endfor %}
+    {% endfor %},
+    true
 );
 var reply = await testClient.request{{channelName | pascalCase}}(receiveMessage 
     {%- for paramName, param in channelParameters %}
