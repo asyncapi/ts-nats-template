@@ -14,16 +14,15 @@ export function publish(
   return new Promise<void>(async (resolve, reject) => {
     try{
       
-try{
+try {
   let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
   var dataToSend : any = message;
   for(let hook of beforeSendingHooks){
     dataToSend = hook(dataToSend);
   }
-}catch(e){
+} catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  reject(error);
-  return;
+  throw error;
 }
 
       await nc.publish(`streetlight.${streetlight_id}.command.turnon`, dataToSend);

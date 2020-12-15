@@ -101,13 +101,13 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     }
     return false;
   }
-
+  
   /**
    * Disconnect all clients from the server
    */
   async disconnect(){
-    if(this.jsonClient && !this.jsonClient!.isClosed()){
-      this.jsonClient!.close();
+    if(!this.isClosed()){
+      await this.jsonClient!.drain();
     }
   }
   
@@ -233,20 +233,34 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
       
       ,streetlight_id: string
       , 
+      flush?: boolean,
       options?: SubscriptionOptions
     ): Promise<Subscription> {
+    return new Promise(async (resolve, reject) => {
     const nc: Client = this.jsonClient!;
-    if(nc){
-      return streetlightStreetlightIdEventTurnonChannel.subscribe(
-        onDataCallback, nc
-        
-          ,streetlight_id
-        , 
-        options
-      );
-    }else{
-      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
-    }
+      if (nc) {
+        try {
+          const sub = await streetlightStreetlightIdEventTurnonChannel.subscribe(
+            onDataCallback, nc
+            
+              ,streetlight_id
+            , 
+            options
+          );
+          if(flush){
+            this.jsonClient!.flush(() => {
+              resolve(sub);
+            });
+          }else{
+            resolve(sub);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
   }
 
 

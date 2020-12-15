@@ -15,30 +15,43 @@
       {% if channelParameters | length %}
         ,{{channelParameters | realizeParametersForChannel}}
       {% endif %}, 
+      flush?: boolean,
       options?: SubscriptionOptions
     ): Promise<Subscription> {
-    {%- if receiveMessage.contentType() | isBinaryPayload(defaultContentType) %}
-    const nc: Client = this.binaryClient!;
-    {%- endif %}
-    {%- if receiveMessage.contentType() | isStringPayload(defaultContentType) %}
-    const nc: Client = this.stringClient!;
-    {%- endif %}
-    {%- if receiveMessage.contentType() | isJsonPayload(defaultContentType) %}
-    const nc: Client = this.jsonClient!;
-    {%- endif %}
-    
-    if(nc){
-      return {{ channelName | camelCase }}Channel.reply(
-        onRequest, 
-        onReplyError, 
-        nc
-      {% if channelParameters | length %}
-        ,{{channelParameters | realizeParametersForChannelWithoutType}}
-      {% endif %},
-        options
-      );
-    }else{
-      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
-    }
+    return new Promise(async (resolve, reject) => {
+      {%- if receiveMessage.contentType() | isBinaryPayload(defaultContentType) %}
+      const nc: Client = this.binaryClient!;
+      {%- endif %}
+      {%- if receiveMessage.contentType() | isStringPayload(defaultContentType) %}
+      const nc: Client = this.stringClient!;
+      {%- endif %}
+      {%- if receiveMessage.contentType() | isJsonPayload(defaultContentType) %}
+      const nc: Client = this.jsonClient!;
+      {%- endif %}
+      if (nc) {
+        try {
+          const sub = await {{ channelName | camelCase }}Channel.reply(
+            onRequest, 
+            onReplyError, 
+            nc
+          {% if channelParameters | length %}
+            ,{{channelParameters | realizeParametersForChannelWithoutType}}
+          {% endif %},
+            options
+          );
+          if(flush){
+            this.jsonClient!.flush(() => {
+              resolve(sub);
+            });
+          }else{
+            resolve(sub);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
   }
 {% endmacro %}

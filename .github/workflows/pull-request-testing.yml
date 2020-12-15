@@ -18,6 +18,8 @@ jobs:
         run: npm ci
       - name: Run linter
         run: npm run lint
+      - name: Re-generate examples
+        run: npm run generate:examples
       - name: Run tests
         run: npm test
   

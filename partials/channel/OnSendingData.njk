@@ -1,6 +1,6 @@
 
-{% macro OnSendingData(promisfyErrors, message, defaultContentType) %}
-try{
+{% macro OnSendingData(message, defaultContentType) %}
+try {
   let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
   var dataToSend : any = message;
   for(let hook of beforeSendingHooks){
@@ -16,13 +16,8 @@ try{
     dataToSend = {{message.uid() | pascalCase}}Message.Convert.{{message.uid() | camelCase}}ToJson(dataToSend);
   }
   {%- endif %}
-}catch(e){
+} catch(e){
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  {%- if promisfyErrors == true %}
-  reject(error);
-  {%- else %}
-  onReplyError(error)
-  {%- endif %}
-  return;
+  throw error;
 }
 {% endmacro %}

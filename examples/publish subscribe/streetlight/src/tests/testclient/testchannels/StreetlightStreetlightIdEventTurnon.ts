@@ -16,7 +16,7 @@ export function subscribe(
     let subscribeOptions: SubscriptionOptions = {... options};
 
     try{
-      let subscription = nc.subscribe(`streetlight.${streetlight_id}.event.turnon`, (err, msg) => {
+      let subscription = await nc.subscribe(`streetlight.${streetlight_id}.event.turnon`, (err, msg) => {
         if(err){
           onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
         }else{
@@ -33,7 +33,8 @@ channel = channel.substring(splits[0].length);
 var streetlightIdEnd = channel.indexOf(splits[1]);
 var streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
 
-          
+          try{
+            
 try {
   let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
   var receivedData : any = msg.data;
@@ -42,10 +43,13 @@ try {
   }
 } catch (e) {
   const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-  reject(error);
-  return;
+  throw error;
 }
 
+          }catch(e){
+            onDataCallback(e)
+            return;
+          }
           onDataCallback(undefined, receivedData,
                 streetlightIdParam);
         }

@@ -21,7 +21,7 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Re-generate examples
-        run: npm generate:examples
+        run: npm run generate:examples
       - name: Get version from package.json before release step
         id: initversion
         run: echo "::set-output name=version::$(npm run get-version --silent)"

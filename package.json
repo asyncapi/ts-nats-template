@@ -26,9 +26,9 @@
 		"release": "semantic-release",
 		"lint": "echo \"No linter specified yet\"",
 		"test": "echo \"No tests specified yet\"",
-		"test:examples:integration": "npm run test:examples:integration:pubsub && npm run test:examples:integration:requestreply",
-		"test:examples:integration:pubsub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
-		"test:examples:integration:requestreply": "cd \"examples/request reply\" && sh ./Test.sh",
+		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
+		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
+		"test:examples:integration:requestReply": "cd \"examples/request reply\" && sh ./Test.sh",
 		"get-version": "echo $npm_package_version"
 	},
 	"dependencies": {
@@ -49,7 +49,8 @@
 		"@semantic-release/npm": "^7.0.3",
 		"@semantic-release/release-notes-generator": "^9.0.1",
 		"conventional-changelog-conventionalcommits": "^4.2.3",
-		"semantic-release": "^17.0.4"
+		"semantic-release": "^17.0.4",
+		"@asyncapi/generator": "^1.0.1"
 	},
 	"release": {
 		"branches": [
