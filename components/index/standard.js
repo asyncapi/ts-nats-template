@@ -1,215 +1,214 @@
-import { Text } from "@asyncapi/generator-react-sdk";
 import { containsBinaryPayload, containsStringPayload, containsJsonPayload} from "../../utils/general";
-import { Bracket } from "../bracket";
 export function Standard({asyncapi}){
-    return <Text>
+    return `
         private jsonClient?: Client;
         private stringClient?: Client;
         private binaryClient?: Client;
         private options?: NatsConnectionOptions;
 
-            /**
-            *
-            * @param options options to use, payload is omitted if sat in the AsyncAPI document.
-            */
-        constructor() <Bracket>
+        /**
+        *
+        */
+        constructor() {
             super();
-        </Bracket>
+        }
+
         /**
         * Try to connect to the NATS server with the different payloads.
+        * @param options to use, payload is omitted if sat in the AsyncAPI document.
         */
-        connect(options : NatsConnectionOptions): Promise{"<void>"}<Bracket>
-            return new Promise(async (resolve: () ={">"} void, reject: (error: any) ={">"} void) ={">"} <Bracket>
-            this.options = options;
-            try<Bracket>
+        connect(options : NatsConnectionOptions): Promise{"<void>"}{
+            return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
+                this.options = options;
+                try{
 
-            {
-                containsBinaryPayload(asyncapi) && 
-                <Text>
-                    if(!this.binaryClient || this.binaryClient!.isClosed())<Bracket>
-                        this.options.payload = Payload.BINARY;
-                        this.binaryClient = await connect(this.options);
-                        this.chainEvents(this.binaryClient);
-                    </Bracket>
-                </Text>
-            }
+                    ${
+                        containsBinaryPayload(asyncapi) && 
+                        `
+                            if(!this.binaryClient || this.binaryClient!.isClosed()){
+                                this.options.payload = Payload.BINARY;
+                                this.binaryClient = await connect(this.options);
+                                this.chainEvents(this.binaryClient);
+                            }
+                        `
+                    }
 
-            {
-                containsStringPayload(asyncapi) && 
-                <Text>
-                    if(!this.stringClient || this.stringClient!.isClosed())<Bracket>
-                        this.options.payload = Payload.STRING;
-                        this.stringClient = await connect(this.options);
-                        this.chainEvents(this.stringClient);
-                    </Bracket>
-                </Text>
-            }
+                    ${
+                        containsStringPayload(asyncapi) && 
+                        `
+                            if(!this.stringClient || this.stringClient!.isClosed()){
+                                this.options.payload = Payload.STRING;
+                                this.stringClient = await connect(this.options);
+                                this.chainEvents(this.stringClient);
+                            }
+                        `
+                    }
 
-            {
-                containsJsonPayload(asyncapi) && 
-                <Text>
-                    if(!this.jsonClient || this.jsonClient!.isClosed())<Bracket>
-                        this.options.payload = Payload.JSON;
-                        this.jsonClient = await connect(this.options);
-                        this.chainEvents(this.jsonClient);
-                    </Bracket>
-                </Text>
-            }
-                resolve();
-            </Bracket>catch(e)<Bracket>
-                reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
-            </Bracket>
-            </Bracket>)
-        </Bracket>
+                    ${
+                        containsJsonPayload(asyncapi) && 
+                        `
+                            if(!this.jsonClient || this.jsonClient!.isClosed()){
+                                this.options.payload = Payload.JSON;
+                                this.jsonClient = await connect(this.options);
+                                this.chainEvents(this.jsonClient);
+                            }
+                        `
+                    }
+                    resolve();
+                }catch(e){
+                    reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+                }
+            })
+        }
 
         /**
         * Returns whether or not any of the clients are closed
         */
-        isClosed()<Bracket>
-            {
+        isClosed(){
+            ${
                 containsBinaryPayload(asyncapi) && 
-                <Text>
-                    if (!this.binaryClient || this.binaryClient!.isClosed())<Bracket>
+                `
+                    if (!this.binaryClient || this.binaryClient!.isClosed()){
                         return true;
-                    </Bracket>
-                </Text>
+                    }
+                `
             }
 
-            {
+            ${
                 containsStringPayload(asyncapi) && 
-                <Text>
-                    if (!this.stringClient || this.stringClient!.isClosed())<Bracket>
+                `
+                    if (!this.stringClient || this.stringClient!.isClosed()){
                         return true;
-                    </Bracket>
-                </Text>
+                    }
+                `
             }
 
-            {
+            ${
                 containsJsonPayload(asyncapi) && 
-                <Text>
-                    if (!this.jsonClient || this.jsonClient!.isClosed())<Bracket>
+                `
+                    if (!this.jsonClient || this.jsonClient!.isClosed()){
                         return true;
-                    </Bracket>
-                </Text>
+                    }
+                `
             }
             return false;
-        </Bracket>
+        }
         
         /**
         * Disconnect all clients from the server
         */
-        async disconnect()<Bracket>
-            if(!this.isClosed())<Bracket>
-                {
+        async disconnect(){
+            if(!this.isClosed()){
+                ${
                     containsBinaryPayload(asyncapi) && 
-                    <Text>
+                    `
                         await this.binaryClient!.drain();
-                    </Text>
+                    `
                 }
 
-                {
+                ${
                     containsStringPayload(asyncapi) && 
-                    <Text>
+                    `
                         await this.stringClient!.drain();
-                    </Text>
+                    `
                 }
 
-                {
+                ${
                     containsJsonPayload(asyncapi) && 
-                    <Text>
+                    `
                         await this.jsonClient!.drain();
-                    </Text>
+                    `
                 }
-            </Bracket>
-        </Bracket>
+            }
+        }
         
-        private chainEvents(ns: Client)<Bracket>
-            ns.on('permissionError', (e: NatsError) ={">"} <Bracket>
+        private chainEvents(ns: Client){
+            ns.on('permissionError', (e: NatsError) => {
                 this.emit(AvailableEvents.permissionError, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-            </Bracket>);
-            ns.on('close', (e: NatsError) ={">"} <Bracket>
+            });
+            ns.on('close', (e: NatsError) => {
                 this.emit(AvailableEvents.close, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-            </Bracket>);
-            ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) ={">"} <Bracket>
+            });
+            ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) => {
                 this.emit(AvailableEvents.connect, connection, serverURL, info)
-            </Bracket>);
-            ns.on('connecting', (serverURL: string) ={">"} <Bracket>
+            });
+            ns.on('connecting', (serverURL: string) => {
                 this.emit(AvailableEvents.connecting, serverURL)
-            </Bracket>);
-            ns.on('disconnect', (serverURL: string) ={">"} <Bracket>
+            });
+            ns.on('disconnect', (serverURL: string) => {
                 this.emit(AvailableEvents.disconnect, serverURL)
-            </Bracket>);
-            ns.on('error', (e: NatsError) ={">"} <Bracket>
+            });
+            ns.on('error', (e: NatsError) => {
                 this.emit(AvailableEvents.error, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-            </Bracket>);
-            ns.on('pingcount', () ={">"} <Bracket>
+            });
+            ns.on('pingcount', () => {
                 this.emit(AvailableEvents.pingcount)
-            </Bracket>);
-            ns.on('pingtimer', () ={">"} <Bracket>
+            });
+            ns.on('pingtimer', () => {
                 this.emit(AvailableEvents.pingtimer)
-            </Bracket>);
-            ns.on('reconnect', (connection: Client, serverURL: string, info: ServerInfo) ={">"} <Bracket>
+            });
+            ns.on('reconnect', (connection: Client, serverURL: string, info: ServerInfo) => {
                 this.emit(AvailableEvents.reconnect, connection, serverURL, info)
-            </Bracket>);
-            ns.on('reconnecting', (serverURL: string) ={">"} <Bracket>
+            });
+            ns.on('reconnecting', (serverURL: string) => {
                 this.emit(AvailableEvents.reconnecting, serverURL)
-            </Bracket>);
-            ns.on('serversChanged', (e: ServersChangedEvent) ={">"} <Bracket>
+            });
+            ns.on('serversChanged', (e: ServersChangedEvent) => {
                 this.emit(AvailableEvents.serversChanged, e)
-            </Bracket>);
-            ns.on('subscribe', (e: SubEvent) ={">"} <Bracket>
+            });
+            ns.on('subscribe', (e: SubEvent) => {
                 this.emit(AvailableEvents.subscribe, e)
-            </Bracket>);
-            ns.on('unsubscribe', (e: SubEvent) ={">"} <Bracket>
+            });
+            ns.on('unsubscribe', (e: SubEvent) => {
                 this.emit(AvailableEvents.unsubscribe, e)
-            </Bracket>);
-            ns.on('yield', () ={">"} <Bracket>
+            });
+            ns.on('yield', () => {
                 this.emit(AvailableEvents.yield)
-            </Bracket>);
-        </Bracket>
+            });
+        }
         
         /**
         * Try to connect to the NATS server with user credentials
         */
-        async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions)<Bracket>
-            await this.connect(<Bracket>
+        async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
+            await this.connect({
             userCreds: userCreds,
             ... options
-            </Bracket>);
-        </Bracket>
+            });
+        }
         /**
         * Try to connect to the NATS server with user and password
         */
-        async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions)<Bracket>
-            await this.connect(<Bracket>
+        async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
+            await this.connect({
             user: user,
             pass: pass,
             ... options
-            </Bracket>);
-        </Bracket>
+            });
+        }
         
         /**
         * Try to connect to the NATS server which has no authentication
         */
-        async connectToHost(host: string, options?: NatsConnectionOptions)<Bracket>
-            await this.connect(<Bracket>
+        async connectToHost(host: string, options?: NatsConnectionOptions){
+            await this.connect({
             servers: [host],
             ... options
-            </Bracket>);
-        </Bracket>
+            });
+        }
 
         /**
         * Try to connect to the NATS server with nkey authentication
         */
-        async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions)<Bracket>
-            await this.connect(<Bracket>
-            nkey: publicNkey,
-            nonceSigner: (nonce: string): Buffer ={">"} <Bracket>
-                const sk = fromSeed(Buffer.from(seed));
-                return sk.sign(Buffer.from(nonce));
-            </Bracket>,
-            ... options
-            </Bracket>);
-        </Bracket>
-    </Text>
+        async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions){
+            await this.connect({
+                nkey: publicNkey,
+                nonceSigner: (nonce: string): Buffer => {
+                    const sk = fromSeed(Buffer.from(seed));
+                    return sk.sign(Buffer.from(nonce));
+                },
+                ... options
+            });
+        }
+    `
 }

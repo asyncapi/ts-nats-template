@@ -32,7 +32,7 @@
 		"get-version": "echo $npm_package_version"
 	},
 	"dependencies": {
-		"@asyncapi/generator-filters": "^1.0.0",
+		"@asyncapi/generator-filters": "^1.1.0",
 		"@asyncapi/generator-react-sdk": "^0.1.1",
 		"@lagoni/asyncapi-quicktype-filter": "^1.2.3",
 		"cross-env": "^7.0.2",
@@ -45,7 +45,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@asyncapi/generator": "^1.1.0",
+		"@asyncapi/generator": "^1.1.1",
 		"@semantic-release/commit-analyzer": "^8.0.1",
 		"@semantic-release/github": "^7.0.4",
 		"@semantic-release/npm": "^7.0.3",
@@ -91,14 +91,6 @@
 				"required": false
 			}
 		},
-		"generator": ">=1.1.0 <2.0.0",
-		"nonRenderableFiles": [
-			"src/NatsTypescriptTemplateError.ts",
-			"src/hooks.ts",
-			"tsconfig.json"
-		],
-		"filters": [
-			"@asyncapi/generator-filters"
-		]
+		"generator": ">=1.1.1 <2.0.0"
 	}
 }

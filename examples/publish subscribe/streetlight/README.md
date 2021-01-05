@@ -1,6 +1,6 @@
-# Streetlight
+# {{ asyncapi.info().title() }}
 
-
+{{ asyncapi.info().description() | safe }}
 
 
 Available nats encodings:

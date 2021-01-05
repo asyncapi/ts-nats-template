@@ -1,18 +1,17 @@
 import { File, Text } from "@asyncapi/generator-react-sdk";
-import { Events } from "../../../../components/events";
-import { Bracket } from "../../../../components/bracket";
-import { Standard } from "../../../../components/index/standard";
-import { Publish } from "../../../../components/index/publish";
-import { Subscribe } from "../../../../components/index/subscribe";
-import { Reply } from "../../../../components/index/reply";
-import { Request } from "../../../../components/index/request";
-import { camelCase, pascalCase, firstUpperCase, isRequestReply, isReplier, isRequester, isPubsub} from "../../../../utils/general";
+import { Events } from "../../components/events";
+import { Standard } from "../../components/index/standard";
+import { Publish } from "../../components/index/publish";
+import { Subscribe } from "../../components/index/subscribe";
+import { Reply } from "../../components/index/reply";
+import { Request } from "../../components/index/request";
+import { camelCase, pascalCase, firstUpperCase, isRequestReply, isReplier, isRequester, isPubsub} from "../../utils/general";
 
 export default function({ asyncapi, params }) {
   let channelImport = asyncapi.channels();
   channelImport = Object.keys(channelImport).length ? Object.entries(channelImport).map(([channelName, _]) => {
     return `
-      import * as ${camelCase(channelName)}Channel from "./testchannels/${firstUpperCase(pascalCase(channelName))}";
+      import * as ${camelCase(channelName)}Channel from "./channels/${firstUpperCase(pascalCase(channelName))}";
       export {${camelCase(channelName)}Channel};
     `
   }) : ``;
@@ -21,7 +20,7 @@ export default function({ asyncapi, params }) {
   for (var [messageName, _] of asyncapi.allMessages()) {
     let pascalMessageName = pascalCase(messageName);
     messagesImport.push(`
-      import * as ${pascalMessageName}Message from "../../messages/${pascalMessageName}";
+      import * as ${pascalMessageName}Message from "./messages/${pascalMessageName}";
       export {${pascalMessageName}Message};
     `);
   }
@@ -30,29 +29,29 @@ export default function({ asyncapi, params }) {
   channelWrappers = Object.keys(channelWrappers).length ? Object.entries(channelWrappers).map(([channelName, channel]) => {
     if(isRequestReply(channel)){
       if(isRequester(channel)){
+        return <Request
+          defaultContentType={asyncapi.defaultContentType()} 
+          channelName={channelName} 
+          requestMessage={channel.subscribe().message(0)} 
+          replyMessage={channel.publish().message(0)} 
+          messageDescription={channel.description()} 
+          channelParameters={channel.parameters()} />
+      }
+      if(isReplier(channel)){
         return <Reply 
           defaultContentType={asyncapi.defaultContentType()} 
           channelName={channelName} 
-          replyMessage={channel.publish().message(0)} 
-          receiveMessage={channel.subscribe().message(0)} 
+          replyMessage={channel.subscribe().message(0)} 
+          receiveMessage={channel.publish().message(0)} 
           messageDescription={channel.description()} 
           channelParameters={channel.parameters()} 
           params={params}/>
-      }
-      if(isReplier(channel)){
-        return <Request 
-          defaultContentType={asyncapi.defaultContentType()} 
-          channelName={channelName} 
-          requestMessage={channel.publish().message(0)} 
-          replyMessage={channel.subscribe().message(0)} 
-          messageDescription={channel.description()} 
-          channelParameters={channel.parameters()} />
       }
     }
 
     if(isPubsub(channel)){
       if(channel.hasSubscribe()){
-        return <Subscribe 
+        return <Publish
           defaultContentType={asyncapi.defaultContentType()} 
           channelName={channelName} 
           message={channel.subscribe().message(0)} 
@@ -60,7 +59,7 @@ export default function({ asyncapi, params }) {
           channelParameters={channel.parameters()} />
       }
       if(channel.hasPublish()){
-        return <Publish 
+        return <Subscribe
           defaultContentType={asyncapi.defaultContentType()} 
           channelName={channelName} 
           message={channel.publish().message(0)} 
@@ -75,7 +74,12 @@ export default function({ asyncapi, params }) {
       {
         `
         import {fromSeed} from 'ts-nkeys';
+        import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
+        export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
+        import * as TestClient from './tests/testclient/';
+        export {% raw %}{{% endraw %} TestClient {% raw %}}{% endraw %};
         import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
+        export {ErrorCode, NatsTypescriptTemplateError}
         import { 
           Client, 
           NatsConnectionOptions, 
@@ -87,7 +91,9 @@ export default function({ asyncapi, params }) {
           SubEvent, 
           ServerInfo,
           SubscriptionOptions
-        } from 'ts-nats';
+          } from 'ts-nats';
+          
+        export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 
         ${channelImport}
         ${messagesImport}
@@ -110,11 +116,11 @@ export default function({ asyncapi, params }) {
           yield = 'yield'
         }
 
-        export declare interface NatsAsyncApiTestClient {
+        export declare interface NatsAsyncApiClient {
           ${<Events />}
         }
 
-        export class NatsAsyncApiTestClient extends events.EventEmitter{
+        export class NatsAsyncApiClient extends events.EventEmitter{
           ${<Standard asyncapi={asyncapi}/>}
           ${channelWrappers}
         }
