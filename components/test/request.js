@@ -3,7 +3,7 @@ import { pascalCase, getMessageType, realizeParametersForChannelWithoutType, toT
 export function Request(channelName, requestMessage, replyMessage, channelParameters) {
   return `
     var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
-    var receivedMsg: Client.{requestMessage | getMessageType} | undefined = undefined;
+    var receivedMsg: Client.${getMessageType(requestMessage)} | undefined = undefined;
     ${
   Object.entries(channelParameters).map(([paramName, param]) => {
     return `var recieved${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined`;
