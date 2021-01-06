@@ -10,42 +10,36 @@ export default function({ asyncapi, channelName, channel, params }) {
   let testMethod;
   if(isRequestReply(channel)){
     if(isRequester(channel)){
-      testMethod = <Request
-        defaultContentType={asyncapi.defaultContentType()} 
-        channelName={channelName} 
-        requestMessage={channel.subscribe().message(0)} 
-        replyMessage={channel.publish().message(0)} 
-        messageDescription={channel.description()} 
-        channelParameters={channel.parameters()} />
+      testMethod = Request(
+            channelName, 
+            channel.subscribe().message(0),
+            channel.publish().message(0),
+            channel.parameters()
+          );
     }
     if(isReplier(channel)){
-      testMethod = <Reply 
-        defaultContentType={asyncapi.defaultContentType()} 
-        channelName={channelName} 
-        replyMessage={channel.subscribe().message(0)} 
-        receiveMessage={channel.publish().message(0)} 
-        messageDescription={channel.description()} 
-        channelParameters={channel.parameters()} 
-        params={params}/>
+      testMethod = Reply(
+          channelName, 
+          channel.subscribe().message(0),
+          channel.publish().message(0),
+          channel.parameters(),
+          params
+        );
     }
   }
 
   if(isPubsub(channel)){
     if(channel.hasSubscribe()){
-      testMethod = <Publish
-        defaultContentType={asyncapi.defaultContentType()} 
-        channelName={channelName} 
-        message={channel.subscribe().message(0)} 
-        messageDescription={channel.description()} 
-        channelParameters={channel.parameters()} />
+      testMethod = Publish(
+          channelName, 
+          channel.subscribe().message(0), 
+          channel.parameters())
     }
     if(channel.hasPublish()){
-      testMethod = <Subscribe
-        defaultContentType={asyncapi.defaultContentType()} 
-        channelName={channelName} 
-        message={channel.publish().message(0)} 
-        messageDescription={channel.description()} 
-        channelParameters={channel.parameters()} />
+      testMethod = Subscribe(
+          channelName, 
+          channel.publish().message(0), 
+          channel.parameters())
     }
   }
 

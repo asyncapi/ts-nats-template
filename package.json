@@ -24,7 +24,7 @@
 		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && sh GenerateAndBuild.sh",
 		"generate:examples:requestReply": "cd \"examples/request reply\" && sh GenerateAndBuild.sh",
 		"release": "semantic-release",
-		"lint": "echo \"No linter specified yet\"",
+		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
 		"test": "echo \"No tests specified yet\"",
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
@@ -51,6 +51,11 @@
 		"@semantic-release/npm": "^7.0.3",
 		"@semantic-release/release-notes-generator": "^9.0.1",
 		"conventional-changelog-conventionalcommits": "^4.2.3",
+		"eslint": "^7.0.0",
+		"eslint-plugin-mocha": "^7.0.1",
+		"eslint-plugin-react": "^7.22.0",
+		"eslint-plugin-security": "^1.4.0",
+		"eslint-plugin-sonarjs": "^0.5.0",
 		"semantic-release": "^17.0.4"
 	},
 	"release": {

@@ -1,43 +1,42 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { Events } from '../../components/events';
-import { Standard } from '../../components/index/standard';
-import { Publish } from '../../components/index/publish';
-import { Subscribe } from '../../components/index/subscribe';
-import { Reply } from '../../components/index/reply';
-import { Request } from '../../components/index/request';
-import { camelCase, pascalCase, firstUpperCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../utils/general';
+import { Events } from '../../../../components/events';
+import { Standard } from '../../../../components/index/standard';
+import { Publish } from '../../../../components/index/publish';
+import { Subscribe } from '../../../../components/index/subscribe';
+import { Reply } from '../../../../components/index/reply';
+import { Request } from '../../../../components/index/request';
+import { camelCase, pascalCase, firstUpperCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../../utils/general';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 function getChannelWrappers(asyncapi, params) {
-  let channelWrappers = [];
-  channelWrappers = Object.keys(asyncapi.channels()).length ? Object.entries(asyncapi.channels()).map(([channelName, channel]) => {
+  let channelWrappers = asyncapi.channels();
+  channelWrappers = Object.keys(channelWrappers).length ? Object.entries(channelWrappers).map(([channelName, channel]) => {
     if (isRequestReply(channel)) {
       if (isRequester(channel)) {
-        return Request(
-          asyncapi.defaultContentType(), 
+        return Reply(asyncapi.defaultContentType(), 
           channelName, 
-          channel.subscribe().message(0),
           channel.publish().message(0),
-          channel.description(),
-          channel.parameters()
-        );
-      }
-      if (isReplier(channel)) {
-        return Reply(
-          asyncapi.defaultContentType(), 
-          channelName, 
           channel.subscribe().message(0),
-          channel.publish().message(0),
           channel.description(),
           channel.parameters(),
           params
+        );
+      }
+      if (isReplier(channel)) {
+        return Request(
+          asyncapi.defaultContentType(), 
+          channelName, 
+          channel.publish().message(0),
+          channel.subscribe().message(0),
+          channel.description(),
+          channel.parameters()
         );
       }
     }
 
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
-        return Publish(
+        return Subscribe(
           asyncapi.defaultContentType(), 
           channelName, 
           channel.subscribe().message(0), 
@@ -45,7 +44,7 @@ function getChannelWrappers(asyncapi, params) {
           channel.parameters());
       }
       if (channel.hasPublish()) {
-        return Subscribe(
+        return Publish(
           asyncapi.defaultContentType(), 
           channelName, 
           channel.publish().message(0), 
@@ -57,11 +56,11 @@ function getChannelWrappers(asyncapi, params) {
   return channelWrappers;
 }
 
-export default function index({ asyncapi, params }) {
+export default function indexFile({ asyncapi, params }) {
   let channelImport = asyncapi.channels();
   channelImport = Object.keys(channelImport).length ? Object.entries(channelImport).map(([channelName, _]) => {
     return `
-      import * as ${camelCase(channelName)}Channel from "./channels/${firstUpperCase(pascalCase(channelName))}";
+      import * as ${camelCase(channelName)}Channel from "./testchannels/${firstUpperCase(pascalCase(channelName))}";
       export {${camelCase(channelName)}Channel};
     `;
   }) : '';
@@ -70,7 +69,7 @@ export default function index({ asyncapi, params }) {
   for (const [messageName] of asyncapi.allMessages()) {
     const pascalMessageName = pascalCase(messageName);
     messagesImport.push(`
-      import * as ${pascalMessageName}Message from "./messages/${pascalMessageName}";
+      import * as ${pascalMessageName}Message from "../../messages/${pascalMessageName}";
       export {${pascalMessageName}Message};
     `);
   }
@@ -80,12 +79,7 @@ export default function index({ asyncapi, params }) {
       {
         `
         import {fromSeed} from 'ts-nkeys';
-        import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-        export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
-        import * as TestClient from './tests/testclient/';
-        export {TestClient};
         import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
-        export {ErrorCode, NatsTypescriptTemplateError}
         import { 
           Client, 
           NatsConnectionOptions, 
@@ -97,9 +91,7 @@ export default function index({ asyncapi, params }) {
           SubEvent, 
           ServerInfo,
           SubscriptionOptions
-          } from 'ts-nats';
-          
-        export {Client, ServerInfo, ServersChangedEvent, SubEvent}
+        } from 'ts-nats';
 
         ${channelImport.join('')}
         ${messagesImport.join('')}
@@ -122,11 +114,11 @@ export default function index({ asyncapi, params }) {
           yield = 'yield'
         }
 
-        export declare interface NatsAsyncApiClient {
+        export declare interface NatsAsyncApiTestClient {
           ${Events()}
         }
 
-        export class NatsAsyncApiClient extends events.EventEmitter{
+        export class NatsAsyncApiTestClient extends events.EventEmitter{
           ${Standard(asyncapi)}
           ${getChannelWrappers(asyncapi, params).join('')}
         }

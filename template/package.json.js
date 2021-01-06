@@ -1,22 +1,23 @@
 
-import { kebabCase} from "../utils/general";
+import { kebabCase} from '../utils/general';
+import { File } from '@asyncapi/generator-react-sdk';
 
-export default function({ asyncapi }) {
-  let name = "NatsTSclient";
-  let version = "1.0.0"
-  let description = "";
-  if(asyncapi.info().title()){
+export default function packageFile({ asyncapi }) {
+  let name = 'NatsTSclient';
+  let version = '1.0.0';
+  let description = '';
+  if (asyncapi.info().title()) {
     name = kebabCase(asyncapi.info().title());
   }
-  if(asyncapi.info().version()){
+  if (asyncapi.info().version()) {
     version = asyncapi.info().version();
   }
-  if(asyncapi.info().description()){
+  if (asyncapi.info().description()) {
     description = asyncapi.info().description();
   }
-  return <File name={"package.json"}>
-  {
-    `
+  return <File name={'package.json'}>
+    {
+      `
     {
       "name": "${name}",
       "description": "${description}",
@@ -44,6 +45,6 @@ export default function({ asyncapi }) {
       }
     }
     `
-  }
-  </File>
+    }
+  </File>;
 }

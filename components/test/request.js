@@ -1,46 +1,45 @@
-import { Text } from "@asyncapi/generator-react-sdk";
-import {generateExample} from '@asyncapi/generator-filters'
-import { pascalCase, getMessageType, realizeParametersForChannelWithoutType} from "../../utils/general";
-export function Request({defaultContentType, channelName, requestMessage, replyMessage, messageDescription, channelParameters}){
-    return `
+import {generateExample} from '@asyncapi/generator-filters';
+import { pascalCase, getMessageType, realizeParametersForChannelWithoutType, toTsType, realizeParameterForChannelWithoutType} from '../../utils/general';
+export function Request(channelName, requestMessage, replyMessage, channelParameters) {
+  return `
     var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
     var receivedMsg: Client.{requestMessage | getMessageType} | undefined = undefined;
     ${
-      channelParameters.map(([paramName, param]) => {
-        return `var recieved${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined`
-      })
-    }
+  channelParameters.map(([paramName, param]) => {
+    return `var recieved${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined`;
+  }).join('')
+}
     
     var replyMessage: TestClient.${getMessageType(replyMessage)} = ${generateExample(replyMessage.payload().json())};
     var requestMessage: Client.${getMessageType(requestMessage)}  = ${generateExample(requestMessage.payload().json())};
     ${
-      channelParameters.map(([paramName, param]) => {
-        return `var ${pascalCase(paramName)}ToSend: ${toTsType(param.schema().type())} = ${generateExample(param.schema().json())}`
-      })
-    }
+  channelParameters.map(([paramName, param]) => {
+    return `var ${pascalCase(paramName)}ToSend: ${toTsType(param.schema().type())} = ${generateExample(param.schema().json())}`;
+  }).join('')
+}
     const replySubscription = await testClient.replyTo${pascalCase(channelName)}((err, msg 
         ${
-          channelParameters.length && 
-          <Text>
-          ,{realizeParametersForChannelWithoutType(channelParameters)}
-          </Text>
-        }) => {
+  Object.keys(channelParameters).length ? 
+    `
+          ,${realizeParametersForChannelWithoutType(channelParameters)}
+          ` : ''
+}) => {
         return new Promise((resolve, reject) => {
             receivedError = err;
             receivedMsg = msg;
             ${
-              channelParameters.map(([paramName, _]) => {
-                return `recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))} = ${paramName}`
-              })
-            }
+  channelParameters.map(([paramName, _]) => {
+    return `recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))} = ${paramName}`;
+  }).join('')
+}
             resolve(replyMessage);
         })},
         (err) => {console.log(err)}
         ${
-          channelParameters.map(([paramName, _]) => {
-            return `, ${pascalCase(paramName)}ToSend`
-          })
-        },
+  channelParameters.map(([paramName, _]) => {
+    return `, ${pascalCase(paramName)}ToSend`;
+  }).join('')
+},
         true
     );
     const tryAndWaitForResponse = new Promise((resolve, reject) => {
@@ -59,18 +58,18 @@ export function Request({defaultContentType, channelName, requestMessage, replyM
     });
     var reply = await client.request${pascalCase(channelName)}(requestMessage 
       ${
-        channelParameters.map(([paramName, _]) => {
-          return `, ${pascalCase(paramName)}ToSend`
-        })
-      });
+  channelParameters.map(([paramName, _]) => {
+    return `, ${pascalCase(paramName)}ToSend`;
+  }).join('')
+});
     await tryAndWaitForResponse;
     expect(reply).to.be.deep.equal(replyMessage)
     expect(receivedError).to.be.undefined;
     expect(receivedMsg).to.be.deep.equal(requestMessage);
     ${
-      channelParameters.map(([paramName, _]) => {
-        return `expect(recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))}).to.be.equal(${pascalCase(paramName)}ToSend);`
-      })
-    }
-    `
+  channelParameters.map(([paramName, _]) => {
+    return `expect(recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))}).to.be.equal(${pascalCase(paramName)}ToSend);`;
+  }).join('')
+}
+    `;
 }

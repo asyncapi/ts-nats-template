@@ -1,3 +1,5 @@
+// detect-non-literal-fs-filename provides false-positives
+/* eslint-disable security/detect-non-literal-fs-filename */
 const fs = require('fs');
 const Path = require('path');
 
@@ -7,17 +9,17 @@ const Path = require('path');
  * @param {string} path to recursively remove 
  */
 const deleteFolderRecursive = function(path) {
-	if (fs.existsSync(path) && path !== "/") {
-	  fs.readdirSync(path).forEach((file, index) => {
-		const curPath = Path.join(path, file);
-		if (fs.lstatSync(curPath).isDirectory()) { // recurse
-		  deleteFolderRecursive(curPath);
-		} else { // delete file
-		  fs.unlinkSync(curPath);
-		}
-	  });
-	  fs.rmdirSync(path);
-	}
+  if (fs.existsSync(path) && path !== '/') {
+    fs.readdirSync(path).forEach((file) => {
+      const curPath = Path.join(path, file);
+      if (fs.lstatSync(curPath).isDirectory()) {
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
 };
 
 /**
@@ -25,10 +27,10 @@ const deleteFolderRecursive = function(path) {
  * or not we have to remove the test client if its not specified. 
  */
 module.exports = {
-	'generate:after': (generator) => {
-		if(generator.targetDir && generator.templateParams && !generator.templateParams.generateTestClient){
-			pathToTests = Path.resolve(generator.targetDir, "src/tests/")
-			deleteFolderRecursive(pathToTests)
-		}
-	}
+  'generate:after': (generator) => {
+    if (generator.targetDir && generator.templateParams && !generator.templateParams.generateTestClient) {
+      const pathToTests = Path.resolve(generator.targetDir, 'src/tests/');
+      deleteFolderRecursive(pathToTests);
+    }
+  }
 };

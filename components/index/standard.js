@@ -1,6 +1,6 @@
-import { containsBinaryPayload, containsStringPayload, containsJsonPayload} from "../../utils/general";
-export function Standard({asyncapi}){
-    return `
+import { containsBinaryPayload, containsStringPayload, containsJsonPayload} from '../../utils/general';
+export function Standard(asyncapi) {
+  return `
         private jsonClient?: Client;
         private stringClient?: Client;
         private binaryClient?: Client;
@@ -17,43 +17,46 @@ export function Standard({asyncapi}){
         * Try to connect to the NATS server with the different payloads.
         * @param options to use, payload is omitted if sat in the AsyncAPI document.
         */
-        connect(options : NatsConnectionOptions): Promise{"<void>"}{
+        connect(options : NatsConnectionOptions): Promise<void>{
             return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
                 this.options = options;
                 try{
 
                     ${
-                        containsBinaryPayload(asyncapi) && 
-                        `
+  containsBinaryPayload(asyncapi) ? 
+    `
                             if(!this.binaryClient || this.binaryClient!.isClosed()){
                                 this.options.payload = Payload.BINARY;
                                 this.binaryClient = await connect(this.options);
                                 this.chainEvents(this.binaryClient);
                             }
                         `
-                    }
+    : ''
+}
 
                     ${
-                        containsStringPayload(asyncapi) && 
-                        `
+  containsStringPayload(asyncapi) ?
+    `
                             if(!this.stringClient || this.stringClient!.isClosed()){
                                 this.options.payload = Payload.STRING;
                                 this.stringClient = await connect(this.options);
                                 this.chainEvents(this.stringClient);
                             }
                         `
-                    }
+    : ''
+}
 
                     ${
-                        containsJsonPayload(asyncapi) && 
-                        `
+  containsJsonPayload(asyncapi) ?
+    `
                             if(!this.jsonClient || this.jsonClient!.isClosed()){
                                 this.options.payload = Payload.JSON;
                                 this.jsonClient = await connect(this.options);
                                 this.chainEvents(this.jsonClient);
                             }
                         `
-                    }
+    : ''
+}
                     resolve();
                 }catch(e){
                     reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -66,31 +69,34 @@ export function Standard({asyncapi}){
         */
         isClosed(){
             ${
-                containsBinaryPayload(asyncapi) && 
-                `
+  containsBinaryPayload(asyncapi) ?
+    `
                     if (!this.binaryClient || this.binaryClient!.isClosed()){
                         return true;
                     }
                 `
-            }
+    : ''
+}
 
             ${
-                containsStringPayload(asyncapi) && 
-                `
+  containsStringPayload(asyncapi) ?
+    `
                     if (!this.stringClient || this.stringClient!.isClosed()){
                         return true;
                     }
                 `
-            }
+    : ''
+}
 
             ${
-                containsJsonPayload(asyncapi) && 
-                `
+  containsJsonPayload(asyncapi) ?
+    `
                     if (!this.jsonClient || this.jsonClient!.isClosed()){
                         return true;
                     }
                 `
-            }
+    : ''
+}
             return false;
         }
         
@@ -100,25 +106,28 @@ export function Standard({asyncapi}){
         async disconnect(){
             if(!this.isClosed()){
                 ${
-                    containsBinaryPayload(asyncapi) && 
-                    `
+  containsBinaryPayload(asyncapi) ?
+    `
                         await this.binaryClient!.drain();
                     `
-                }
+    : ''
+}
 
                 ${
-                    containsStringPayload(asyncapi) && 
-                    `
+  containsStringPayload(asyncapi) ?
+    `
                         await this.stringClient!.drain();
                     `
-                }
+    : ''
+}
 
                 ${
-                    containsJsonPayload(asyncapi) && 
-                    `
+  containsJsonPayload(asyncapi) ?
+    `
                         await this.jsonClient!.drain();
                     `
-                }
+    : ''
+}
             }
         }
         
@@ -210,5 +219,5 @@ export function Standard({asyncapi}){
                 ... options
             });
         }
-    `
+    `;
 }
