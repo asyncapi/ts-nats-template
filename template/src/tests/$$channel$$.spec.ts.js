@@ -45,7 +45,7 @@ function getTestCode(channel, channelName, params) {
 }
 
 export default function channelRender({ channelName, channel, params }) {
-  return <File name={`${pascalCase(channelName)}.ts`}>
+  return <File name={`${pascalCase(channelName)}.spec.ts`}>
     {
       `
 import {describe, it} from 'mocha';
