@@ -13,9 +13,7 @@
     export function request(
       message: TurnonCommandMessage.TurnonCommand,
       nc: Client
-      
-        ,streetlight_id: string
-        
+      ,streetlight_id: string
       ): Promise<GeneralReplyMessage.GeneralReply> {
       return new Promise(async (resolve, reject) => {
         var timeout = undefined;

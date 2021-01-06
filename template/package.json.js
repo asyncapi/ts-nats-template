@@ -1,5 +1,5 @@
 
-import { kebabCase} from '../utils/general';
+import { kebabCase } from '../utils/index';
 import { File } from '@asyncapi/generator-react-sdk';
 
 export default function packageFile({ asyncapi }) {

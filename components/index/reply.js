@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannel, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/general';
+import { pascalCase, camelCase, getMessageType, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType, realizeParametersForChannelWrapper} from '../../utils/index';
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) {
   return `
     /**
@@ -10,17 +10,10 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
          onRequest : (
            err?: NatsTypescriptTemplateError, 
            msg?: ${getMessageType(receiveMessage)}
-           ${
-  Object.keys(channelParameters).length ?
-    `
-            ,${realizeParametersForChannel(channelParameters, false)}
-            ` : ''
-}
+           ${realizeParametersForChannelWrapper(channelParameters, false)}
          ) => ${params.promisifyReplyCallback.length && 'Promise<'}${getMessageType(replyMessage)}${ params.promisifyReplyCallback.length && '>'}, 
          onReplyError : (err: NatsTypescriptTemplateError) => void 
-         ${ Object.keys(channelParameters).length && 
-           `,${realizeParametersForChannel(channelParameters)}`
-}, 
+         ${realizeParametersForChannelWrapper(channelParameters)}, 
          flush?: boolean,
          options?: SubscriptionOptions
        ): Promise<Subscription> {

@@ -1,5 +1,5 @@
 import {generateExample} from '@asyncapi/generator-filters';
-import { pascalCase, toTsType, getMessageType, realizeParametersForChannelWithoutType, realizeParameterForChannelWithoutType} from '../../utils/general';
+import { pascalCase, toTsType, getMessageType, realizeParametersForChannelWithoutType, realizeParameterForChannelWithoutType} from '../../utils/index';
 export function Subscribe(channelName, message, channelParameters) {
   return `
 

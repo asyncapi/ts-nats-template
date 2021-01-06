@@ -11,9 +11,7 @@
     export function publish(
         message: TurnonCommandMessage.TurnonCommand,
         nc: Client
-        
-         ,streetlight_id: string
-         
+        ,streetlight_id: string
         ): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
           try{

@@ -1,15 +1,11 @@
 import { OnSendingData } from './OnSendingData';
-import { realizeChannelName, getMessageType, realizeParametersForChannel, messageHasNotNullPayload } from '../../utils/general';
+import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload } from '../../utils/index';
 export function Publish(defaultContentType, channelName, message, channelParameters) {
   return `
     export function publish(
         message: ${getMessageType(message)},
         nc: Client
-        ${Object.keys(channelParameters).length ?
-    `
-         ,${realizeParametersForChannel(channelParameters)}
-         ` : ''
-}
+        ${realizeParametersForChannelWrapper(channelParameters)}
         ): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
           try{

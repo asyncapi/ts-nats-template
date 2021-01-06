@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannel, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/general';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/index';
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, messageDescription, channelParameters) {
   return `
     /**
@@ -7,9 +7,7 @@ export function Request(defaultContentType, channelName, requestMessage, replyMe
      */
      public request${pascalCase(channelName)}(
        requestMessage:${getMessageType(requestMessage)} 
-       ${ Object.keys(channelParameters).length && 
-        `,${realizeParametersForChannel(channelParameters)}`
-}
+        ${realizeParametersForChannelWrapper(channelParameters)}
      ): Promise<${getMessageType(replyMessage)}> {
       ${
   isBinaryPayload(requestMessage.contentType(), defaultContentType) ?

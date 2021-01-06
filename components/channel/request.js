@@ -1,17 +1,12 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
-import { realizeChannelName, getMessageType, realizeParametersForChannel, hasNatsBindings, messageHasNotNullPayload, } from '../../utils/general';
+import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, hasNatsBindings, messageHasNotNullPayload } from '../../utils/index';
 export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
   return `
     export function request(
       message: ${getMessageType(requestMessage)},
       nc: Client
-      ${
-  Object.keys(channelParameters).length && 
-        `
-        ,${realizeParametersForChannel(channelParameters)}
-        `
-}
+      ${realizeParametersForChannelWrapper(channelParameters)}
       ): Promise<${getMessageType(receiveMessage)}> {
       return new Promise(async (resolve, reject) => {
         var timeout = undefined;

@@ -3,7 +3,7 @@ import { Publish } from '../../../components/test/publish';
 import { Subscribe } from '../../../components/test/subscribe';
 import { Reply } from '../../../components/test/reply';
 import { Request } from '../../../components/test/request';
-import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/general';
+import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
 
 function getTestCode(channel, channelName, params) {
   let testMethod;

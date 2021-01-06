@@ -237,7 +237,7 @@
      */
      public requestStreetlightStreetlightIdCommandTurnon(
        requestMessage:TurnonCommandMessage.TurnonCommand 
-       ,streetlight_id: string
+        ,streetlight_id: string
      ): Promise<GeneralReplyMessage.GeneralReply> {
       
 
@@ -264,9 +264,7 @@
          onRequest : (
            err?: NatsTypescriptTemplateError, 
            msg?: AnonymousMessage4Message.AnonymousMessage4
-           
-            ,streetlight_id?: string
-            
+           ,streetlight_id?: string
          ) => Promise<GeneralReplyMessage.GeneralReply>, 
          onReplyError : (err: NatsTypescriptTemplateError) => void 
          ,streetlight_id: string, 

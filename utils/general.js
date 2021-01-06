@@ -1,13 +1,10 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 export function camelCase(string) {
   return _.camelCase(string);
 }
 export function pascalCase(string) {
   string = _.camelCase(string);
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-export function firstUpperCase(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 export function kebabCase(string) {
@@ -151,60 +148,6 @@ export function castToTsType(jsonSchemaType, variableToCast) {
     return `Boolean(${variableToCast})`;
   default: throw new Error(`Parameter type not supported - ${  jsonSchemaType}`);
   }
-}
-
-/**
- * Convert RFC 6570 URI with parameters to NATS topic. 
- */
-export function realizeChannelName(parameters, channelName) {
-  let returnString = `\`${  channelName  }\``;
-  returnString = returnString.replace(/\//g, '.');
-  for (const paramName in parameters) {
-    returnString = returnString.replace(`{${paramName}}`, `\${${paramName}}`);
-  }
-  return returnString;
-}
-
-export function realizeChannelNameWithoutParameters(channelName) {
-  return realizeChannelName(null, channelName);
-}
-
-/**
- * Realize parameters without using types and without trailing comma
- */
-export function realizeParametersForChannelWithoutType(parameters) {
-  let returnString = '';
-  for (const paramName in parameters) {
-    returnString += `${realizeParameterForChannelWithoutType(paramName)},`;
-  }
-  if (returnString.length >= 1) {
-    returnString = returnString.slice(0, -1);
-  }
-  return returnString;
-}
-
-export function realizeParameterForChannelWithoutType(parameterName) {
-  return `${parameterName}`;
-}
-export function realizeParameterForChannelWithType(parameterName, parameter, required = true) {
-  const requiredType = !required ? '?' : '';
-  return `${parameterName}${requiredType}: ${toTsType(
-    parameter.schema().type()
-  )}`;
-}
-
-/**
- * Realize parameters using types without trailing comma
- */
-export function realizeParametersForChannel(parameters, required = true) {
-  let returnString = '';
-  for (const paramName in parameters) {
-    returnString += `${realizeParameterForChannelWithType(paramName, parameters[`${paramName}`], required)  },`;
-  }
-  if (returnString.length >= 1) {
-    returnString = returnString.slice(0, -1);
-  }
-  return returnString;
 }
 
 /**

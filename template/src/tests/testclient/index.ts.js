@@ -5,7 +5,7 @@ import { Publish } from '../../../../components/index/publish';
 import { Subscribe } from '../../../../components/index/subscribe';
 import { Reply } from '../../../../components/index/reply';
 import { Request } from '../../../../components/index/request';
-import { camelCase, pascalCase, firstUpperCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../../utils/general';
+import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../../utils/index';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 function getChannelWrappers(asyncapi, params) {
@@ -60,7 +60,7 @@ export default function indexFile({ asyncapi, params }) {
   let channelImport = asyncapi.channels();
   channelImport = Object.keys(channelImport).length ? Object.entries(channelImport).map(([channelName, _]) => {
     return `
-      import * as ${camelCase(channelName)}Channel from "./testchannels/${firstUpperCase(pascalCase(channelName))}";
+      import * as ${camelCase(channelName)}Channel from "./testchannels/${pascalCase(channelName)}";
       export {${camelCase(channelName)}Channel};
     `;
   }) : '';

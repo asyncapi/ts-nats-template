@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannel, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/general';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/index';
 export function Publish(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return `
         /**
@@ -7,10 +7,7 @@ export function Publish(defaultContentType, channelName, message, messageDescrip
         */
         public publishTo${pascalCase(channelName)}(
             requestMessage: ${getMessageType(message)} 
-            ${
-  Object.keys(channelParameters).length ? 
-    `,${realizeParametersForChannel(channelParameters)}` : ''
-}
+            ${realizeParametersForChannelWrapper(channelParameters)}
         ): Promise<void> {
             ${
   isBinaryPayload(message.contentType(), defaultContentType) ? 

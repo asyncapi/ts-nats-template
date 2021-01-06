@@ -1,5 +1,5 @@
 
-import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '../../utils/general';
+import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '../../utils/index';
 export function unwrap(channelName, channelParameters) {
   let parameterSplit = '';
   let prevParameterName = null;

@@ -3,7 +3,7 @@ import { Publish } from '../../../components/channel/publish';
 import { Subscribe } from '../../../components/channel/subscribe';
 import { Reply } from '../../../components/channel/reply';
 import { Request } from '../../../components/channel/request';
-import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHasNotNullPayload} from '../../../utils/general';
+import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHasNotNullPayload} from '../../../utils/index';
 
 function getChannelCode(asyncapi, channel, channelName, params) {
   let channelcode;

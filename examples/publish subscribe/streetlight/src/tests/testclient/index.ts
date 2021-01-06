@@ -260,10 +260,8 @@
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
         msg?: AnonymousMessage2Message.AnonymousMessage2
-        , streetlight_id?: string) => void
-      
-        ,streetlight_id: string
-        ,
+        ,streetlight_id?: string) => void
+      ,streetlight_id: string,
       flush?: boolean,
       options?: SubscriptionOptions
     ): Promise<Subscription> {

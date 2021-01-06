@@ -1,4 +1,4 @@
-import { containsBinaryPayload, containsStringPayload, containsJsonPayload} from '../../utils/general';
+import { containsBinaryPayload, containsStringPayload, containsJsonPayload} from '../../utils/index';
 export function Standard(asyncapi) {
   return `
         private jsonClient?: Client;

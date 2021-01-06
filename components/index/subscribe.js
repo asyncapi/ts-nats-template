@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannel, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/general';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/index';
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return  `
   /**
@@ -9,16 +9,8 @@ export function Subscribe(defaultContentType, channelName, message, messageDescr
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
         msg?: ${getMessageType(message)}
-        ${ 
-  Object.keys(channelParameters).length ? 
-    `, ${realizeParametersForChannel(channelParameters, false)}` : ''
-}) => void
-      ${
-  Object.keys(channelParameters).length ? 
-    `
-        ,${realizeParametersForChannel(channelParameters)}
-        ` : ''
-},
+        ${realizeParametersForChannelWrapper(channelParameters, false)}) => void
+      ${realizeParametersForChannelWrapper(channelParameters)},
       flush?: boolean,
       options?: SubscriptionOptions
     ): Promise<Subscription> {

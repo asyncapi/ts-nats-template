@@ -1,7 +1,7 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
-import { realizeChannelName, camelCase, hasNatsBindings, messageHasNotNullPayload, getMessageType, realizeParametersForChannel} from '../../utils/general';
+import { realizeChannelName, camelCase, hasNatsBindings, messageHasNotNullPayload, getMessageType, realizeParametersForChannel, realizeParametersForChannelWrapper} from '../../utils/index';
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params) {
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
@@ -12,18 +12,11 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       onRequest : (
         err?: NatsTypescriptTemplateError, 
         msg?: ${getMessageType(receiveMessage)}
-        ${
-  Object.keys(channelParameters).length && 
-         `
-         ,${realizeParametersForChannel(channelParameters, false)}
-         `
-}
+        ${realizeParametersForChannelWrapper(channelParameters, false)}
       ) => ${params.promisifyReplyCallback.length && 'Promise<'}${getMessageType(replyMessage)}${ params.promisifyReplyCallback.length && '>'}, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
-      nc: Client         
-      ${ Object.keys(channelParameters).length && 
-        `,${realizeParametersForChannel(channelParameters)}`
-}, 
+      nc: Client
+      ${realizeParametersForChannelWrapper(channelParameters)}, 
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {

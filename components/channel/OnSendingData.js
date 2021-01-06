@@ -1,5 +1,5 @@
 
-import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/general';
+import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/index';
 export function OnSendingData(message, defaultContentType) {
   const messageName = pascalCase(message.uid());
   return `

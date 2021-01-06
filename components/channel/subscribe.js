@@ -1,27 +1,20 @@
 import { OnReceivingData } from './OnReceivingData';
-import { realizeChannelName, camelCase, getMessageType, hasNatsBindings, realizeParametersForChannel, messageHasNotNullPayload} from '../../utils/general';
+import { realizeChannelName, camelCase, getMessageType, hasNatsBindings, messageHasNotNullPayload, realizeParametersForChannelWrapper} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
 export function Subscribe(defaultContentType, channelName, message, channelParameters) {
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
     return `${camelCase(parameterName)}Param`;
   });
+  
   return `
     export function subscribe(
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
         msg?: ${getMessageType(message)}
-        ${ 
-  Object.keys(channelParameters).length ?
-    `, ${realizeParametersForChannel(channelParameters, false)}` : ''
-}) => void, 
+        ${realizeParametersForChannelWrapper(channelParameters, false)}) => void, 
       nc: Client
-      ${
-  Object.keys(channelParameters).length && 
-        `
-        ,${realizeParametersForChannel(channelParameters)}
-        `
-},
+      ${realizeParametersForChannelWrapper(channelParameters)},
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {

@@ -14,12 +14,10 @@
       onRequest : (
         err?: NatsTypescriptTemplateError, 
         msg?: AnonymousMessage4Message.AnonymousMessage4
-        
-         ,streetlight_id?: string
-         
+        ,streetlight_id?: string
       ) => Promise<GeneralReplyMessage.GeneralReply>, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
-      nc: Client         
+      nc: Client
       ,streetlight_id: string, 
       options?: SubscriptionOptions
     ): Promise<Subscription> {

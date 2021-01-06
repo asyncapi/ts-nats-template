@@ -12,11 +12,9 @@
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
         msg?: TurnonCommandMessage.TurnonCommand
-        , streetlight_id?: string) => void, 
+        ,streetlight_id?: string) => void, 
       nc: Client
-      
-        ,streetlight_id: string
-        ,
+      ,streetlight_id: string,
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {

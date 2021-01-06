@@ -1,5 +1,5 @@
 
-import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/general';
+import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/index';
 export function OnReceivingData(message, defaultContentType) {
   return `
 try {
