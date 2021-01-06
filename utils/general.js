@@ -70,7 +70,7 @@ function containsPayloadInDocument(document, payload) {
   if (channels !== undefined) {
     for (const key in document.channels()) {
       if (Object.hasOwnProperty.call(document.channels(), key)) {
-        const channel = document.channels()[key];
+        const channel = document.channels()[`${key}`];
         if (
           (channel.hasPublish() &&
             channel
@@ -199,7 +199,7 @@ export function realizeParameterForChannelWithType(parameterName, parameter, req
 export function realizeParametersForChannel(parameters, required = true) {
   let returnString = '';
   for (const paramName in parameters) {
-    returnString += `${realizeParameterForChannelWithType(paramName, parameters[paramName], required)  },`;
+    returnString += `${realizeParameterForChannelWithType(paramName, parameters[`${paramName}`], required)  },`;
   }
   if (returnString.length >= 1) {
     returnString = returnString.slice(0, -1);
