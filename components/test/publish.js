@@ -6,14 +6,14 @@ export function Publish(channelName, message, channelParameters) {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
     var receivedMsg: Client.${getMessageType(message)} | undefined = undefined;
     ${
-  channelParameters.map(([paramName, param]) => {
+  Object.entries(channelParameters).map(([paramName, param]) => {
     return `var recieved${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined`;
   }).join('')
 }
     
     var publishMessage: TestClient.${getMessageType(message)} = ${generateExample(message.payload().json())};
     ${
-  channelParameters.map(([paramName, param]) => {
+  Object.entries(channelParameters).map(([paramName, param]) => {
     return `var ${pascalCase(paramName)}ToSend: ${toTsType(param.schema().type())} = ${generateExample(param.schema().json())}`;
   }).join('')
 }
@@ -27,13 +27,13 @@ export function Publish(channelName, message, channelParameters) {
             receivedError = err;
             receivedMsg = msg;
             ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))} = ${paramName}`;
   }).join('')
 }
         }
         ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `, ${pascalCase(paramName)}ToSend`;
   }).join('')
 },
@@ -55,14 +55,14 @@ export function Publish(channelName, message, channelParameters) {
     });
     await client.publishTo${pascalCase(channelName)}(publishMessage 
       ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `, ${pascalCase(paramName)}ToSend`;
   }).join('')
 });
     await tryAndWaitForResponse;
     expect(receivedError).to.be.undefined;
     ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `expect(recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))}).to.be.equal(${pascalCase(paramName)}ToSend);`;
   }).join('')
 }

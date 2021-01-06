@@ -2,9 +2,9 @@ import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
 import { realizeChannelName, camelCase, hasNatsBindings, messageHasNotNullPayload, getMessageType, realizeParametersForChannel} from '../../utils/general';
-export function Reply(channelName, channelParameters, replyMessage, receiveMessage, params, defaultContentType) {
+export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params) {
   let parameters = [];
-  parameters = channelParameters.map(([parameterName, _]) => {
+  parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
     return `${camelCase(parameterName)}Param`;
   });
   return `

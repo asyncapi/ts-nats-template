@@ -3,7 +3,7 @@ import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '..
 export function unwrap(channelName, channelParameters) {
   let parameterSplit = '';
   let prevParameterName = null;
-  parameterSplit = channelParameters.map(([parameterName, _]) => {
+  parameterSplit = Object.entries(channelParameters).map(([parameterName, _]) => {
     let toReturn;
     const parameterCamelCase = camelCase(parameterName);
     if (prevParameterName) {
@@ -16,7 +16,7 @@ export function unwrap(channelName, channelParameters) {
   });
 
   let splits = '';
-  splits = channelParameters.map(([parameterName, _], index) => {
+  splits = Object.entries(channelParameters).map(([parameterName, _], index) => {
     if (index+1 === Object.keys(channelParameters).length) {
       return `
 			${camelCase(parameterName)}Split[0],
@@ -30,8 +30,8 @@ export function unwrap(channelName, channelParameters) {
 
   prevParameterName = null;
   let parameterReplacement = '';
-  parameterReplacement = channelParameters.map(([parameterName, parameter], index) => {
-    let channelSplit = `channel = channel.substring(${prevParameterName}}End+splits[${index}].length);`;
+  parameterReplacement = Object.entries(channelParameters).map(([parameterName, parameter], index) => {
+    let channelSplit = `channel = channel.substring(${prevParameterName}End+splits[${index}].length);`;
     if (index === 0) {
       channelSplit = `channel = channel.substring(splits[${index}].length);`;
     }
@@ -40,8 +40,8 @@ export function unwrap(channelName, channelParameters) {
     prevParameterName = camelCase(parameterName);
     return `
 			${channelSplit}
+			var ${camelCase(parameterName)}End = channel.indexOf(splits[${index+1}]);
 			${paramVarToCast}
-			var ${camelCase(parameterName)}End = channel.indexOf(splits[${index+1}}]);
 			var ${camelCase(parameterName)}Param = ${castToTsType(parameter.schema().type(), paramVarToCast)};
 		`;
   });

@@ -6,7 +6,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
     var receivedMsg: TestClient.${getMessageType(receiveMessage)} | undefined = undefined;
 
     ${
-  channelParameters.map(([paramName, param]) => {
+  Object.entries(channelParameters).map(([paramName, param]) => {
     return `var recieved${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined`;
   }).join('')
 }
@@ -14,7 +14,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
     var replyMessage: Client.${getMessageType(replyMessage)} = ${generateExample(replyMessage.payload().json())};
     var receiveMessage: TestClient.${getMessageType(receiveMessage)} = ${generateExample(receiveMessage.payload().json())};
     ${
-  channelParameters.map(([paramName, param]) => {
+  Object.entries(channelParameters).map(([paramName, param]) => {
     return `var ${pascalCase(paramName)}ToSend: ${toTsType(param.schema().type())} = ${generateExample(param.schema().json())}`;
   }).join('')
 }
@@ -29,7 +29,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
             receivedError = err;
             receivedMsg = msg;
             ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))} = ${paramName}`;
   }).join('')
 }
@@ -37,7 +37,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
         })},
         (err) => {console.log(err)}
         ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `, ${pascalCase(paramName)}ToSend`;
   }).join('')
 },
@@ -45,7 +45,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
     );
     var reply = await testClient.request${pascalCase(channelName)}(receiveMessage 
         ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `, ${pascalCase(paramName)}ToSend`;
   }).join('')
 });
@@ -53,7 +53,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
     expect(receivedError).to.be.undefined;
     expect(receivedMsg).to.be.deep.equal(receiveMessage);
     ${
-  channelParameters.map(([paramName, _]) => {
+  Object.entries(channelParameters).map(([paramName, _]) => {
     return `expect(recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))}).to.be.equal(${pascalCase(paramName)}ToSend);`;
   }).join('')
 }

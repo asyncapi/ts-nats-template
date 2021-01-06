@@ -27,10 +27,9 @@ export function OnSendingData(message, defaultContentType) {
 			}
 			` : ''
 }
-	  } catch(e){
+	  } catch(e) {
 		const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
 		throw error;
 	  }
-	  
 	`;
 }

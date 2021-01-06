@@ -1,6 +1,6 @@
 import { OnSendingData } from './OnSendingData';
 import { realizeChannelName, getMessageType, realizeParametersForChannel, messageHasNotNullPayload } from '../../utils/general';
-export function Publish(channelName, channelParameters, message, defaultContentType) {
+export function Publish(defaultContentType, channelName, message, channelParameters) {
   return `
     export function publish(
         message: ${getMessageType(message)},
@@ -13,10 +13,11 @@ export function Publish(channelName, channelParameters, message, defaultContentT
         ): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
           try{
-              ${messageHasNotNullPayload(message.payload())
+              ${
+  messageHasNotNullPayload(message.payload())
     ?
     `
-                ${OnSendingData(message, defaultContentType)}}
+                ${OnSendingData(message, defaultContentType)}
                 await nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);
                 `
     :

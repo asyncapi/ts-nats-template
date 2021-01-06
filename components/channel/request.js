@@ -1,7 +1,7 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { realizeChannelName, getMessageType, realizeParametersForChannel, hasNatsBindings, messageHasNotNullPayload, } from '../../utils/general';
-export function Request(channelName, channelParameters, requestMessage, receiveMessage, defaultContentType) {
+export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
   return `
     export function request(
       message: ${getMessageType(requestMessage)},

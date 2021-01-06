@@ -1,9 +1,9 @@
 import { OnReceivingData } from './OnReceivingData';
 import { realizeChannelName, camelCase, getMessageType, hasNatsBindings, realizeParametersForChannel, messageHasNotNullPayload} from '../../utils/general';
 import { unwrap } from './ChannelParameterUnwrap';
-export function Subscribe(channelName, channelParameters, message, defaultContentType) {
+export function Subscribe(defaultContentType, channelName, message, channelParameters) {
   let parameters = [];
-  parameters = channelParameters.map(([parameterName]) => {
+  parameters = Object.entries(channelParameters).map(([parameterName]) => {
     return `${camelCase(parameterName)}Param`;
   });
   return `

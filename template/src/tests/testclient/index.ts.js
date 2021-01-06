@@ -79,7 +79,7 @@ export default function indexFile({ asyncapi, params }) {
       {
         `
         import {fromSeed} from 'ts-nkeys';
-        import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
+        import {ErrorCode, NatsTypescriptTemplateError} from '../../NatsTypescriptTemplateError';
         import { 
           Client, 
           NatsConnectionOptions, 
