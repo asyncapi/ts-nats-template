@@ -236,11 +236,8 @@
             requestMessage: TurnonCommandMessage.TurnonCommand 
             ,streetlight_id: string
         ): Promise<void> {
-            
-
-            
-
             const nc: Client = this.jsonClient!;
+
             if(nc) {
                 return streetlightStreetlightIdCommandTurnonChannel.publish(
                     requestMessage, 
@@ -266,10 +263,6 @@
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {
-      
-
-      
-
       const nc: Client = this.jsonClient!;
 
       if(nc){

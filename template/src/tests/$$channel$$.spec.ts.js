@@ -32,7 +32,8 @@ function getTestCode(channel, channelName, params) {
       testMethod = Publish(
         channelName, 
         channel.subscribe().message(0), 
-        channel.parameters());
+        channel.parameters(),
+        params);
     }
     if (channel.hasPublish()) {
       testMethod = Subscribe(

@@ -40,7 +40,7 @@ describe('streetlight/{streetlight_id}/command/turnon can talk to it self', () =
         return new Promise((resolve, reject) => {
             receivedError = err;
             receivedMsg = msg;
-            recievedStreetlightId = streetlight_id
+recievedStreetlightId = streetlight_id
             resolve(replyMessage);
         })},
         (err) => {console.log(err)}

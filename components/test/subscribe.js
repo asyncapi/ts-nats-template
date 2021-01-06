@@ -1,6 +1,6 @@
 import {generateExample} from '@asyncapi/generator-filters';
 import { pascalCase, toTsType, getMessageType, realizeParametersForChannelWithoutType, realizeParameterForChannelWithoutType} from '../../utils/index';
-export function Subscribe(channelName, message, channelParameters) {
+export function Subscribe(channelName, message, channelParameters, params) {
   return `
 
     var receivedError: NatsTypescriptTemplateError | undefined = undefined; 

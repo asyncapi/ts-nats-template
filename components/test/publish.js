@@ -1,5 +1,5 @@
 import {generateExample} from '@asyncapi/generator-filters';
-import { pascalCase, getMessageType, realizeParametersForChannelWithoutType, toTsType, realizeParameterForChannelWithoutType} from '../../utils/index';
+import { pascalCase, getMessageType, realizeParametersForChannelWithoutType, toTsType, realizeParameterForChannelWithoutType, shouldPromisfyCallbacks} from '../../utils/index';
 export function Publish(channelName, message, channelParameters) {
   return `
 

@@ -1,6 +1,7 @@
 import {generateExample} from '@asyncapi/generator-filters';
 import { pascalCase, getMessageType, realizeParametersForChannelWithoutType, toTsType, realizeParameterForChannelWithoutType} from '../../utils/index';
-export function Reply(channelName, replyMessage, receiveMessage, channelParameters) {
+
+export function Reply(channelName, replyMessage, receiveMessage, channelParameters, params) {
   return `
     var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
     var receivedMsg: TestClient.${getMessageType(receiveMessage)} | undefined = undefined;
@@ -28,7 +29,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
         return new Promise((resolve, reject) => {
             receivedError = err;
             receivedMsg = msg;
-            ${
+${
   Object.entries(channelParameters).map(([paramName, _]) => {
     return `recieved${pascalCase(realizeParameterForChannelWithoutType(paramName))} = ${paramName}`;
   }).join('')

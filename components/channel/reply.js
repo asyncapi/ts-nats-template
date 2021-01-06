@@ -1,19 +1,47 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
-import { realizeChannelName, camelCase, hasNatsBindings, messageHasNotNullPayload, getMessageType, realizeParametersForChannel, realizeParametersForChannelWrapper} from '../../utils/index';
+import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisfyCallbacks } from '../../utils/index';
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params) {
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
     return `${camelCase(parameterName)}Param`;
   });
+
+  let whenRecievingRequest = `let message = ${shouldPromisfyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
+  if (messageHasNotNullPayload(replyMessage.payload())) {
+    whenRecievingRequest =  `
+    try{
+      ${OnReceivingData(receiveMessage, defaultContentType)}
+    }catch(e){
+      onReplyError(e)
+      return;
+    }
+    let message = ${shouldPromisfyCallbacks(params) ? 'await' : ''} onRequest(undefined, receivedData ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
+    `;
+  }
+
+  let whenSendingReply = 'await nc.publish(msg.reply, null);';
+  if (messageHasNotNullPayload(replyMessage.payload())) {
+    whenSendingReply = `
+    try{
+      ${OnSendingData(replyMessage, defaultContentType)}
+    }catch(e){
+      onReplyError(e)
+      return;
+    }
+    
+    await nc.publish(msg.reply, dataToSend);
+    `;
+  }
+  
   return `
     export function reply(
       onRequest : (
         err?: NatsTypescriptTemplateError, 
         msg?: ${getMessageType(receiveMessage)}
         ${realizeParametersForChannelWrapper(channelParameters, false)}
-      ) => ${params.promisifyReplyCallback.length && 'Promise<'}${getMessageType(replyMessage)}${ params.promisifyReplyCallback.length && '>'}, 
+      ) => ${shouldPromisfyCallbacks(params) ? 'Promise<' : ''}${getMessageType(replyMessage)}${ shouldPromisfyCallbacks(params) ? '>' : ''}, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
       nc: Client
       ${realizeParametersForChannelWrapper(channelParameters)}, 
@@ -23,66 +51,19 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       try {
         let subscribeOptions: SubscriptionOptions = {... options};
         
-        ${
-  hasNatsBindings(replyMessage) && replyMessage.bindings().nats().queue() &&
-          `
-          //If queue
-          subscribeOptions.queue = '${replyMessage.bindings().nats().queue()}';
-          `
-}
-        ${
-  hasNatsBindings(replyMessage) && replyMessage.bindings().nats().unsubAfter() &&
-          `
-          //If unsubafter
-          subscribeOptions.max = ${replyMessage.bindings().nats().unsubAfter()};
-          `
-}
+        ${includeQueueForSubscription(replyMessage)}
+        ${includeUnsubAfterForSubscription(replyMessage)}
   
-        let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, ${params.promisifyReplyCallback.length && 'async'} (err, msg) => {
+        let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisfyCallbacks(params) ? 'async' : ''} (err, msg) => {
           if (err) {
             onRequest(err);
           } else {
-            ${
-  Object.keys(channelParameters).length ? 
-    unwrap(channelName, channelParameters) : ''
-}
+            ${unwrap(channelName, channelParameters)}
             
-            ${
-  messageHasNotNullPayload(replyMessage.payload()) 
-    ? `
-              try{
-                ${OnReceivingData(receiveMessage, defaultContentType)}
-              }catch(e){
-                onReplyError(e)
-                return;
-              }
-              let message = ${params.promisifyReplyCallback.length && 'await'} onRequest(undefined, receivedData ${parameters.length > 0 && `, ${parameters.join(',')}`});
-              `
-    : 
-    `
-              let message = ${params.promisifyReplyCallback.length && 'await'} onRequest(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});
-              `
-}
+            ${whenRecievingRequest}
 
             if (msg.reply) {
-
-              ${
-  messageHasNotNullPayload(replyMessage.payload()) 
-    ? `
-                try{
-                  ${OnSendingData(replyMessage, defaultContentType)}
-                }catch(e){
-                  onReplyError(e)
-                  return;
-                }
-                
-                await nc.publish(msg.reply, dataToSend);
-                `
-    : 
-    `
-                await nc.publish(msg.reply, null);
-                `
-}
+              ${whenSendingReply}
             } else {
               let error = new NatsTypescriptTemplateError('Expected request to need a reply, did not..', '000');
               onReplyError(error)

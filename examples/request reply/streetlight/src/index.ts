@@ -255,11 +255,6 @@
          options?: SubscriptionOptions
        ): Promise<Subscription> {
        return new Promise(async (resolve, reject) => {
-
-        
-
-        
-
         const nc: Client = this.jsonClient!;
          if (nc) {
            try {
@@ -294,10 +289,6 @@
        requestMessage:AnonymousMessage4Message.AnonymousMessage4 
         ,streetlight_id: string
      ): Promise<GeneralReplyMessage.GeneralReply> {
-      
-
-      
-
       const nc: Client = this.jsonClient!;
        if(nc){
          return streetlightStreetlightIdEventTurnonChannel.request(

@@ -23,9 +23,7 @@
 		for(let hook of beforeSendingHooks){
 		  dataToSend = hook(dataToSend);
 		}
-
 		
-
 		
 	  } catch(e) {
 		const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);

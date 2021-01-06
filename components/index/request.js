@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType} from '../../utils/index';
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, messageDescription, channelParameters) {
   return `
     /**
@@ -9,20 +9,7 @@ export function Request(defaultContentType, channelName, requestMessage, replyMe
        requestMessage:${getMessageType(requestMessage)} 
         ${realizeParametersForChannelWrapper(channelParameters)}
      ): Promise<${getMessageType(replyMessage)}> {
-      ${
-  isBinaryPayload(requestMessage.contentType(), defaultContentType) ?
-    'const nc: Client = this.binaryClient!;' : ''
-}
-
-      ${
-  isStringPayload(requestMessage.contentType(), defaultContentType) ?
-    'const nc: Client = this.stringClient!;' : ''
-}
-
-      ${
-  isJsonPayload(requestMessage.contentType(), defaultContentType) ?
-    'const nc: Client = this.jsonClient!;' : ''
-}
+      ${getClientToUse(requestMessage, defaultContentType)}
        if(nc){
          return ${camelCase(channelName)}Channel.request(
            requestMessage, 

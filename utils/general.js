@@ -1,4 +1,7 @@
 import _ from 'lodash';
+export function shouldPromisfyCallbacks(params) {
+  return params.promisifyReplyCallback;
+}
 
 export function camelCase(string) {
   return _.camelCase(string);
@@ -35,6 +38,18 @@ export function isStringPayload(messageContentType, defaultContentType) {
 }
 export function isJsonPayload(messageContentType, defaultContentType) {
   return containsPayload(messageContentType, defaultContentType, 'json');
+}
+
+export function getClientToUse(message, defaultContentType) {
+  if (isBinaryPayload(message.contentType(), defaultContentType)) {
+    return 'const nc: Client = this.binaryClient!;';
+  } else if (isStringPayload(message.contentType(), defaultContentType)) {
+    return 'const nc: Client = this.stringClient!;';
+  } else if (isJsonPayload(message.contentType(), defaultContentType)) {
+    return 'const nc: Client = this.jsonClient!;';
+  } 
+  //Default to JSON client
+  return 'const nc: Client = this.jsonClient!;';
 }
 
 export function messageHasNotNullPayload(messagePayload) {
@@ -148,71 +163,4 @@ export function castToTsType(jsonSchemaType, variableToCast) {
     return `Boolean(${variableToCast})`;
   default: throw new Error(`Parameter type not supported - ${  jsonSchemaType}`);
   }
-}
-
-/**
- * Does an object have bindings
- */
-export function hasNatsBindings(obj) {
-  return obj.bindings && obj.bindings.nats;
-}
-
-/**
- * is the channel a publish and subscribe type if nothing is specified default to being pubsub type 
- */
-export function isPubsub(channel) {
-  const tempChannel = channel._json;
-  if (
-    !tempChannel.bindings || 
-    !tempChannel.bindings.nats ||
-    !tempChannel.bindings.nats.is || 
-    tempChannel.bindings.nats.is === 'pubsub') {
-    return true;
-  }
-  return false;
-}
-
-/**
- * is the channel a request and reply
- */
-export function isRequestReply(channel) {
-  const tempChannel = channel._json;
-  if (
-    tempChannel.bindings &&
-    tempChannel.bindings.nats &&
-    tempChannel.bindings.nats.is === 'requestReply'
-  ) {
-    return true;
-  }
-  return false;
-}
-
-/**
- * Is the request reply a requester
- */
-export function isRequester(channel) {
-  const tempChannel = channel._json;
-  if (
-    isRequestReply(channel) &&
-    tempChannel.bindings.nats.requestReply &&
-    tempChannel.bindings.nats.requestReply.is === 'requester'
-  ) {
-    return true;
-  }
-  return false;
-}
-
-/**
- * Is the request reply a replier
- */
-export function isReplier(channel) {
-  const tempChannel = channel._json;
-  if (
-    isRequestReply(channel) &&
-    tempChannel.bindings.nats.requestReply &&
-    tempChannel.bindings.nats.requestReply.is === 'replier'
-  ) {
-    return true;
-  }
-  return false;
 }

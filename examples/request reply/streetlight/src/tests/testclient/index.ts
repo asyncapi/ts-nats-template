@@ -239,10 +239,6 @@
        requestMessage:TurnonCommandMessage.TurnonCommand 
         ,streetlight_id: string
      ): Promise<GeneralReplyMessage.GeneralReply> {
-      
-
-      
-
       const nc: Client = this.jsonClient!;
        if(nc){
          return streetlightStreetlightIdCommandTurnonChannel.request(
@@ -272,11 +268,6 @@
          options?: SubscriptionOptions
        ): Promise<Subscription> {
        return new Promise(async (resolve, reject) => {
-
-        
-
-        
-
         const nc: Client = this.jsonClient!;
          if (nc) {
            try {

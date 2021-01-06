@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType} from '../../utils/index';
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return  `
   /**
@@ -15,20 +15,7 @@ export function Subscribe(defaultContentType, channelName, message, messageDescr
       options?: SubscriptionOptions
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {
-      ${
-  isBinaryPayload(message.contentType(), defaultContentType) ?
-    'const nc: Client = this.binaryClient!;' : ''
-}
-
-      ${
-  isStringPayload(message.contentType(), defaultContentType) ? 
-    'const nc: Client = this.stringClient!;' : ''
-}
-
-      ${
-  isJsonPayload(message.contentType(), defaultContentType) ? 
-    'const nc: Client = this.jsonClient!;' : ''
-}
+      ${getClientToUse(message, defaultContentType)}
 
       if(nc){
         try{

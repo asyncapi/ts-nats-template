@@ -25,34 +25,34 @@
       try {
         let subscribeOptions: SubscriptionOptions = {... options};
         
-        undefined
-        undefined
+        
+        
   
         let subscription = await nc.subscribe(`streetlight.${streetlight_id}.command.turnon`, async (err, msg) => {
           if (err) {
             onRequest(err);
           } else {
             
-		var unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
-		var channel = msg.subject;
-		var streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
-		const splits = [
-			
+  var unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
+  var channel = msg.subject;
+  var streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
+  const splits = [
+    
 			streetlightIdSplit[0],
 			streetlightIdSplit[1]
 			
-		];
-		
+  ];
+  
 			channel = channel.substring(splits[0].length);
 			var streetlightIdEnd = channel.indexOf(splits[1]);
 			channel.substring(0, streetlightIdEnd)
 			var streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
 		
-		
+  
             
             
-              try{
-                
+    try{
+      
 try {
 	let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
 	var receivedData : any = msg.data;
@@ -60,47 +60,44 @@ try {
 		receivedData = hook(receivedData);
 	}
 	
-
 	
+
 } catch (e) {
 	const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
 	throw error;
 }
 	
-              }catch(e){
-                onReplyError(e)
-                return;
-              }
-              let message = await onRequest(undefined, receivedData , streetlightIdParam);
-              
+    }catch(e){
+      onReplyError(e)
+      return;
+    }
+    let message = await onRequest(undefined, receivedData , streetlightIdParam);
+    
 
             if (msg.reply) {
-
               
-                try{
-                  
+    try{
+      
 	try {
 		let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
 		var dataToSend : any = message;
 		for(let hook of beforeSendingHooks){
 		  dataToSend = hook(dataToSend);
 		}
-
 		
-
 		
 	  } catch(e) {
 		const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
 		throw error;
 	  }
 	
-                }catch(e){
-                  onReplyError(e)
-                  return;
-                }
-                
-                await nc.publish(msg.reply, dataToSend);
-                
+    }catch(e){
+      onReplyError(e)
+      return;
+    }
+    
+    await nc.publish(msg.reply, dataToSend);
+    
             } else {
               let error = new NatsTypescriptTemplateError('Expected request to need a reply, did not..', '000');
               onReplyError(error)

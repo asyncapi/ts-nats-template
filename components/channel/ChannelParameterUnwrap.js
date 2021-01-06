@@ -1,6 +1,9 @@
 
 import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '../../utils/index';
 export function unwrap(channelName, channelParameters) {
+  if (Object.keys(channelParameters).length === 0) {
+    return '';
+  }
   let parameterSplit = '';
   let prevParameterName = null;
   parameterSplit = Object.entries(channelParameters).map(([parameterName, _]) => {
@@ -46,16 +49,13 @@ export function unwrap(channelName, channelParameters) {
 		`;
   });
 
-  if (Object.keys(channelParameters).length) {
-    return `
-		var unmodifiedChannel = ${realizeChannelNameWithoutParameters(channelName)};
-		var channel = msg.subject;
-		${parameterSplit.join('')}
-		const splits = [
-			${splits.join('')}
-		];
-		${parameterReplacement.join('')}
-		`;
-  } 
-  return '';
+  return `
+  var unmodifiedChannel = ${realizeChannelNameWithoutParameters(channelName)};
+  var channel = msg.subject;
+  ${parameterSplit.join('')}
+  const splits = [
+    ${splits.join('')}
+  ];
+  ${parameterReplacement.join('')}
+  `;
 }

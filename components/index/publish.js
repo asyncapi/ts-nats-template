@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, isBinaryPayload, isStringPayload, isJsonPayload, realizeParametersForChannelWithoutType} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, realizeParametersForChannelWithoutType, getClientToUse} from '../../utils/index';
 export function Publish(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return `
         /**
@@ -9,20 +9,8 @@ export function Publish(defaultContentType, channelName, message, messageDescrip
             requestMessage: ${getMessageType(message)} 
             ${realizeParametersForChannelWrapper(channelParameters)}
         ): Promise<void> {
-            ${
-  isBinaryPayload(message.contentType(), defaultContentType) ? 
-    'const nc: Client = this.binaryClient!;' : ''
-}
+            ${getClientToUse(message, defaultContentType)}
 
-            ${
-  isStringPayload(message.contentType(), defaultContentType) ?
-    'const nc: Client = this.stringClient!;' : ''
-}
-
-            ${
-  isJsonPayload(message.contentType(), defaultContentType) ?
-    'const nc: Client = this.jsonClient!;' : ''
-}
             if(nc) {
                 return ${camelCase(channelName)}Channel.publish(
                     requestMessage, 
