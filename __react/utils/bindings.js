@@ -7,7 +7,7 @@
  */
 export function includeUnsubAfterForSubscription(message) {
   if (message.hasBinding('nats') && message.bindings().nats.unsubAfter) {
-    return `subscribeOptions.max = '${message.bindings().nats.unsubAfter}';`;
+    return `subscribeOptions.max = '${message.binding('nats').unsubAfter}';`;
   }
   return '';
 }
