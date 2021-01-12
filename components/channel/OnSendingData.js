@@ -6,7 +6,7 @@ export function OnSendingData(message, defaultContentType) {
   if (isBinaryPayload(message.contentType(), defaultContentType)) {
     convertToBinary = `
       if(beforeSendingHooks.length == 0){
-      dataToSend = Buffer.from(${messageName}}Message.Convert.${messageName}ToJson(dataToSend));
+      dataToSend = Buffer.from(${messageName}Message.Convert.${messageName}ToJson(dataToSend));
       }
 		  `;
   }

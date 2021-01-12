@@ -4,7 +4,7 @@
       {
         "type": "node",
         "request": "launch",
-        "name": "Debug publish and subscribe example generation",
+        "name": "Debug request reply example generation",
         "timeout": 10000,
         "sourceMaps": true,
         "args": [
@@ -23,7 +23,7 @@
       {
         "type": "node",
         "request": "launch",
-        "name": "Debug request reply example generation",
+        "name": "Debug publish and subscribe example generation",
         "timeout": 10000,
         "sourceMaps": true,
         "args": [
