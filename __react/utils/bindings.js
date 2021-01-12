@@ -15,7 +15,7 @@ export function includeQueueForSubscription(message) {
  * Does an object have bindings
  */
 export function hasNatsBindings(obj) {
-  return obj.bindings && obj.bindings.nats;
+  return obj.bindings() && obj.bindings().nats();
 }
   
 /**
