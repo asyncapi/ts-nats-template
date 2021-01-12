@@ -1,7 +1,7 @@
 
 # Streetlight
 
-null
+
 
 
 Available nats encodings:

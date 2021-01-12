@@ -5,7 +5,7 @@ export default function readmeFile({ asyncapi }) {
       `
 # ${asyncapi.info().title() }
 
-${asyncapi.info().description() }
+${asyncapi.info().description() || ''}
 
 
 Available nats encodings:
