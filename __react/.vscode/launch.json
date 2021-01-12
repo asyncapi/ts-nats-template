@@ -1,0 +1,43 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug request reply example generation",
+        "timeout": 10000,
+        "sourceMaps": true,
+        "args": [
+          "./examples/request reply/streetlight.json",
+          "./",
+          "--output",
+          "./examples/request reply/streetlight",
+          "--force-write",
+          "--param",
+          "generateTestClient=true",
+          "--param",
+          "promisifyReplyCallback=true"
+        ],
+        "program": "./node_modules/@asyncapi/generator/cli.js"
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug publish and subscribe example generation",
+        "timeout": 10000,
+        "sourceMaps": true,
+        "args": [
+          "./examples/publish subscribe/streetlight.json",
+          "./",
+          "--output",
+          "./examples/publish subscribe/streetlight",
+          "--force-write",
+          "--param",
+          "generateTestClient=true",
+          "--param",
+          "promisifyReplyCallback=true"
+        ],
+        "program": "./node_modules/@asyncapi/generator/cli.js"
+      }
+    ]
+  }
