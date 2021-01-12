@@ -40,8 +40,8 @@ export function isPubsub(channel) {
  * Is the channel a request and reply.
  */
 export function isRequestReply(channel) {
-  if (!channel.hasBinding('nats') ||
-      !channel.binding('nats').is || 
+  if (channel.hasBinding('nats') &&
+      channel.binding('nats').is && 
       channel.binding('nats').is === 'requestReply') {
     return true;
   }
