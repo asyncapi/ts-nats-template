@@ -5,6 +5,14 @@ import { Reply } from '../../../components/channel/reply';
 import { Request } from '../../../components/channel/request';
 import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHasNotNullPayload} from '../../../utils/index';
 
+/**
+ * Return the correct channel component based on whether its `pubSub` or `requestReply`.
+ * 
+ * @param {*} asyncapi 
+ * @param {*} channel to determine the type of
+ * @param {*} channelName 
+ * @param {*} params
+ */
 function getChannelCode(asyncapi, channel, channelName, params) {
   let channelcode;
   if (isRequestReply(channel)) {
@@ -49,26 +57,27 @@ function getChannelCode(asyncapi, channel, channelName, params) {
 }
 
 export default function channelRender({ asyncapi, channelName, channel, params }) {
+  // Import the correct messages
+  let publishMessageImport = '';
+  if(channel.hasPublish() && messageHasNotNullPayload(channel.publish().message(0).payload())){
+    publishMessageImport = `import * as ${pascalCase(channel.publish().message(0).uid())}Message from '../messages/${pascalCase(channel.publish().message(0).uid())}'`
+  }
+
+  let subscribeMessageImport = '';
+  if(channel.hasSubscribe() && messageHasNotNullPayload(channel.subscribe().message(0).payload())){
+    subscribeMessageImport = `import * as ${pascalCase(channel.subscribe().message(0).uid())}Message from '../messages/${pascalCase(channel.subscribe().message(0).uid())}'`
+  }
+
   return <File name={`${pascalCase(channelName)}.ts`}>
-    {
-      `
-    ${
-  channel.hasPublish() && messageHasNotNullPayload(channel.publish().message(0).payload()) ?
-    `
-      import * as ${pascalCase(channel.publish().message(0).uid())}Message from '../messages/${pascalCase(channel.publish().message(0).uid())}'
-      ` : ''
-}
-    ${
-  channel.hasSubscribe() && messageHasNotNullPayload(channel.subscribe().message(0).payload()) ?
-    `
-      import * as ${pascalCase(channel.subscribe().message(0).uid())}Message from '../messages/${pascalCase(channel.subscribe().message(0).uid())}'
-      ` : ''
-}
+    {`
+    ${publishMessageImport}
+    ${subscribeMessageImport}
+
     import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
     import {ErrorCode, NatsTypescriptTemplateError} from '../NatsTypescriptTemplateError';
     import { Hooks } from '../hooks';
 
     ${getChannelCode(asyncapi, channel, channelName, params)}
-  `}
+    `}
   </File>;
 }

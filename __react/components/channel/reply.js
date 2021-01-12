@@ -2,15 +2,29 @@ import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
 import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisfyCallbacks } from '../../utils/index';
+
+/**
+ * Component which returns a function which sets up a reply for a given channel
+ * 
+ * @param {*} defaultContentType 
+ * @param {*} channelName to reply to
+ * @param {*} replyMessage which is being send as a reply
+ * @param {*} receiveMessage which is being received
+ * @param {*} channelParameters parameters to the channel
+ * @param {*} params template parameters
+ */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params) {
+
+  //Create an array of all the parameter names
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
     return `${camelCase(parameterName)}Param`;
   });
 
-  let whenRecievingRequest = `let message = ${shouldPromisfyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
-  if (messageHasNotNullPayload(replyMessage.payload())) {
-    whenRecievingRequest =  `
+  //Determine the receiving process based on whether the payload type is null
+  let receivingOperation = `let message = ${shouldPromisfyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
+  if (messageHasNotNullPayload(receiveMessage.payload())) {
+    receivingOperation =  `
     try{
       ${OnReceivingData(receiveMessage, defaultContentType)}
     }catch(e){
@@ -21,9 +35,10 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
     `;
   }
 
-  let whenSendingReply = 'await nc.publish(msg.reply, null);';
+  //Determine the reply process based on whether the payload type is null
+  let replyOperation = 'await nc.publish(msg.reply, null);';
   if (messageHasNotNullPayload(replyMessage.payload())) {
-    whenSendingReply = `
+    replyOperation = `
     try{
       ${OnSendingData(replyMessage, defaultContentType)}
     }catch(e){
@@ -60,10 +75,10 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
           } else {
             ${unwrap(channelName, channelParameters)}
             
-            ${whenRecievingRequest}
+            ${receivingOperation}
 
             if (msg.reply) {
-              ${whenSendingReply}
+              ${replyOperation}
             } else {
               let error = new NatsTypescriptTemplateError('Expected request to need a reply, did not..', '000');
               onReplyError(error)

@@ -1,14 +1,28 @@
 import { OnReceivingData } from './OnReceivingData';
 import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNotNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
+
+/**
+ * Component which returns a function which subscribes to the given channel
+ * 
+ * @param {*} defaultContentType 
+ * @param {*} channelName to subscribe to
+ * @param {*} message which is being received
+ * @param {*} channelParameters parameters to the channel
+ */
 export function Subscribe(defaultContentType, channelName, message, channelParameters) {
+
+  //Create an array of all the parameter names
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
     return `${camelCase(parameterName)}Param`;
   });
-  let whenRecievingMessage = `onDataCallback(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});`;
+
+  //Determine the callback process when receiving messages.
+  //If the message payload is null no hooks are called to process the received data.
+  let whenreceivingMessage = `onDataCallback(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});`;
   if (messageHasNotNullPayload(message.payload())) {
-    whenRecievingMessage =  `
+    whenreceivingMessage =  `
     try{
       ${OnReceivingData(message, defaultContentType)}
     }catch(e){
@@ -41,7 +55,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
           }else{
             ${unwrap(channelName, channelParameters)}
 
-            ${whenRecievingMessage}
+            ${whenreceivingMessage}
           }
         }, subscribeOptions);
         resolve(subscription);
