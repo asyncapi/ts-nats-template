@@ -18,8 +18,8 @@ export function realizeParametersForChannelWrapper(channelParameters, required =
 }
   
 /**
-   * Realize parameters using types without trailing comma
-   */
+ * Realize parameters using types without trailing comma
+ */
 export function realizeParametersForChannel(parameters, required = true) {
   let returnString = '';
   for (const paramName in parameters) {

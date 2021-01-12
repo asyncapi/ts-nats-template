@@ -34,8 +34,8 @@ export function isPubsub(channel) {
 }
   
 /**
-   * is the channel a request and reply
-   */
+ * is the channel a request and reply
+ */
 export function isRequestReply(channel) {
   const tempChannel = channel._json;
   if (
@@ -49,8 +49,8 @@ export function isRequestReply(channel) {
 }
   
 /**
-   * Is the request reply a requester
-   */
+ * Is the request reply a requester
+ */
 export function isRequester(channel) {
   const tempChannel = channel._json;
   if (
@@ -64,8 +64,8 @@ export function isRequester(channel) {
 }
   
 /**
-   * Is the request reply a replier
-   */
+ * Is the request reply a replier
+ */
 export function isReplier(channel) {
   const tempChannel = channel._json;
   if (
