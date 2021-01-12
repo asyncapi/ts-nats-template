@@ -2,7 +2,7 @@
 import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/index';
 
 /**
- * Component which makes sure the hooks are called before transmitting data.
+ * Component which ensures the hooks are called before transmitting data.
  * 
  * @param {*} message which is being transmitted.
  * @param {*} defaultContentType 
@@ -31,17 +31,17 @@ export function OnSendingData(message, defaultContentType) {
   }
   
   return `
-	try {
-		let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
-		var dataToSend : any = message;
-		for(let hook of beforeSendingHooks){
-		  dataToSend = hook(dataToSend);
-		}
-		${convertToBinary}
-		${convertToString}
+  try {
+    let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
+    var dataToSend : any = message;
+    for(let hook of beforeSendingHooks){
+      dataToSend = hook(dataToSend);
+    }
+    ${convertToBinary}
+    ${convertToString}
   } catch(e) {
     const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
     throw error;
   }
-	`;
+  `;
 }

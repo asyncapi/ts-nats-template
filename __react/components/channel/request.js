@@ -52,9 +52,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
       ): Promise<${getMessageType(receiveMessage)}> {
       return new Promise(async (resolve, reject) => {
         var timeout = undefined;
-
         ${includeTimeout}
-
         let msg;
         try {
           ${requestOperation}
@@ -62,7 +60,6 @@ export function Request(defaultContentType, channelName, requestMessage, receive
           reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
           return;
         }
-
         ${requestCallbackOperation}
       })
     }

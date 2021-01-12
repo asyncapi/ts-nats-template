@@ -45,7 +45,6 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       onReplyError(e)
       return;
     }
-    
     await nc.publish(msg.reply, dataToSend);
     `;
   }

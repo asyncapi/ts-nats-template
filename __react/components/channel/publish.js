@@ -21,18 +21,18 @@ export function Publish(defaultContentType, channelName, message, channelParamet
   }
   return `
     export function publish(
-        message: ${getMessageType(message)},
-        nc: Client
-        ${realizeParametersForChannelWrapper(channelParameters)}
-        ): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-          try{
-            ${publishOperation}
-            resolve();
-          }catch(e){
-            reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
-          }
-        });
+      message: ${getMessageType(message)},
+      nc: Client
+      ${realizeParametersForChannelWrapper(channelParameters)}
+      ): Promise<void> {
+      return new Promise<void>(async (resolve, reject) => {
+        try{
+          ${publishOperation}
+          resolve();
+        }catch(e){
+          reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+        }
+      });
     };
     `;
 }
