@@ -1,7 +1,15 @@
 import _ from 'lodash';
-export function shouldPromisfyCallbacks(params) {
+
+/**
+ * Should the callbacks be promisified.
+ * 
+ * @param {*} params passed to the template
+ * @returns {boolean} should it promisify callbacks
+ */
+export function shouldPromisifyCallbacks(params) {
   return params.promisifyReplyCallback;
 }
+
 
 export function camelCase(string) {
   return _.camelCase(string);
@@ -16,6 +24,7 @@ export function kebabCase(string) {
 
 /**
  * Figure out if our message content type or default content type matches a given payload.
+ * 
  * @param {*} messageContentType to check
  * @param {*} defaultContentType to check
  * @param {*} payload to find
@@ -40,6 +49,12 @@ export function isJsonPayload(messageContentType, defaultContentType) {
   return containsPayload(messageContentType, defaultContentType, 'json');
 }
 
+/**
+ * Based on the payload type of the message choose a client
+ * 
+ * @param {*} message 
+ * @param {*} defaultContentType 
+ */
 export function getClientToUse(message, defaultContentType) {
   if (isBinaryPayload(message.contentType(), defaultContentType)) {
     return 'const nc: Client = this.binaryClient!;';
@@ -52,12 +67,20 @@ export function getClientToUse(message, defaultContentType) {
   return 'const nc: Client = this.jsonClient!;';
 }
 
+/**
+ * Checks if the message payload is of type null
+ * 
+ * @param {*} messagePayload to check
+ * @returns {boolean} does the payload contain null type 
+ */
 export function messageHasNotNullPayload(messagePayload) {
   return `${messagePayload.type()}` !== 'null';
 }
 
 /**
- * Because quicktype cant handle null types we have to ensure if it is null thats 
+ * Because quicktype cant handle null types we have to ensure that the correct message type is returned.
+ * 
+ * @param {*} message to find the message type for
  */
 export function getMessageType(message) {
   if (`${message.payload().type()}` === 'null') {
@@ -68,6 +91,7 @@ export function getMessageType(message) {
 
 /**
  * Figure out if a content type is located in the document.
+ * 
  * @param {*} document to look through
  * @param {*} payload to find
  */
@@ -124,6 +148,7 @@ export function containsJsonPayload(document) {
 
 /**
  * Convert JSON schema draft 7 types to typescript types 
+ * 
  * @param {*} jsonSchemaType 
  * @param {*} property 
  */
@@ -138,7 +163,7 @@ export function toTsType(jsonSchemaType, property) {
     return 'Boolean';
   case 'object':
     if (property) {
-      return `${property.uid()  }Schema`;
+      return `${property.uid()}Schema`;
     }
     return 'any';
       

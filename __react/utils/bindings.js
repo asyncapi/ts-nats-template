@@ -1,48 +1,48 @@
+
+
+/**
+ * Wrapper to include subscriptions option code if specified in the spec.
+ * 
+ * @param {*} message to check for queue bindings on 
+ */
 export function includeUnsubAfterForSubscription(message) {
-  if (hasNatsBindings(message) && message.bindings().nats().unsubAfter()) {
-    return `subscribeOptions.max = '${message.bindings().nats().unsubAfter()}';`;
-  }
-  return '';
-}
-export function includeQueueForSubscription(message) {
-  if (hasNatsBindings(message) && message.bindings().nats().queue()) {
-    return `subscribeOptions.queue = '${message.bindings().nats().queue()}';`;
+  if (message.hasBinding('nats') && message.bindings().nats.unsubAfter) {
+    return `subscribeOptions.max = '${message.bindings().nats.unsubAfter}';`;
   }
   return '';
 }
 
 /**
- * Does an object have bindings
+ * Wrapper to include subscriptions queue option if specified in the spec.
+ * 
+ * @param {*} message to check for queue bindings on 
  */
-export function hasNatsBindings(obj) {
-  return obj.bindings() && obj.bindings().nats();
+export function includeQueueForSubscription(message) {
+  if (message.hasBinding('nats') && message.binding('nats').queue) {
+    return `subscribeOptions.queue = '${message.binding('nats').queue}';`;
+  }
+  return '';
 }
-  
+
 /**
-   * is the channel a publish and subscribe type if nothing is specified default to being pubsub type 
-   */
+ * Is the channel a publish and subscribe. This is the default type if none is defined.
+ */
 export function isPubsub(channel) {
-  const tempChannel = channel._json;
-  if (
-    !tempChannel.bindings || 
-      !tempChannel.bindings.nats ||
-      !tempChannel.bindings.nats.is || 
-      tempChannel.bindings.nats.is === 'pubsub') {
+  if (!channel.hasBinding('nats') ||
+      !channel.binding('nats').is || 
+      channel.binding('nats').is === 'pubsub') {
     return true;
   }
   return false;
 }
   
 /**
- * is the channel a request and reply
+ * Is the channel a request and reply.
  */
 export function isRequestReply(channel) {
-  const tempChannel = channel._json;
-  if (
-    tempChannel.bindings &&
-      tempChannel.bindings.nats &&
-      tempChannel.bindings.nats.is === 'requestReply'
-  ) {
+  if (!channel.hasBinding('nats') ||
+      !channel.binding('nats').is || 
+      channel.binding('nats').is === 'requestReply') {
     return true;
   }
   return false;
@@ -52,12 +52,9 @@ export function isRequestReply(channel) {
  * Is the request reply a requester
  */
 export function isRequester(channel) {
-  const tempChannel = channel._json;
-  if (
-    isRequestReply(channel) &&
-      tempChannel.bindings.nats.requestReply &&
-      tempChannel.bindings.nats.requestReply.is === 'requester'
-  ) {
+  if (isRequestReply(channel) &&
+      channel.binding('nats').requestReply &&
+      channel.binding('nats').requestReply.is === 'requester') {
     return true;
   }
   return false;
@@ -67,12 +64,9 @@ export function isRequester(channel) {
  * Is the request reply a replier
  */
 export function isReplier(channel) {
-  const tempChannel = channel._json;
-  if (
-    isRequestReply(channel) &&
-      tempChannel.bindings.nats.requestReply &&
-      tempChannel.bindings.nats.requestReply.is === 'replier'
-  ) {
+  if (isRequestReply(channel) &&
+      channel.binding('nats').requestReply &&
+      channel.binding('nats').requestReply.is === 'replier') {
     return true;
   }
   return false;

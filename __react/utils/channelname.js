@@ -11,6 +11,10 @@ export function realizeChannelName(parameters, channelName) {
   return returnString;
 }
   
+/**
+ * Realize channel name to NATS topic without replacing parameters
+ * @param {*} channelName 
+ */
 export function realizeChannelNameWithoutParameters(channelName) {
   return realizeChannelName(null, channelName);
 }
