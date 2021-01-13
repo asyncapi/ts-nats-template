@@ -88,11 +88,8 @@ export default function index({ asyncapi, params }) {
 {`
 import {fromSeed} from 'ts-nkeys';
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
 import * as TestClient from './tests/testclient/';
-export {TestClient};
 import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
-export {ErrorCode, NatsTypescriptTemplateError}
 import { 
   Client, 
   NatsConnectionOptions, 
@@ -106,12 +103,19 @@ import {
   SubscriptionOptions
   } from 'ts-nats';
   
-export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 
 ${importList.join('')}
-${exportList.join('')}
 
 import * as events from 'events';
+
+export declare interface NatsAsyncApiClient {
+  ${Events()}
+}
+export {ErrorCode, NatsTypescriptTemplateError}
+export {TestClient};
+export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
+export {Client, ServerInfo, ServersChangedEvent, SubEvent}
+${exportList.join('')}
 export enum AvailableEvents {
   permissionError = 'permissionError',
   close = 'close',
@@ -128,11 +132,6 @@ export enum AvailableEvents {
   unsubscribe = 'unsubscribe',
   yield = 'yield'
 }
-
-export declare interface NatsAsyncApiClient {
-  ${Events()}
-}
-
 export class NatsAsyncApiClient extends events.EventEmitter{
   ${Standard(asyncapi)}
   ${getChannelWrappers(asyncapi, params).join('')}
