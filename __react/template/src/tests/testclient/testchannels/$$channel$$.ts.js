@@ -58,27 +58,14 @@ function getChannelCode(asyncapi, channel, channelName, params) {
   return channelcode;
 }
 export default function channelRender({ asyncapi, channelName, channel, params }) {
-  // Import the correct messages
-  let publishMessageImport = '';
-  if(channel.hasPublish() && messageHasNotNullPayload(channel.publish().message(0).payload())){
-    publishMessageImport = `import * as ${pascalCase(channel.publish().message(0).uid())}Message from '../../../messages/${pascalCase(channel.publish().message(0).uid())}'`
-  }
-
-  let subscribeMessageImport = '';
-  if(channel.hasSubscribe() && messageHasNotNullPayload(channel.subscribe().message(0).payload())){
-    subscribeMessageImport = `import * as ${pascalCase(channel.subscribe().message(0).uid())}Message from '../../../messages/${pascalCase(channel.subscribe().message(0).uid())}'`
-  }
+  const publishMessage = channel.publish().message(0);
+  const subscribeMessage = channel.subscribe().message(0);
 
   return <File name={`${pascalCase(channelName)}.ts`}>
-    {`
-      ${publishMessageImport}
-      ${subscribeMessageImport}
+{`
+${General(channel, publishMessage, subscribeMessage, '../../..')}
 
-      import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
-      import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTemplateError';
-      import { Hooks } from '../../../hooks';
-
-      ${getChannelCode(asyncapi, channel, channelName, params)}
-    `}
+${getChannelCode(asyncapi, channel, channelName, params)}
+`}
   </File>;
 }

@@ -3,6 +3,7 @@ import { Publish } from '../../../components/channel/publish';
 import { Subscribe } from '../../../components/channel/subscribe';
 import { Reply } from '../../../components/channel/reply';
 import { Request } from '../../../components/channel/request';
+import { General } from '../../../components/channel/general';
 import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHasNotNullPayload} from '../../../utils/index';
 
 /**
@@ -59,31 +60,14 @@ function getChannelCode(asyncapi, channel, channelName, params) {
 }
 
 export default function channelRender({ asyncapi, channelName, channel, params }) {
-  // Import the correct messages
   const publishMessage = channel.publish().message(0);
-  let publishMessageImport = '';
-  if(channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())){
-    const publishMessageUid = publishMessage.uid();
-    publishMessageImport = `import * as ${pascalCase(publishMessageUid)}Message from '../messages/${pascalCase(publishMessageUid)}'`
-  }
-
   const subscribeMessage = channel.subscribe().message(0);
-  let subscribeMessageImport = '';
-  if(channel.hasSubscribe() && messageHasNotNullPayload(subscribeMessage.payload())){
-    const subscribeMessageUid = subscribeMessage.uid();
-    subscribeMessageImport = `import * as ${pascalCase(subscribeMessageUid)}Message from '../messages/${pascalCase(subscribeMessageUid)}'`
-  }
 
   return <File name={`${pascalCase(channelName)}.ts`}>
     {`
-    ${publishMessageImport}
-    ${subscribeMessageImport}
+${General(channel, publishMessage, subscribeMessage, '..')}
 
-    import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
-    import {ErrorCode, NatsTypescriptTemplateError} from '../NatsTypescriptTemplateError';
-    import { Hooks } from '../hooks';
-
-    ${getChannelCode(asyncapi, channel, channelName, params)}
+${getChannelCode(asyncapi, channel, channelName, params)}
     `}
   </File>;
 }
