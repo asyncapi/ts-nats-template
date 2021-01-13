@@ -67,24 +67,20 @@ function getChannelWrappers(asyncapi, params) {
 
 
 export default function index({ asyncapi, params }) {
-  //Import the channel code and re-export them
-  let channelImport = asyncapi.channels();
-  channelImport = Object.keys(channelImport).length ? Object.entries(channelImport).map(([channelName, _]) => {
+  //Import the channel and messages and re-export them
+  const importList = [];
+  const exportList = [];
+  for (const [channelName] of Object.entries(asyncapi.channels())){
     const camelCaseChannelName = camelCase(channelName);
-    return `
-      import * as ${camelCaseChannelName}Channel from "./channels/${pascalCase(channelName)}";
-      export {${camelCaseChannelName}Channel};
-    `;
-  }) : '';
+    importList.push(`import * as ${camelCaseChannelName}Channel from "./channels/${pascalCase(channelName)}";`);
+    exportList.push(`export {${camelCaseChannelName}Channel};`);
+  }
 
   //Import the messages and re-export them
-  const messagesImport = [];
   for (const [messageName] of asyncapi.allMessages()) {
     const pascalMessageName = pascalCase(messageName);
-    messagesImport.push(`
-      import * as ${pascalMessageName}Message from "./messages/${pascalMessageName}";
-      export {${pascalMessageName}Message};
-    `);
+    importList.push(`import * as ${pascalMessageName}Message from "./messages/${pascalMessageName}";`);
+    exportList.push(`export {${pascalMessageName}Message};`);
   }
 
   return (
@@ -112,8 +108,8 @@ import {
   
 export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 
-${channelImport.join('')}
-${messagesImport.join('')}
+${importList.join('')}
+${exportList.join('')}
 
 import * as events from 'events';
 export enum AvailableEvents {
