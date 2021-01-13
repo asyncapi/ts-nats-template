@@ -6,16 +6,16 @@ import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '..
  * 
  * 
  * Example
-  var unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
-  var channel = msg.subject;
-  var streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
+  const unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
+  const channel = msg.subject;
+  const streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
   const splits = [
     streetlightIdSplit[0],
     streetlightIdSplit[1]
   ];
   channel = channel.substring(splits[0].length);
-  var streetlightIdEnd = channel.indexOf(splits[1]);
-  var streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
+  const streetlightIdEnd = channel.indexOf(splits[1]);
+  const streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
  * 
  * 
  * @param {*} channelName to be unwrapped
@@ -35,9 +35,9 @@ export function unwrap(channelName, channelParameters) {
     let toReturn;
     const parameterCamelCase = camelCase(parameterName);
     if (prevParameterName) {
-      toReturn = `var ${parameterCamelCase}Split = ${prevParameterName}Split[1].split("${`{${parameterName}}`}");`;
+      toReturn = `const ${parameterCamelCase}Split = ${prevParameterName}Split[1].split("${`{${parameterName}}`}");`;
     } else {
-      toReturn = `var ${parameterCamelCase}Split = unmodifiedChannel.split("${`{${parameterName}}`}");`;
+      toReturn = `const ${parameterCamelCase}Split = unmodifiedChannel.split("${`{${parameterName}}`}");`;
     }
     prevParameterName = parameterCamelCase;
     return toReturn;
@@ -50,9 +50,9 @@ export function unwrap(channelName, channelParameters) {
     // Check if we reached the end of the parameter list
     if (index+1 === Object.keys(channelParameters).length) {
       return `
-			${parameterCamelCase}Split[0],
-			${parameterCamelCase}Split[1]
-			`;
+      ${parameterCamelCase}Split[0],
+      ${parameterCamelCase}Split[1]
+      `;
     }
     return `${parameterCamelCase}Split[0],`;
   });
@@ -67,18 +67,18 @@ export function unwrap(channelName, channelParameters) {
       channelSplit = `channel = channel.substring(splits[${index}].length);`;
     }
     prevParameterName = camelCase(parameterName);
-    const paramVarToCast = `channel.substring(0, ${prevParameterName}End)`;
+    const paramconstToCast = `channel.substring(0, ${prevParameterName}End)`;
     return `
-			${channelSplit}
-			var ${prevParameterName}End = channel.indexOf(splits[${index+1}]);
-			var ${prevParameterName}Param = ${castToTsType(parameter.schema().type(), paramVarToCast)};
-		`;
+      ${channelSplit}
+      const ${prevParameterName}End = channel.indexOf(splits[${index+1}]);
+      const ${prevParameterName}Param = ${castToTsType(parameter.schema().type(), paramconstToCast)};
+    `;
   });
 
 
   return `
-  var unmodifiedChannel = ${realizeChannelNameWithoutParameters(channelName)};
-  var channel = msg.subject;
+  const unmodifiedChannel = ${realizeChannelNameWithoutParameters(channelName)};
+  let channel = msg.subject;
   ${parameterSplit.join('')}
   const splits = [
     ${splits.join('')}

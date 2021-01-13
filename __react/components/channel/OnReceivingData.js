@@ -29,7 +29,7 @@ export function OnReceivingData(message, defaultContentType) {
   return `
   try {
     let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
-    var receivedData : any = msg.data;
+    let receivedData : any = msg.data;
     for(let hook of receivedDataHooks){
       receivedData = hook(receivedData);
     }

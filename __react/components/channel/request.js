@@ -51,7 +51,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
       ${realizeParametersForChannelWrapper(channelParameters)}
       ): Promise<${getMessageType(receiveMessage)}> {
       return new Promise(async (resolve, reject) => {
-        var timeout = undefined;
+        let timeout = undefined;
         ${includeTimeout}
         let msg;
         try {

@@ -33,7 +33,7 @@ export function OnSendingData(message, defaultContentType) {
   return `
   try {
     let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
-    var dataToSend : any = message;
+    let dataToSend : any = message;
     for(let hook of beforeSendingHooks){
       dataToSend = hook(dataToSend);
     }
