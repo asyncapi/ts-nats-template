@@ -20,9 +20,9 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
 
   //Determine the callback process when receiving messages.
   //If the message payload is null no hooks are called to process the received data.
-  let whenreceivingMessage = `onDataCallback(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});`;
+  let whenReceivingMessage = `onDataCallback(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});`;
   if (messageHasNotNullPayload(message.payload())) {
-    whenreceivingMessage =  `
+    whenReceivingMessage =  `
     try{
       ${OnReceivingData(message, defaultContentType)}
     }catch(e){
@@ -55,7 +55,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
           }else{
             ${unwrap(channelName, channelParameters)}
 
-            ${whenreceivingMessage}
+            ${whenReceivingMessage}
           }
         }, subscribeOptions);
         resolve(subscription);

@@ -14,14 +14,16 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHa
  * @param {*} params
  */
 function getChannelCode(asyncapi, channel, channelName, params) {
+  const publishMessage = channel.publish().message(0);
+  const subscribeMessage = channel.subscribe().message(0);
   let channelcode;
   if (isRequestReply(channel)) {
     if (isRequester(channel)) {
       channelcode = Request(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.subscribe().message(0),
-        channel.publish().message(0),
+        subscribeMessage,
+        publishMessage,
         channel.parameters()
       );
     }
@@ -29,8 +31,8 @@ function getChannelCode(asyncapi, channel, channelName, params) {
       channelcode = Reply(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.subscribe().message(0),
-        channel.publish().message(0),
+        subscribeMessage,
+        publishMessage,
         channel.parameters(),
         params
       );
@@ -42,14 +44,14 @@ function getChannelCode(asyncapi, channel, channelName, params) {
       channelcode = Publish(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.subscribe().message(0), 
+        subscribeMessage, 
         channel.parameters());
     }
     if (channel.hasPublish()) {
       channelcode = Subscribe(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.publish().message(0), 
+        publishMessage, 
         channel.parameters());
     }
   }
@@ -58,14 +60,18 @@ function getChannelCode(asyncapi, channel, channelName, params) {
 
 export default function channelRender({ asyncapi, channelName, channel, params }) {
   // Import the correct messages
+  const publishMessage = channel.publish().message(0);
   let publishMessageImport = '';
-  if(channel.hasPublish() && messageHasNotNullPayload(channel.publish().message(0).payload())){
-    publishMessageImport = `import * as ${pascalCase(channel.publish().message(0).uid())}Message from '../messages/${pascalCase(channel.publish().message(0).uid())}'`
+  if(channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())){
+    const publishMessageUid = publishMessage.uid();
+    publishMessageImport = `import * as ${pascalCase(publishMessageUid)}Message from '../messages/${pascalCase(publishMessageUid)}'`
   }
 
+  const subscribeMessage = channel.subscribe().message(0);
   let subscribeMessageImport = '';
-  if(channel.hasSubscribe() && messageHasNotNullPayload(channel.subscribe().message(0).payload())){
-    subscribeMessageImport = `import * as ${pascalCase(channel.subscribe().message(0).uid())}Message from '../messages/${pascalCase(channel.subscribe().message(0).uid())}'`
+  if(channel.hasSubscribe() && messageHasNotNullPayload(subscribeMessage.payload())){
+    const subscribeMessageUid = subscribeMessage.uid();
+    subscribeMessageImport = `import * as ${pascalCase(subscribeMessageUid)}Message from '../messages/${pascalCase(subscribeMessageUid)}'`
   }
 
   return <File name={`${pascalCase(channelName)}.ts`}>
