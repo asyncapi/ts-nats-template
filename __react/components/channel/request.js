@@ -14,10 +14,11 @@ import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper,
 export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
   //Include timeout if specified in the document
   let includeTimeout =  ``;
+  const natsBindings = requestMessage.bindings('nats');
   if(requestMessage.hasBinding('nats') && 
-    requestMessage.bindings('nats').requestReply && 
-    requestMessage.bindings('nats').requestReply.timeout){
-      includeTimeout = `timeout = '${requestMessage.bindings('nats').requestReply.timeout}';`;
+      natsBindings.requestReply && 
+      natsBindings.requestReply.timeout){
+      includeTimeout = `timeout = '${natsBindings.requestReply.timeout}';`;
   }
 
 
