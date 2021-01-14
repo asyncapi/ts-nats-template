@@ -140,7 +140,7 @@ function getIsClosedFunction(asyncapi){
  * 
  * @param {*} asyncapi 
  */
-export function Standard(asyncapi) {
+export function getStandardClassCode(asyncapi) {
   return `
     private jsonClient?: Client;
     private stringClient?: Client;
@@ -247,4 +247,65 @@ export function Standard(asyncapi) {
         ... options
       });
     }`;
+}
+
+/**
+ * 
+ * @param {*} asyncapi 
+ */
+export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
+  //Import the channel code and re-export them
+  const imports = [];
+  const exports = [];
+  for (const [channelName] of Object.entries(channelImport)) {
+    const camelCaseChannelName = camelCase(channelName);
+    imports.push(`import * as ${camelCaseChannelName}Channel from "${channelPath}/${pascalCase(channelName)}";`);
+    exports.push(`export {${camelCaseChannelName}Channel};`);
+  }
+
+  //Import the messages and re-export them
+  for (const [messageName] of asyncapi.allMessages()) {
+    const pascalMessageName = pascalCase(messageName);
+    imports.push(`import * as ${pascalMessageName}Message from "${pathToRoot}/messages/${pascalMessageName}";`);
+    exports.push(`export {${pascalMessageName}Message};`);
+  }
+  return `
+import {fromSeed} from 'ts-nkeys';
+import {ErrorCode, NatsTypescriptTemplateError} from '${pathToRoot}/NatsTypescriptTemplateError';
+import { 
+  Client, 
+  NatsConnectionOptions, 
+  connect,
+  Payload, 
+  NatsError, 
+  Subscription, 
+  ServersChangedEvent, 
+  SubEvent, 
+  ServerInfo,
+  SubscriptionOptions
+} from 'ts-nats';
+
+${imports.join('')}
+
+import * as events from 'events';
+export enum AvailableEvents {
+  permissionError = 'permissionError',
+  close = 'close',
+  connect = 'connect',
+  connecting = 'connecting',
+  disconnect = 'disconnect',
+  error = 'error',
+  pingcount = 'pingcount',
+  pingtimer = 'pingtimer',
+  reconnect = 'reconnect',
+  reconnecting = 'reconnecting',
+  serversChanged = 'serversChanged',
+  subscribe = 'subscribe',
+  unsubscribe = 'unsubscribe',
+  yield = 'yield'
+}
+
+${exports.join('')}
+
+  `;
 }
