@@ -1,5 +1,5 @@
 import { pascalCase, realizeParametersForChannelWithoutType, toTsType} from '../../utils/index';
-
+import {generateExample} from '@asyncapi/generator-filters';
 /**
  * Get the code for received variable declaration
  * 
