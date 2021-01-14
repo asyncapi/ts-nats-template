@@ -1,3 +1,6 @@
+
+import { messageHasNotNullPayload, pascalCase } from '../../utils/index';
+
 export function General( channel, publishMessage, subscribeMessage, path){
   // Import the correct messages
   let publishMessageImport = '';
