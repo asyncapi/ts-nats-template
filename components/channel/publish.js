@@ -15,8 +15,8 @@ export function Publish(defaultContentType, channelName, message, channelParamet
   let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, null);`
   if(messageHasNotNullPayload(message.payload())){
     publishOperation = `
-    ${OnSendingData(message, defaultContentType)}
-    await nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);
+      ${OnSendingData(message, defaultContentType)}
+      await nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);
     `;
   }
   return `
@@ -27,6 +27,7 @@ export function Publish(defaultContentType, channelName, message, channelParamet
       ): Promise<void> {
       return new Promise<void>(async (resolve, reject) => {
         try{
+          let dataToSend : any = message;
           ${publishOperation}
           resolve();
         }catch(e){

@@ -25,6 +25,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   let receivingOperation = `let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
   if (messageHasNotNullPayload(receiveMessage.payload())) {
     receivingOperation =  `
+    let receivedData : any = msg.data;
     try{
       ${OnReceivingData(receiveMessage, defaultContentType)}
     }catch(e){
@@ -39,6 +40,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   let replyOperation = 'await nc.publish(msg.reply, null);';
   if (messageHasNotNullPayload(replyMessage.payload())) {
     replyOperation = `
+    let dataToSend : any = message;
     try{
       ${OnSendingData(replyMessage, defaultContentType)}
     }catch(e){

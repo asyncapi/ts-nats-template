@@ -23,6 +23,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
   let whenReceivingMessage = `onDataCallback(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});`;
   if (messageHasNotNullPayload(message.payload())) {
     whenReceivingMessage =  `
+    let receivedData : any = msg.data;
     try{
       ${OnReceivingData(message, defaultContentType)}
     }catch(e){

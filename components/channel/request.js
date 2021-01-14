@@ -35,6 +35,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
   let requestCallbackOperation = 'resolve(null);'
   if(messageHasNotNullPayload(receiveMessage.payload())){
     requestCallbackOperation =  `
+    let receivedData : any = msg.data;
     try{
       ${OnReceivingData(receiveMessage, defaultContentType)}
     }catch(e){
@@ -55,6 +56,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
         let timeout = undefined;
         ${includeTimeout}
         let msg;
+        let dataToSend : any = message;
         try {
           ${requestOperation}
         }catch(e){
