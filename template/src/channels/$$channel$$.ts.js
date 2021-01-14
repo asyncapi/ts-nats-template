@@ -15,8 +15,8 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHa
  * @param {*} params
  */
 function getChannelCode(asyncapi, channel, channelName, params) {
-  const publishMessage = channel.publish().message(0);
-  const subscribeMessage = channel.subscribe().message(0);
+  const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
+  const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
   let channelcode;
   if (isRequestReply(channel)) {
     if (isRequester(channel)) {
@@ -60,8 +60,8 @@ function getChannelCode(asyncapi, channel, channelName, params) {
 }
 
 export default function channelRender({ asyncapi, channelName, channel, params }) {
-  const publishMessage = channel.publish().message(0);
-  const subscribeMessage = channel.subscribe().message(0);
+  const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
+  const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
 
   return <File name={`${pascalCase(channelName)}.ts`}>
     {`

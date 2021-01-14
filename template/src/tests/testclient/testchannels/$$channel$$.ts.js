@@ -22,8 +22,8 @@ function getChannelCode(asyncapi, channel, channelName, params) {
       channelcode = Reply(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.publish().message(0),
-        channel.subscribe().message(0),
+        channel.publish() ? channel.publish().message(0) : undefined,
+        channel.subscribe() ? channel.subscribe().message(0) : undefined,
         channel.parameters(),
         params
       );
@@ -32,8 +32,8 @@ function getChannelCode(asyncapi, channel, channelName, params) {
       channelcode = Request(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.publish().message(0),
-        channel.subscribe().message(0),
+        channel.publish() ? channel.publish().message(0) : undefined,
+        channel.subscribe() ? channel.subscribe().message(0) : undefined,
         channel.parameters()
       );
     }
@@ -44,22 +44,22 @@ function getChannelCode(asyncapi, channel, channelName, params) {
       channelcode = Subscribe(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.subscribe().message(0),
+        channel.subscribe() ? channel.subscribe().message(0) : undefined,
         channel.parameters());
     }
     if (channel.hasPublish()) {
       channelcode = Publish(
         asyncapi.defaultContentType(), 
         channelName, 
-        channel.publish().message(0), 
+        channel.publish() ? channel.publish().message(0) : undefined, 
         channel.parameters());
     }
   }
   return channelcode;
 }
 export default function channelRender({ asyncapi, channelName, channel, params }) {
-  const publishMessage = channel.publish().message(0);
-  const subscribeMessage = channel.subscribe().message(0);
+  const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
+  const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
 
   return <File name={`${pascalCase(channelName)}.ts`}>
 {`

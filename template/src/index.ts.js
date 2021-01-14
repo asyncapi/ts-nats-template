@@ -17,8 +17,8 @@ import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub
 function getChannelWrappers(asyncapi, params) {
   let channelWrappers = [];
   channelWrappers = Object.keys(asyncapi.channels()).length ? Object.entries(asyncapi.channels()).map(([channelName, channel]) => {
-    const publishMessage = channel.publish().message(0);
-    const subscribeMessage = channel.subscribe().message(0);
+    const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
+    const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
     const defaultContentType = asyncapi.defaultContentType();
     const channelDescription = channel.description();
     const channelParameters = channel.parameters();

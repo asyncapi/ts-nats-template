@@ -10,8 +10,8 @@ import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../
  * @param {*} params passed template parameters
  */
 function getTestCode(channel, channelName, params) {
-  const publishMessage = channel.publish().message(0);
-  const subscribeMessage = channel.subscribe().message(0);
+  const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
+  const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
   const channelParameters = channel.parameters();
   let testMethod;
   if (isRequestReply(channel)) {
