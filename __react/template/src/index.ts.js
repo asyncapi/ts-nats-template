@@ -1,6 +1,6 @@
 import { File } from '@asyncapi/generator-react-sdk';
 import { Events } from '../../components/events';
-import { Standard } from '../../components/index/standard';
+import { getStandardClassCode, getStandardHeaderCode } from '../../components/index/standard';
 import { Publish } from '../../components/index/publish';
 import { Subscribe } from '../../components/index/subscribe';
 import { Reply } from '../../components/index/reply';
@@ -19,25 +19,28 @@ function getChannelWrappers(asyncapi, params) {
   channelWrappers = Object.keys(asyncapi.channels()).length ? Object.entries(asyncapi.channels()).map(([channelName, channel]) => {
     const publishMessage = channel.publish().message(0);
     const subscribeMessage = channel.subscribe().message(0);
+    const defaultContentType = asyncapi.defaultContentType();
+    const channelDescription = channel.description();
+    const channelParameters = channel.parameters();
     if (isRequestReply(channel)) {
       if (isRequester(channel)) {
         return Request(
-          asyncapi.defaultContentType(), 
+          defaultContentType, 
           channelName, 
           subscribeMessage,
           publishMessage,
-          channel.description(),
-          channel.parameters()
+          channelDescription,
+          channelParameters
         );
       }
       if (isReplier(channel)) {
         return Reply(
-          asyncapi.defaultContentType(), 
+          defaultContentType, 
           channelName, 
           subscribeMessage,
           publishMessage,
-          channel.description(),
-          channel.parameters(),
+          channelDescription,
+          channelParameters,
           params
         );
       }
@@ -46,19 +49,19 @@ function getChannelWrappers(asyncapi, params) {
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
         return Publish(
-          asyncapi.defaultContentType(), 
+          defaultContentType, 
           channelName, 
           subscribeMessage, 
-          channel.description(), 
-          channel.parameters());
+          channelDescription, 
+          channelParameters);
       }
       if (channel.hasPublish()) {
         return Subscribe(
-          asyncapi.defaultContentType(), 
+          defaultContentType, 
           channelName, 
           publishMessage, 
-          channel.description(), 
-          channel.parameters());
+          channelDescription, 
+          channelParameters);
       }
     }
   }) : '';
@@ -67,73 +70,25 @@ function getChannelWrappers(asyncapi, params) {
 
 
 export default function index({ asyncapi, params }) {
-  //Import the channel and messages and re-export them
-  const importList = [];
-  const exportList = [];
-  for (const [channelName] of Object.entries(asyncapi.channels())){
-    const camelCaseChannelName = camelCase(channelName);
-    importList.push(`import * as ${camelCaseChannelName}Channel from "./channels/${pascalCase(channelName)}";`);
-    exportList.push(`export {${camelCaseChannelName}Channel};`);
-  }
-
-  //Import the messages and re-export them
-  for (const [messageName] of asyncapi.allMessages()) {
-    const pascalMessageName = pascalCase(messageName);
-    importList.push(`import * as ${pascalMessageName}Message from "./messages/${pascalMessageName}";`);
-    exportList.push(`export {${pascalMessageName}Message};`);
-  }
 
   return (
     <File name="index.ts">
 {`
-import {fromSeed} from 'ts-nkeys';
+
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 import * as TestClient from './tests/testclient/';
-import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';
-import { 
-  Client, 
-  NatsConnectionOptions, 
-  connect,
-  Payload, 
-  NatsError, 
-  Subscription, 
-  ServersChangedEvent, 
-  SubEvent, 
-  ServerInfo,
-  SubscriptionOptions
-  } from 'ts-nats';
-  
-
-${importList.join('')}
-
-import * as events from 'events';
-
-export declare interface NatsAsyncApiClient {
-  ${Events()}
-}
+${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
 export {TestClient};
 export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
 export {Client, ServerInfo, ServersChangedEvent, SubEvent}
-${exportList.join('')}
-export enum AvailableEvents {
-  permissionError = 'permissionError',
-  close = 'close',
-  connect = 'connect',
-  connecting = 'connecting',
-  disconnect = 'disconnect',
-  error = 'error',
-  pingcount = 'pingcount',
-  pingtimer = 'pingtimer',
-  reconnect = 'reconnect',
-  reconnecting = 'reconnecting',
-  serversChanged = 'serversChanged',
-  subscribe = 'subscribe',
-  unsubscribe = 'unsubscribe',
-  yield = 'yield'
+
+export declare interface NatsAsyncApiClient {
+  ${Events()}
 }
+
 export class NatsAsyncApiClient extends events.EventEmitter{
-  ${Standard(asyncapi)}
+  ${getStandardClassCode(asyncapi)}
   ${getChannelWrappers(asyncapi, params).join('')}
 }
 `}
