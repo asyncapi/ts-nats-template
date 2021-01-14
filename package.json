@@ -24,7 +24,7 @@
 		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && sh GenerateAndBuild.sh",
 		"generate:examples:requestReply": "cd \"examples/request reply\" && sh GenerateAndBuild.sh",
 		"release": "semantic-release",
-		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
+		"lint": "echo \"No linter yet\"",
 		"test": "echo \"No tests specified yet\"",
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
