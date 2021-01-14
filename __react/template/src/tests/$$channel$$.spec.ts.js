@@ -1,8 +1,6 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { Publish } from '../../../components/test/publish';
-import { Subscribe } from '../../../components/test/subscribe';
-import { Reply } from '../../../components/test/reply';
-import { Request } from '../../../components/test/request';
+import { publishSubscribe } from '../../../components/test/publishSubscribe';
+import { requestReply } from '../../../components/test/requestReply';
 import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
 
 /**
@@ -12,40 +10,42 @@ import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../
  * @param {*} params passed template parameters
  */
 function getTestCode(channel, channelName, params) {
+  const publishMessage = channel.publish().message(0);
+  const subscribeMessage = channel.subscribe().message(0);
+  const channelParameters = channel.parameters();
   let testMethod;
   if (isRequestReply(channel)) {
     if (isRequester(channel)) {
-      testMethod = Request(
+      testMethod = requestReply(
         channelName, 
-        channel.subscribe().message(0),
-        channel.publish().message(0),
-        channel.parameters()
+        publishMessage,
+        subscribeMessage,
+        channelParameters
       );
     }
     if (isReplier(channel)) {
-      testMethod = Reply(
+      testMethod = requestReply(
         channelName, 
-        channel.subscribe().message(0),
-        channel.publish().message(0),
-        channel.parameters(),
-        params
+        subscribeMessage,
+        publishMessage,
+        channelParameters
       );
     }
   }
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
-      testMethod = Publish(
+      testMethod = publishSubscribe(
         channelName, 
-        channel.subscribe().message(0), 
-        channel.parameters(),
+        subscribeMessage, 
+        channelParameters,
         params);
     }
     if (channel.hasPublish()) {
-      testMethod = Subscribe(
+      testMethod = publishSubscribe(
         channelName, 
-        channel.publish().message(0), 
-        channel.parameters());
+        publishMessage, 
+        channelParameters);
     }
   }
   return testMethod;
