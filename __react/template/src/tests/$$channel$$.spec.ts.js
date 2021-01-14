@@ -60,7 +60,7 @@ import * as Client from '../index'
 import * as TestClient from './testclient/index'
 import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
 
-describe('${channelName} can talk to it self', () => {
+describe('${channelName} can talk to itself', () => {
     var client: Client.NatsAsyncApiClient;
     var testClient: TestClient.NatsAsyncApiTestClient;
     before(async () => {
