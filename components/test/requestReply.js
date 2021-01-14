@@ -2,6 +2,14 @@ import {generateExample} from '@asyncapi/generator-filters';
 import { pascalCase, getMessageType} from '../../utils/index';
 import {getReceivedVariableDeclaration, getExampleParameters, getFunctionParameters, getSetReceivedParameters, getVerifyExpectedParameters, getCallbackParameters} from './general';
 
+export function request(channelName, replyMessage, receiveMessage, channelParameters) {
+  return requestReply(channelName, replyMessage, receiveMessage, channelParameters, true); 
+}
+export function reply(channelName, replyMessage, receiveMessage, channelParameters) {
+  return requestReply(channelName, replyMessage, receiveMessage, channelParameters, false); 
+}
+
+
 /**
  * Request and reply test code
  * 
@@ -9,8 +17,9 @@ import {getReceivedVariableDeclaration, getExampleParameters, getFunctionParamet
  * @param {*} replyMessage 
  * @param {*} receiveMessage 
  * @param {*} channelParameters 
+ * @param {boolean} requester is it the real client which does the request
  */ 
-export function requestReply(channelName, replyMessage, receiveMessage, channelParameters) {
+function requestReply(channelName, replyMessage, receiveMessage, channelParameters, requester) {
   const replyMessageExample = generateExample(replyMessage.payload().json());
   const receiveMessageExample = generateExample(receiveMessage.payload().json());
   const receivedVariableDeclaration = getReceivedVariableDeclaration(channelParameters);
@@ -19,17 +28,20 @@ export function requestReply(channelName, replyMessage, receiveMessage, channelP
   const setReceivedVariable = getSetReceivedParameters(channelParameters);
   const verifyExpectedParameters = getVerifyExpectedParameters(channelParameters);
   const replyCallbackParameters = getCallbackParameters(channelParameters);
-  
+  const requesterClientClass = requester ? 'Client' : 'TestClient';
+  const requesterClient = requester ? 'client' : 'testClient';
+  const replierClientClass = requester ? 'TestClient' : 'Client';
+  const replierClient = requester ? 'testClient' : 'client';
   return `
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
-var receivedMsg: TestClient.${getMessageType(receiveMessage)} | undefined = undefined;
+var receivedMsg: ${requesterClientClass}.${getMessageType(receiveMessage)} | undefined = undefined;
 
 ${receivedVariableDeclaration}
 
-var replyMessage: Client.${getMessageType(replyMessage)} = ${replyMessageExample};
-var receiveMessage: TestClient.${getMessageType(receiveMessage)} = ${receiveMessageExample};
+var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replyMessageExample};
+var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${receiveMessageExample};
 ${exampleParameters}
-const replySubscription = await client.replyTo${pascalCase(channelName)}((err, msg 
+const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName)}((err, msg 
       ${replyCallbackParameters}) => {
     return new Promise((resolve, reject) => {
         receivedError = err;
@@ -41,7 +53,7 @@ const replySubscription = await client.replyTo${pascalCase(channelName)}((err, m
     ${functionParameters},
     true
 );
-var reply = await testClient.request${pascalCase(channelName)}(receiveMessage ${functionParameters});
+var reply = await ${requesterClient}.request${pascalCase(channelName)}(receiveMessage ${functionParameters});
 expect(reply).to.be.deep.equal(replyMessage)
 expect(receivedError).to.be.undefined;
 expect(receivedMsg).to.be.deep.equal(receiveMessage);

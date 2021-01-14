@@ -1,6 +1,6 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { publishSubscribe } from '../../../components/test/publishSubscribe';
-import { requestReply } from '../../../components/test/requestReply';
+import { publish, subscribe } from '../../../components/test/publishSubscribe';
+import { request, reply } from '../../../components/test/requestReply';
 import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
 
 /**
@@ -16,7 +16,7 @@ function getTestCode(channel, channelName, params) {
   let testMethod;
   if (isRequestReply(channel)) {
     if (isRequester(channel)) {
-      testMethod = requestReply(
+      testMethod = request(
         channelName, 
         publishMessage,
         subscribeMessage,
@@ -24,7 +24,7 @@ function getTestCode(channel, channelName, params) {
       );
     }
     if (isReplier(channel)) {
-      testMethod = requestReply(
+      testMethod = reply(
         channelName, 
         subscribeMessage,
         publishMessage,
@@ -35,14 +35,13 @@ function getTestCode(channel, channelName, params) {
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
-      testMethod = publishSubscribe(
+      testMethod = publish(
         channelName, 
         subscribeMessage, 
-        channelParameters,
-        params);
+        channelParameters);
     }
     if (channel.hasPublish()) {
-      testMethod = publishSubscribe(
+      testMethod = subscribe(
         channelName, 
         publishMessage, 
         channelParameters);

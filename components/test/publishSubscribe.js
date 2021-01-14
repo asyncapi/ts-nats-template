@@ -2,14 +2,23 @@ import {generateExample} from '@asyncapi/generator-filters';
 import { pascalCase, getMessageType} from '../../utils/index';
 import {getReceivedVariableDeclaration, getExampleParameters, getFunctionParameters, getSetReceivedParameters, getVerifyExpectedParameters, getCallbackParameters} from './general';
 
+export function publish(channelName, message, channelParameters) {
+  return publishSubscribe(channelName, message, channelParameters, true)
+}
+export function subscribe(channelName, message, channelParameters) {
+  return publishSubscribe(channelName, message, channelParameters, false)
+}
+
 /**
  * Publish and subscribe test code
  * 
  * @param {*} channelName 
  * @param {*} message 
  * @param {*} channelParameters 
+ * @param {Boolean} publish is the real client the one to publish 
+ * 
  */
-export function publishSubscribe(channelName, message, channelParameters) {
+function publishSubscribe(channelName, message, channelParameters, publish) {
   const publishMessageExample = generateExample(message.payload().json());
   const exampleParameters = getExampleParameters(channelParameters);
   const receivedVariableDeclaration = getReceivedVariableDeclaration(channelParameters);
@@ -17,15 +26,19 @@ export function publishSubscribe(channelName, message, channelParameters) {
   const setReceivedVariable = getSetReceivedParameters(channelParameters);
   const functionParameters = getFunctionParameters(channelParameters);
   const verifyExpectedParameters = getVerifyExpectedParameters(channelParameters);
+  const subscribeClientClass = publish ? 'TestClient' : 'Client';
+  const subscribeClient = publish ? 'testClient' : 'client';
+  const publishClientClass = publish ? 'Client' : 'TestClient';
+  const publishClient = publish ? 'client' : 'testClient';
 
   return `
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
-var receivedMsg: Client.${getMessageType(message)} | undefined = undefined;
+var receivedMsg: ${subscribeClientClass}.${getMessageType(message)} | undefined = undefined;
 ${receivedVariableDeclaration}
 
-var publishMessage: TestClient.${getMessageType(message)} = ${publishMessageExample};
+var publishMessage: ${publishClientClass}.${getMessageType(message)} = ${publishMessageExample};
 ${exampleParameters}
-const subscription = await testClient.subscribeTo${pascalCase(channelName)}((err, msg 
+const subscription = await ${subscribeClient}.subscribeTo${pascalCase(channelName)}((err, msg 
       ${subscribeToCallbackParameters}) => {
         receivedError = err;
         receivedMsg = msg;
@@ -48,7 +61,7 @@ const tryAndWaitForResponse = new Promise((resolve, reject) => {
         }
     }, 100);
 });
-await client.publishTo${pascalCase(channelName)}(publishMessage ${functionParameters});
+await ${publishClient}.publishTo${pascalCase(channelName)}(publishMessage ${functionParameters});
 await tryAndWaitForResponse;
 expect(receivedError).to.be.undefined;
 expect(receivedMsg).to.be.deep.equal(publishMessage);
