@@ -1,4 +1,4 @@
-import { pascalCase, realizeParametersForChannelWithoutType, toTsType, realizeParameterForChannelWithoutType} from '../../utils/index';
+import { pascalCase, realizeParametersForChannelWithoutType, toTsType} from '../../utils/index';
 
 /**
  * Get the code for received variable declaration
@@ -39,7 +39,7 @@ export function getFunctionParameters(channelParameters){
  */
 export function getSetReceivedParameters(channelParameters){
     return Object.entries(channelParameters).map(([paramName, _]) => {
-        return `received${pascalCase(realizeParameterForChannelWithoutType(paramName))} = ${paramName}`;
+        return `received${pascalCase(paramName)} = ${paramName}`;
     }).join('');
 }
 
@@ -49,7 +49,7 @@ export function getSetReceivedParameters(channelParameters){
  */
 export function getVerifyExpectedParameters(channelParameters){
     return Object.entries(channelParameters).map(([paramName, _]) => {
-        return `expect(received${pascalCase(realizeParameterForChannelWithoutType(paramName))}).to.be.equal(${pascalCase(paramName)}ToSend);`;
+        return `expect(received${pascalCase(paramName)}).to.be.equal(${pascalCase(paramName)}ToSend);`;
     }).join('');
 }
 

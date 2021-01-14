@@ -1,4 +1,4 @@
-import { containsBinaryPayload, containsStringPayload, containsJsonPayload } from '../../utils/index';
+import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase} from '../../utils/index';
 
 
 /**
@@ -249,15 +249,13 @@ export function getStandardClassCode(asyncapi) {
     }`;
 }
 
-/**
- * 
- * @param {*} asyncapi 
- */
+
 export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
+  let channels = asyncapi.channels();
   //Import the channel code and re-export them
   const imports = [];
   const exports = [];
-  for (const [channelName] of Object.entries(channelImport)) {
+  for (const [channelName] of Object.entries(channels)) {
     const camelCaseChannelName = camelCase(channelName);
     imports.push(`import * as ${camelCaseChannelName}Channel from "${channelPath}/${pascalCase(channelName)}";`);
     exports.push(`export {${camelCaseChannelName}Channel};`);

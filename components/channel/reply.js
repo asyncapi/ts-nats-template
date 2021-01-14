@@ -1,7 +1,7 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
-import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisfyCallbacks } from '../../utils/index';
+import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks } from '../../utils/index';
 
 /**
  * Component which returns a function which sets up a reply for a given channel
@@ -22,7 +22,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   });
 
   //Determine the receiving process based on whether the payload type is null
-  let receivingOperation = `let message = ${shouldPromisfyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
+  let receivingOperation = `let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
   if (messageHasNotNullPayload(receiveMessage.payload())) {
     receivingOperation =  `
     try{
@@ -31,7 +31,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       onReplyError(e)
       return;
     }
-    let message = ${shouldPromisfyCallbacks(params) ? 'await' : ''} onRequest(undefined, receivedData ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
+    let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, receivedData ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
     `;
   }
 
@@ -55,7 +55,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         err?: NatsTypescriptTemplateError, 
         msg?: ${getMessageType(receiveMessage)}
         ${realizeParametersForChannelWrapper(channelParameters, false)}
-      ) => ${shouldPromisfyCallbacks(params) ? 'Promise<' : ''}${getMessageType(replyMessage)}${ shouldPromisfyCallbacks(params) ? '>' : ''}, 
+      ) => ${shouldPromisifyCallbacks(params) ? 'Promise<' : ''}${getMessageType(replyMessage)}${ shouldPromisifyCallbacks(params) ? '>' : ''}, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
       nc: Client
       ${realizeParametersForChannelWrapper(channelParameters)}, 
@@ -68,7 +68,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         ${includeQueueForSubscription(replyMessage)}
         ${includeUnsubAfterForSubscription(replyMessage)}
   
-        let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisfyCallbacks(params) ? 'async' : ''} (err, msg) => {
+        let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err, msg) => {
           if (err) {
             onRequest(err);
           } else {
