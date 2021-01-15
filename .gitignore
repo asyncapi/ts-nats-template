@@ -1,4 +1,4 @@
 node_modules
-test/actual_comparators/*
 dist
 .DS_Store
+__transpiled
