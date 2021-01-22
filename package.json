@@ -29,7 +29,8 @@
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
 		"test:examples:integration:requestReply": "cd \"examples/request reply\" && sh ./Test.sh",
-		"get-version": "echo $npm_package_version"
+		"generate:assets": "npm run generate:examples",
+		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
 	"dependencies": {
 		"@asyncapi/generator-filters": "^1.1.0",
