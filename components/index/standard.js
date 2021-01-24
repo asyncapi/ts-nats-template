@@ -1,4 +1,4 @@
-import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase} from '../../utils/index';
+import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload} from '../../utils/index';
 
 
 /**
@@ -262,10 +262,12 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
   }
 
   //Import the messages and re-export them
-  for (const [messageName] of asyncapi.allMessages()) {
-    const pascalMessageName = pascalCase(messageName);
-    imports.push(`import * as ${pascalMessageName}Message from "${pathToRoot}/messages/${pascalMessageName}";`);
-    exports.push(`export {${pascalMessageName}Message};`);
+  for (const [messageName, message] of asyncapi.allMessages()) {
+    if(messageHasNotNullPayload(message.payload())){
+      const pascalMessageName = pascalCase(messageName);
+      imports.push(`import * as ${pascalMessageName}Message from "${pathToRoot}/messages/${pascalMessageName}";`);
+      exports.push(`export {${pascalMessageName}Message};`);
+    }
   }
   return `
 import {fromSeed} from 'ts-nkeys';
