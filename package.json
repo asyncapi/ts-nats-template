@@ -26,7 +26,7 @@
 		"release": "semantic-release",
 		"lint": "echo \"No linter yet\"",
 		"test": "echo \"No tests specified yet\"",
-		"execpath:get": "echo $npm_execpath",
+		"execpath:get": "where npm",
 		"execpath:set": "echo $GLOBAL_NPM_PATH",
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
