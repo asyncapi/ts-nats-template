@@ -32,6 +32,7 @@
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
 		"test:examples:integration:requestReply": "cd \"examples/request reply\" && sh ./Test.sh",
 		"generate:assets": "npm run generate:examples",
+		"postinstall": "cd node_modules/npmi && npm install global-npm@0.4.1",
 		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
 	"dependencies": {
