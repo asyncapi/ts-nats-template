@@ -21,7 +21,7 @@
 	"license": "Apache-2.0",
 	"scripts": {
 		"generate:examples": "npm run generate:examples:pubSub",
-		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && ag --output \"./streetlight\" \"./streetlight.json\" \"../../\" --force-write --param \"generateTestClient=true\" --param \"promisifyReplyCallback=true\" && cd ./streetlight && npm i && npm run build && cd \"../examples/request reply\" && ag --output \"./streetlight\" \"./streetlight.json\" \"../../\" --force-write --param \"generateTestClient=true\" --param \"promisifyReplyCallback=true\" && cd ./streetlight && npm i && npm run build && cd ..",
+		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && ag --output \"./streetlight\" \"./streetlight.json\" \"../../\" --force-write --param \"generateTestClient=true\" --param \"promisifyReplyCallback=true\" && cd ./streetlight && npm i && npm run build && cd \"../request reply\" && ag --output \"./streetlight\" \"./streetlight.json\" \"../../\" --force-write --param \"generateTestClient=true\" --param \"promisifyReplyCallback=true\" && cd ./streetlight && npm i && npm run build && cd ..",
 		"release": "semantic-release",
 		"lint": "echo \"No linter yet\"",
 		"test": "echo \"No tests specified yet\"",
