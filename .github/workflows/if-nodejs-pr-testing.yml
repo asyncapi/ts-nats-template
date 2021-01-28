@@ -39,4 +39,8 @@ jobs:
       - if: steps.packagejson.outputs.exists == 'true'
         timeout-minutes: 1
         name: Run release assets generation to make sure PR does not break it
-        run: npm run generate:assets
+        run: npm run generate:examples:pubSub
+      - if: steps.packagejson.outputs.exists == 'true'
+        timeout-minutes: 1
+        name: Run release assets generation to make sure PR does not break it
+        run: npm run generate:examples:requestReply
