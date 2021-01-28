@@ -37,5 +37,6 @@ jobs:
         name: Run linter
         run: npm run lint
       - if: steps.packagejson.outputs.exists == 'true'
+        timeout-minutes: 1
         name: Run release assets generation to make sure PR does not break it
         run: npm run generate:assets
