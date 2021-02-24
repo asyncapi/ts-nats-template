@@ -11,26 +11,8 @@ module.exports = {
     const typescriptGenerator = new TypeScriptGenerator({modelType: "interface"});
     const generatedModels = await typescriptGenerator.generate(generator.asyncapi);
     for (const generatedModel of generatedModels) {
-      const targetDir = Path.join(generator.targetDir, 'src/schemas/');
-      const imports = [];
-      if (generatedModel.model.additionalProperties?.$ref) {
-        const filename = FormatHelpers.toPascalCase(generatedModel.model?.additionalProperties?.$ref);
-        imports.push(`imports {${filename} from './${filename}';`)
-      }
-      if (generatedModel.model.items?.$ref) {
-        const filename = FormatHelpers.toPascalCase(generatedModel.model?.items?.$ref);
-        imports.push(`imports {${filename} from './${filename}';`)
-      }
-      if (generatedModel.model.properties !== null && Object.keys(generatedModel.model.properties).length) {
-        Object.entries(generatedModel.model.properties).forEach(([_, propertyModel]) => {
-          if (propertyModel.additionalProperties?.$ref) {
-            const filename = FormatHelpers.toPascalCase(propertyModel.additionalProperties?.$ref);
-            imports.push(`imports {${filename} from './${filename}';`);
-          }
-        });
-      }
       const fileContent = `
-${imports.join('\n')}
+${generatedModel.model.getImmediateDependencies().map((value) => {return FormatHelpers.toPascalCase(value)}).join('\n')}
 ${generatedModel.result}
       `
       await fs.promises
