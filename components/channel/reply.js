@@ -32,7 +32,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       onReplyError(e)
       return;
     }
-    let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, new ${getMessageType(message)}(receivedData) ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
+    let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, new ${getMessageType(receiveMessage)}(receivedData) ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
     `;
   }
 
