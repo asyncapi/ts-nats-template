@@ -1,38 +1,38 @@
-const {TypeScriptGenerator} = require('@asyncapi/generator-model-sdk');
+const {TypeScriptGenerator, FormatHelpers} = require('@asyncapi/generator-model-sdk');
 const fs = require('fs');
 const Path = require('path');
 const _ = require('lodash');
-function fileName(string) {
-  string = string.replace(/\W/g, '');
-  string = _.camelCase(string);
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-const preset = {
-  class: {
-    async self({ renderer, model }) {
-      const content = [
-        await renderer.renderProperties(),
-        await renderer.runCtorPreset(),
-        await renderer.renderAccessors(),
-        await renderer.runAdditionalContentPreset(),
-      ];
-      const formattedName = fileName(model.$id);
-      return `export class ${formattedName} {
-${renderer.indent(renderer.renderBlock(content, 2))}
-}`;
-    }
-  }
-}
+
 /**
- * Use quicktype to generate messages with their payload.
+ * Use AsyncAPI generator model gen library to generate all schemas.
  */
 module.exports = {
   'generate:after': async (generator) => {
-    const typescriptGenerator = new TypeScriptGenerator({presets: [preset]});
+    const typescriptGenerator = new TypeScriptGenerator({modelType: "interface"});
     const generatedModels = await typescriptGenerator.generate(generator.asyncapi);
     for (const generatedModel of generatedModels) {
-      
       const targetDir = Path.join(generator.targetDir, 'src/schemas/');
+      const imports = [];
+      if (generatedModel.model.additionalProperties?.$ref) {
+        const filename = FormatHelpers.toPascalCase(generatedModel.model?.additionalProperties?.$ref);
+        imports.push(`imports {${filename} from './${filename}';`)
+      }
+      if (generatedModel.model.items?.$ref) {
+        const filename = FormatHelpers.toPascalCase(generatedModel.model?.items?.$ref);
+        imports.push(`imports {${filename} from './${filename}';`)
+      }
+      if (generatedModel.model.properties !== null && Object.keys(generatedModel.model.properties).length) {
+        Object.entries(generatedModel.model.properties).forEach(([_, propertyModel]) => {
+          if (propertyModel.additionalProperties?.$ref) {
+            const filename = FormatHelpers.toPascalCase(propertyModel.additionalProperties?.$ref);
+            imports.push(`imports {${filename} from './${filename}';`);
+          }
+        });
+      }
+      const fileContent = `
+${imports.join('\n')}
+${generatedModel.result}
+      `
       await fs.promises
         .mkdir(targetDir, { recursive: true })
         .catch(console.error);
@@ -40,9 +40,9 @@ module.exports = {
       fs.writeFileSync(
         Path.join(
           targetDir,
-          `${fileName(generatedModel.modelName)}.ts`
+          `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`
         ),
-        generatedModel.result
+        fileContent
       );
     }
   }

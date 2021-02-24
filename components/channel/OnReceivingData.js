@@ -13,7 +13,7 @@ export function OnReceivingData(message, defaultContentType) {
   if (isBinaryPayload(message.contentType(), defaultContentType)) {
     convertFromBinary = `
     if(receivedDataHooks.length == 0){
-      receivedData = new ${getMessageType(message)}(JSON.parse(receivedData.toString()));
+      receivedData = JSON.parse(receivedData.toString());
     }`;
   }
 
@@ -22,7 +22,7 @@ export function OnReceivingData(message, defaultContentType) {
   if (isStringPayload(message.contentType(), defaultContentType)) {
     convertFromString = `
     if(receivedDataHooks.length == 0){
-      receivedData = new ${getMessageType(message)}(JSON.parse(receivedData));
+      receivedData = JSON.parse(receivedData);
     }`;
   }
 
@@ -31,7 +31,7 @@ export function OnReceivingData(message, defaultContentType) {
   if (isJsonPayload(message.contentType(), defaultContentType)) {
     convertFromJson = `
     if(receivedDataHooks.length == 0){
-      receivedData = new ${getMessageType(message)}(receivedData);
+      receivedData = receivedData;
     }`;
   }
 

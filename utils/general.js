@@ -1,4 +1,5 @@
 import _ from 'lodash';
+const {FormatHelpers} = require('@asyncapi/generator-model-sdk');
 
 /**
  * Should the callbacks be promisified.
@@ -23,8 +24,7 @@ export function kebabCase(string) {
 }
 
 export function getSchemaFileName(string) {
-  string = string.replace(/\W/g, '');
-  return pascalCase(string);
+  return FormatHelpers.toPascalCase(string);
 }
 
 /**

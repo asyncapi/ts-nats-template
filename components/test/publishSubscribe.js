@@ -36,7 +36,7 @@ var receivedError: NatsTypescriptTemplateError | undefined = undefined;
 var receivedMsg: ${subscribeClientClass}.${getMessageType(message)} | undefined = undefined;
 ${receivedVariableDeclaration}
 
-var publishMessage: ${publishClientClass}.${getMessageType(message)} = new ${publishClientClass}.${getMessageType(message)}(${publishMessageExample});
+var publishMessage: ${publishClientClass}.${getMessageType(message)} = ${publishMessageExample};
 ${exampleParameters}
 const subscription = await ${subscribeClient}.subscribeTo${pascalCase(channelName)}((err, msg 
       ${subscribeToCallbackParameters}) => {

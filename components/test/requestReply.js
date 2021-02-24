@@ -38,8 +38,8 @@ var receivedMsg: ${requesterClientClass}.${getMessageType(receiveMessage)} | und
 
 ${receivedVariableDeclaration}
 
-var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = new ${replierClientClass}.${getMessageType(replyMessage)}(${replyMessageExample});
-var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = new ${requesterClientClass}.${getMessageType(receiveMessage)}(${receiveMessageExample});
+var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replyMessageExample};
+var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${receiveMessageExample};
 ${exampleParameters}
 const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName)}((err, msg 
       ${replyCallbackParameters}) => {
