@@ -1,4 +1,4 @@
-import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload} from '../../utils/index';
+import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload, getSchemaFileName} from '../../utils/index';
 
 
 /**
@@ -264,9 +264,9 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
   //Import the messages and re-export them
   for (const [messageName, message] of asyncapi.allMessages()) {
     if(messageHasNotNullPayload(message.payload())){
-      const pascalMessageName = pascalCase(messageName);
-      imports.push(`import * as ${pascalMessageName}Message from "${pathToRoot}/messages/${pascalMessageName}";`);
-      exports.push(`export {${pascalMessageName}Message};`);
+      const schemaName = getSchemaFileName(message.payload().uid());
+      imports.push(`import {${schemaName}} from "${pathToRoot}/schemas/${schemaName}";`);
+      exports.push(`export {${schemaName}};`);
     }
   }
   return `

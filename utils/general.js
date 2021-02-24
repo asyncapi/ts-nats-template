@@ -22,6 +22,11 @@ export function kebabCase(string) {
   return _.kebabCase(string);
 }
 
+export function getSchemaFileName(string) {
+  string = string.replace(/\W/g, '');
+  return pascalCase(string);
+}
+
 /**
  * Figure out if our message content type or default content type matches a given payload.
  * 
@@ -86,7 +91,7 @@ export function getMessageType(message) {
   if (`${message.payload().type()}` === 'null') {
     return 'null';
   }
-  return `${pascalCase(message.uid())}Message.${pascalCase(message.uid())}`;
+  return `${getSchemaFileName(message.payload().uid())}`;
 }
 
 /**
