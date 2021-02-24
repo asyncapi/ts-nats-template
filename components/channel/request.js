@@ -42,7 +42,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
       reject(e)
       return;
     }
-    resolve(new ${getMessageType(receiveMessage)}(receivedData));
+    resolve(receivedData);
     `;
   }
 

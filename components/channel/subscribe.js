@@ -30,7 +30,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
       onDataCallback(e)
       return;
     }
-    onDataCallback(undefined, new ${getMessageType(message)}(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`});
+    onDataCallback(undefined, receivedData ${parameters.length > 0 && `, ${parameters.join(',')}`});
     `;
   }
   
