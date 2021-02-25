@@ -10,6 +10,7 @@ module.exports = {
   'generate:after': async (generator) => {
     const typescriptGenerator = new TypeScriptGenerator({modelType: "interface"});
     const generatedModels = await typescriptGenerator.generate(generator.asyncapi);
+    const targetDir = Path.join(generator.targetDir, 'src/schemas/');
     for (const generatedModel of generatedModels) {
       const fileContent = `
 ${generatedModel.model.getImmediateDependencies().map((value) => {return FormatHelpers.toPascalCase(value)}).join('\n')}
