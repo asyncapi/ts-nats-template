@@ -9,7 +9,7 @@ import { isBinaryPayload, getMessageType, isStringPayload, isJsonPayload} from '
  */
 export function OnReceivingData(message, defaultContentType) {
   //Check if we are converting from binary
-  let convertFromBinary = '';
+  let convertFromBinary;
   if (isBinaryPayload(message.contentType(), defaultContentType)) {
     convertFromBinary = `
     if(receivedDataHooks.length == 0){
@@ -18,7 +18,7 @@ export function OnReceivingData(message, defaultContentType) {
   }
 
   //Check if we are converting from string
-  let convertFromString = '';
+  let convertFromString;
   if (isStringPayload(message.contentType(), defaultContentType)) {
     convertFromString = `
     if(receivedDataHooks.length == 0){
@@ -27,7 +27,7 @@ export function OnReceivingData(message, defaultContentType) {
   }
 
   //Check if we are converting from JSON
-  let convertFromJson = '';
+  let convertFromJson;
   if (isJsonPayload(message.contentType(), defaultContentType)) {
     convertFromJson = `
     if(receivedDataHooks.length == 0){
