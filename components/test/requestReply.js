@@ -20,6 +20,8 @@ export function reply(channelName, replyMessage, receiveMessage, channelParamete
  * @param {boolean} requester is it the real client which does the request
  */ 
 function requestReply(channelName, replyMessage, receiveMessage, channelParameters, requester) {
+  const replyMessageExample = generateExample(replyMessage.payload().json());
+  const receiveMessageExample = generateExample(receiveMessage.payload().json());
   const receivedVariableDeclaration = getReceivedVariableDeclaration(channelParameters);
   const exampleParameters = getExampleParameters(channelParameters);
   const functionParameters = getFunctionParameters(channelParameters);
@@ -36,8 +38,8 @@ var receivedMsg: ${requesterClientClass}.${getMessageType(receiveMessage)} | und
 
 ${receivedVariableDeclaration}
 
-var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replierClientClass}.example${getMessageType(replyMessage)};
-var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${requesterClientClass}.example${getMessageType(receiveMessage)};
+var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replyMessageExample};
+var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${receiveMessageExample};
 ${exampleParameters}
 const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName)}((err, msg 
       ${replyCallbackParameters}) => {
