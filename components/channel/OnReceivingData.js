@@ -42,9 +42,7 @@ export function OnReceivingData(message, defaultContentType) {
     for(let hook of receivedDataHooks){
       receivedData = hook(receivedData);
     }
-    ${convertFromBinary}
-    ${convertFromString}
-    ${convertFromJson}
+    ${convertFromBinary || convertFromString || convertFromJson}
   } catch (e) {
     const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
     throw error;
