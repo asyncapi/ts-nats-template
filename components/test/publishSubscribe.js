@@ -19,7 +19,6 @@ export function subscribe(channelName, message, channelParameters) {
  * 
  */
 function publishSubscribe(channelName, message, channelParameters, publish) {
-  const publishMessageExample = generateExample(message.payload().json());
   const exampleParameters = getExampleParameters(channelParameters);
   const receivedVariableDeclaration = getReceivedVariableDeclaration(channelParameters);
   const subscribeToCallbackParameters = getCallbackParameters(channelParameters);
@@ -36,7 +35,7 @@ var receivedError: NatsTypescriptTemplateError | undefined = undefined;
 var receivedMsg: ${subscribeClientClass}.${getMessageType(message)} | undefined = undefined;
 ${receivedVariableDeclaration}
 
-var publishMessage: ${publishClientClass}.${getMessageType(message)} = ${publishMessageExample};
+var publishMessage: ${publishClientClass}.${getMessageType(message)} = ${publishClientClass}.example${getMessageType(message)};
 ${exampleParameters}
 const subscription = await ${subscribeClient}.subscribeTo${pascalCase(channelName)}((err, msg 
       ${subscribeToCallbackParameters}) => {
