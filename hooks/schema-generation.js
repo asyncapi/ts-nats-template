@@ -4,8 +4,8 @@ const Path = require('path');
 
 const preset = {
   interface: {
-    async property({ renderer, propertyName, property }) {
-      const signature = renderer.renderTypeSignature(property, { isRequired: renderer.model.isRequired(propertyName) });
+    async property({ renderer, model, propertyName, property }) {
+      const signature = renderer.renderTypeSignature(property, { isRequired: model.isRequired(propertyName) });
       return `${propertyName}${signature};`;
     }
   }
