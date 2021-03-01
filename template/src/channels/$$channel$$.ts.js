@@ -15,7 +15,8 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHa
  * @param {*} params
  */
 function getChannelCode(asyncapi, channel, channelName, params) {
-  const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
+  const publishOperation = channel.publish() ? channel.publish() : undefined;
+  const publishMessage = publishOperation ? publishOperation.message(0) : undefined;
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
   let channelcode;
   if (isRequestReply(channel)) {
@@ -35,7 +36,8 @@ function getChannelCode(asyncapi, channel, channelName, params) {
         subscribeMessage,
         publishMessage,
         channel.parameters(),
-        params
+        params,
+        publishOperation
       );
     }
   }
@@ -53,7 +55,8 @@ function getChannelCode(asyncapi, channel, channelName, params) {
         asyncapi.defaultContentType(), 
         channelName, 
         publishMessage, 
-        channel.parameters());
+        channel.parameters(),
+        publishOperation);
     }
   }
   return channelcode;
