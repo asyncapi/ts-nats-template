@@ -10,7 +10,7 @@ import { unwrap } from './ChannelParameterUnwrap';
  * @param {*} message which is being received
  * @param {*} channelParameters parameters to the channel
  */
-export function Subscribe(defaultContentType, channelName, message, channelParameters) {
+export function Subscribe(defaultContentType, channelName, message, channelParameters, operation) {
 
   //Create an array of all the parameter names
   let parameters = [];
@@ -46,8 +46,8 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
     ): Promise<Subscription> {
     return new Promise(async (resolve, reject) => {
       let subscribeOptions: SubscriptionOptions = {... options};
-      ${includeQueueForSubscription(message)}
-      ${includeUnsubAfterForSubscription(message)}
+      ${includeQueueForSubscription(operation)}
+      ${includeUnsubAfterForSubscription(operation)}
 
       try{
         let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, (err, msg) => {
