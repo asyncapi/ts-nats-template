@@ -13,7 +13,7 @@ import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messag
  * @param {*} channelParameters parameters to the channel
  * @param {*} params template parameters
  */
-export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params) {
+export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {
 
   //Create an array of all the parameter names
   let parameters = [];
@@ -67,8 +67,8 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       try {
         let subscribeOptions: SubscriptionOptions = {... options};
         
-        ${includeQueueForSubscription(replyMessage)}
-        ${includeUnsubAfterForSubscription(replyMessage)}
+        ${includeQueueForSubscription(operation)}
+        ${includeUnsubAfterForSubscription(operation)}
   
         let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err, msg) => {
           if (err) {

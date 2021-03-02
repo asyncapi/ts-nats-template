@@ -3,11 +3,11 @@
 /**
  * Wrapper to include subscriptions option code if specified in the spec.
  * 
- * @param {*} message to check for queue bindings on 
+ * @param {*} operation to check for queue bindings on 
  */
-export function includeUnsubAfterForSubscription(message) {
-  if (message.hasBinding('nats') && message.bindings().nats.unsubAfter) {
-    return `subscribeOptions.max = '${message.binding('nats').unsubAfter}';`;
+export function includeUnsubAfterForSubscription(operation) {
+  if (operation !== undefined && operation.hasBinding('nats') && operation.binding('nats').unsubAfter) {
+    return `subscribeOptions.max = '${operation.binding('nats').unsubAfter}';`;
   }
   return '';
 }
@@ -15,11 +15,11 @@ export function includeUnsubAfterForSubscription(message) {
 /**
  * Wrapper to include subscriptions queue option if specified in the spec.
  * 
- * @param {*} message to check for queue bindings on 
+ * @param {*} obj to check for queue bindings on 
  */
-export function includeQueueForSubscription(message) {
-  if (message.hasBinding('nats') && message.binding('nats').queue) {
-    return `subscribeOptions.queue = '${message.binding('nats').queue}';`;
+export function includeQueueForSubscription(operation) {
+  if (operation !== undefined && operation.hasBinding('nats') && operation.binding('nats').queue) {
+    return `subscribeOptions.queue = '${operation.binding('nats').queue}';`;
   }
   return '';
 }
