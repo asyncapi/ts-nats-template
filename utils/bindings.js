@@ -6,7 +6,7 @@
  * @param {*} operation to check for queue bindings on 
  */
 export function includeUnsubAfterForSubscription(operation) {
-  if (operation !== undefined && operation.hasBinding('nats') && operation.bindings().nats.unsubAfter) {
+  if (operation !== undefined && operation.hasBinding('nats') && operation.binding('nats').unsubAfter) {
     return `subscribeOptions.max = '${operation.binding('nats').unsubAfter}';`;
   }
   return '';
