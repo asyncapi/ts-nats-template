@@ -1,7 +1,7 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { publish, subscribe } from '../../components/test/publishSubscribe';
-import { request, reply } from '../../components/test/requestReply';
-import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../utils/index';
+import { publish, subscribe } from '../../../components/test/publishSubscribe';
+import { request, reply } from '../../../components/test/requestReply';
+import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
 
 /**
  * Return the correct test code based on whether the channel is `pubSub` or `requestReply`
@@ -55,9 +55,9 @@ export default function channelRender({ channelName, channel, params }) {
     {`
 import {describe, it, before} from 'mocha';
 import {expect} from 'chai';
-import * as Client from '../src/index'
-import * as TestClient from '../src/testclient/index'
-import { NatsTypescriptTemplateError } from '../src/NatsTypescriptTemplateError';
+import * as Client from '../../src/index'
+import * as TestClient from '../../src/testclient/index'
+import { NatsTypescriptTemplateError } from '../../src/NatsTypescriptTemplateError';
 
 describe('${channelName} can talk to itself', () => {
     var client: Client.NatsAsyncApiClient;

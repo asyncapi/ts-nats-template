@@ -12,7 +12,7 @@ export default function packageFile({ asyncapi }) {
     scripts: {
       watch: 'tsc --watch',
       build: 'tsc',
-      'test:integration': './node_modules/.bin/mocha -r ts-node/register tests/**/*.spec.ts --exit --timeout 10000'
+      'test:integration': './node_modules/.bin/mocha -r ts-node/register tests/integration/**/*.spec.ts --exit --timeout 10000'
     },
     dependencies: {
       '@types/klaw-sync': '^6.0.0',
