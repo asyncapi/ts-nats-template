@@ -1,6 +1,6 @@
 {
 	"name": "@asyncapi/ts-nats-template",
-	"version": "0.1.0",
+	"version": "0.2.4",
 	"description": "NATS TypeScript/Node.js template for the AsyncAPI generator.",
 	"keywords": [
 		"asyncapi",
@@ -20,19 +20,23 @@
 	"author": "Jonas Lagoni (jonas-lt@live.dk)",
 	"license": "Apache-2.0",
 	"scripts": {
-		"generate:examples": "npm run generate:examples:pubSub && npm run generate:examples:requestReply",
+		"generate:examples": "npm run generate:examples:pubSub && npm run generate:examples:clean && npm run generate:examples:requestReply",
 		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && sh GenerateAndBuild.sh",
 		"generate:examples:requestReply": "cd \"examples/request reply\" && sh GenerateAndBuild.sh",
+		"generate:examples:clean": "cd \"node_modules/@asyncapi/generator/node_modules/@asyncapi\" && rimraf \"ts-nats-template\"",
 		"release": "semantic-release",
 		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
 		"test": "echo \"No tests specified yet\"",
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
 		"test:examples:integration:requestReply": "cd \"examples/request reply\" && sh ./Test.sh",
-		"get-version": "echo $npm_package_version"
+		"generate:assets": "npm run generate:examples",
+		"postinstall": "cd \"node_modules/npmi\" && npm install global-npm@0.4.1",
+		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
 	"dependencies": {
-		"@asyncapi/generator-filters": "^1.0.0",
+		"@asyncapi/generator-filters": "^1.1.0",
+		"@asyncapi/generator-react-sdk": "^0.1.6",
 		"@lagoni/asyncapi-quicktype-filter": "^1.2.3",
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
@@ -44,12 +48,18 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@asyncapi/generator": "^1.1.4",
+		"@asyncapi/generator": "^1.1.11",
 		"@semantic-release/commit-analyzer": "^8.0.1",
 		"@semantic-release/github": "^7.0.4",
 		"@semantic-release/npm": "^7.0.3",
 		"@semantic-release/release-notes-generator": "^9.0.1",
 		"conventional-changelog-conventionalcommits": "^4.2.3",
+		"eslint": "^7.0.0",
+		"eslint-plugin-mocha": "^7.0.1",
+		"eslint-plugin-react": "^7.22.0",
+		"eslint-plugin-security": "^1.4.0",
+		"eslint-plugin-sonarjs": "^0.5.0",
+		"rimraf": "^3.0.2",
 		"semantic-release": "^17.0.4"
 	},
 	"release": {
@@ -74,6 +84,7 @@
 		]
 	},
 	"generator": {
+		"renderer": "react",
 		"supportedProtocols": [
 			"nats"
 		],
@@ -89,9 +100,6 @@
 				"required": false
 			}
 		},
-		"generator": "<2.0.0 >1.0.0",
-		"filters": [
-			"@asyncapi/generator-filters"
-		]
+		"generator": ">=1.1.1 <2.0.0"
 	}
 }

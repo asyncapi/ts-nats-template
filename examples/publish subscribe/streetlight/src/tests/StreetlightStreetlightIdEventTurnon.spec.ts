@@ -1,12 +1,11 @@
 
-
-import {describe, it} from 'mocha';
+import {describe, it, before} from 'mocha';
 import {expect} from 'chai';
 import * as Client from '../index'
 import * as TestClient from './testclient/index'
 import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
 
-describe('streetlight/{streetlight_id}/event/turnon can talk to it self', () => {
+describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
     var client: Client.NatsAsyncApiClient;
     var testClient: TestClient.NatsAsyncApiTestClient;
     before(async () => {
@@ -17,32 +16,25 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to it self', () => 
         const natsUrl = `${natsHost}:${natsPort}`
         await client.connectToHost(natsUrl);
         await testClient.connectToHost(natsUrl);
-    });    
+    });
 
     it('can send message', async () => {
       
-  
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
 var receivedMsg: TestClient.AnonymousMessage2Message.AnonymousMessage2 | undefined = undefined;
-var recievedStreetlightId : string | undefined = undefined
+var receivedStreetlightId : string | undefined = undefined
 
-
-var publishMessage: TestClient.AnonymousMessage2Message.AnonymousMessage2  = {
+var publishMessage: Client.AnonymousMessage2Message.AnonymousMessage2 = {
   "lumen": 0
 };
 var StreetlightIdToSend: string = "string"
-
-const replySubscription = await testClient.subscribeToStreetlightStreetlightIdEventTurnon((err, msg 
-        
-          ,streetlight_id
-        ) => {
+const subscription = await testClient.subscribeToStreetlightStreetlightIdEventTurnon((err, msg 
+      ,streetlight_id) => {
         receivedError = err;
         receivedMsg = msg;
-        recievedStreetlightId = streetlight_id
-        
+        receivedStreetlightId = streetlight_id
     }
-    , StreetlightIdToSend
-    ,
+    , StreetlightIdToSend,
     true
 );
 const tryAndWaitForResponse = new Promise((resolve, reject) => {
@@ -53,26 +45,23 @@ const tryAndWaitForResponse = new Promise((resolve, reject) => {
         }
     }, 3000)
     setInterval(async () => {
-        if(replySubscription.getReceived() === 1){
+        if(subscription.getReceived() === 1){
             resolve();
             isReturned = true
         }
     }, 100);
 });
-await client.publishToStreetlightStreetlightIdEventTurnon(publishMessage
-    , StreetlightIdToSend
-    );
+await client.publishToStreetlightStreetlightIdEventTurnon(publishMessage , StreetlightIdToSend);
 await tryAndWaitForResponse;
 expect(receivedError).to.be.undefined;
 expect(receivedMsg).to.be.deep.equal(publishMessage);
-expect(recievedStreetlightId).to.be.equal(StreetlightIdToSend);
-
-
+expect(receivedStreetlightId).to.be.equal(StreetlightIdToSend);
+    
     });
 
     after( async () => {
         await client.disconnect();
         await testClient.disconnect();
     });
-
 });
+  
