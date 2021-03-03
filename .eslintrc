@@ -46,6 +46,7 @@ rules:
   sonarjs/cognitive-complexity: 1
 
   # Errors
+  linebreak-style: ["error", "windows"]
   eol-last: ["error", "always"]
   eqeqeq: 2
   no-undef: 2
@@ -90,7 +91,6 @@ rules:
   space-in-parens: [2, never]
   space-unary-ops: [2, {words: true, nonwords: false}]
   wrap-regex: 2
-  linebreak-style: [2, unix]
   semi: [2, always]
   arrow-spacing: [2, {before: true, after: true}]
   no-class-assign: 2
