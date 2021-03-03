@@ -1,7 +1,7 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { publish, subscribe } from '../../../components/test/publishSubscribe';
-import { request, reply } from '../../../components/test/requestReply';
-import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
+import { publish, subscribe } from '../../components/test/publishSubscribe';
+import { request, reply } from '../../components/test/requestReply';
+import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../utils/index';
 
 /**
  * Return the correct test code based on whether the channel is `pubSub` or `requestReply`
