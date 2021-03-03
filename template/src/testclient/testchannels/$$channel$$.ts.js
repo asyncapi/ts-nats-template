@@ -64,7 +64,7 @@ export default function channelRender({ asyncapi, channelName, channel, params }
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
 
   return <File name={`${pascalCase(channelName)}.ts`}>
-{`
+    {`
 ${General(channel, publishMessage, subscribeMessage, '../..')}
 
 ${getChannelCode(asyncapi, channel, channelName, params)}

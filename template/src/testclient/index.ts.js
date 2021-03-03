@@ -5,7 +5,7 @@ import { Publish } from '../../../components/index/publish';
 import { Subscribe } from '../../../components/index/subscribe';
 import { Reply } from '../../../components/index/reply';
 import { Request } from '../../../components/index/request';
-import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
+import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 
 /**
  * Return the correct channel functions for the test client on whether a channel is `pubSub` or `requestReply`
