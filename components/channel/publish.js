@@ -10,10 +10,9 @@ import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper,
  * @param {*} channelParameters parameters to the channel
  */
 export function Publish(defaultContentType, channelName, message, channelParameters) {
-
   //Determine the publish operation based on whether the message type is null
-  let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, null);`
-  if(messageHasNotNullPayload(message.payload())){
+  let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, null);`;
+  if (messageHasNotNullPayload(message.payload())) {
     publishOperation = `
       ${OnSendingData(message, defaultContentType)}
       await nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);

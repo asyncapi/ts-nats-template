@@ -16,6 +16,7 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../
  * @param {*} channelName 
  * @param {*} params 
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function getChannelCode(asyncapi, channel, channelName, params) {
   let channelcode;
   if (isRequestReply(channel)) {
@@ -63,7 +64,7 @@ export default function channelRender({ asyncapi, channelName, channel, params }
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
 
   return <File name={`${pascalCase(channelName)}.ts`}>
-{`
+    {`
 ${General(channel, publishMessage, subscribeMessage, '../../..')}
 
 ${getChannelCode(asyncapi, channel, channelName, params)}

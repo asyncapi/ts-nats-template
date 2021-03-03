@@ -4,7 +4,7 @@ import { Subscribe } from '../../../components/channel/subscribe';
 import { Reply } from '../../../components/channel/reply';
 import { Request } from '../../../components/channel/request';
 import { General } from '../../../components/channel/general';
-import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, messageHasNotNullPayload} from '../../../utils/index';
+import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 
 /**
  * Return the correct channel component based on whether its `pubSub` or `requestReply`.
