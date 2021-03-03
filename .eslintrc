@@ -46,6 +46,7 @@ rules:
   sonarjs/cognitive-complexity: 1
 
   # Errors
+  eol-last: ["error", "always"]
   eqeqeq: 2
   no-undef: 2
   no-dupe-keys: 2
