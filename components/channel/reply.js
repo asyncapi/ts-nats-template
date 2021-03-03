@@ -14,7 +14,6 @@ import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messag
  * @param {*} params template parameters
  */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {
-
   //Create an array of all the parameter names
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {

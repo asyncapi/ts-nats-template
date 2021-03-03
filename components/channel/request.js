@@ -13,18 +13,17 @@ import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper,
  */
 export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
   //Include timeout if specified in the document
-  let includeTimeout =  ``;
+  let includeTimeout =  '';
   const natsBindings = requestMessage.bindings('nats');
-  if(requestMessage.hasBinding('nats') && 
+  if (requestMessage.hasBinding('nats') && 
       natsBindings.requestReply && 
-      natsBindings.requestReply.timeout){
-      includeTimeout = `timeout = '${natsBindings.requestReply.timeout}';`;
+      natsBindings.requestReply.timeout) {
+    includeTimeout = `timeout = '${natsBindings.requestReply.timeout}';`;
   }
 
-
   //Determine the request operation based on whether the message type is null
-  let requestOperation = `msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, timeout, null)`
-  if(messageHasNotNullPayload(requestMessage.payload())){
+  let requestOperation = `msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, timeout, null)`;
+  if (messageHasNotNullPayload(requestMessage.payload())) {
     requestOperation = `
     ${OnSendingData(requestMessage, defaultContentType)}
     msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, timeout, dataToSend)
@@ -32,8 +31,8 @@ export function Request(defaultContentType, channelName, requestMessage, receive
   }
 
   //Determine the request callback operation based on whether the message type is null
-  let requestCallbackOperation = 'resolve(null);'
-  if(messageHasNotNullPayload(receiveMessage.payload())){
+  let requestCallbackOperation = 'resolve(null);';
+  if (messageHasNotNullPayload(receiveMessage.payload())) {
     requestCallbackOperation =  `
     let receivedData : any = msg.data;
     try{

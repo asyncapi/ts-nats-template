@@ -3,10 +3,10 @@ import { pascalCase, getMessageType} from '../../utils/index';
 import {getReceivedVariableDeclaration, getExampleParameters, getFunctionParameters, getSetReceivedParameters, getVerifyExpectedParameters, getCallbackParameters} from './general';
 
 export function publish(channelName, message, channelParameters) {
-  return publishSubscribe(channelName, message, channelParameters, true)
+  return publishSubscribe(channelName, message, channelParameters, true);
 }
 export function subscribe(channelName, message, channelParameters) {
-  return publishSubscribe(channelName, message, channelParameters, false)
+  return publishSubscribe(channelName, message, channelParameters, false);
 }
 
 /**

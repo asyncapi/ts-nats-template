@@ -10,7 +10,6 @@ export function shouldPromisifyCallbacks(params) {
   return params.promisifyReplyCallback;
 }
 
-
 export function camelCase(string) {
   return _.camelCase(string);
 }

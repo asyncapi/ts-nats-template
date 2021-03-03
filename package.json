@@ -26,6 +26,7 @@
 		"generate:examples:clean": "cd \"node_modules/@asyncapi/generator/node_modules/@asyncapi\" && rimraf \"ts-nats-template\"",
 		"release": "semantic-release",
 		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
+		"lint:fix": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc . --fix",
 		"test": "echo \"No tests specified yet\"",
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",

@@ -75,7 +75,6 @@ export function unwrap(channelName, channelParameters) {
     `;
   });
 
-
   return `
   const unmodifiedChannel = ${realizeChannelNameWithoutParameters(channelName)};
   let channel = msg.subject;

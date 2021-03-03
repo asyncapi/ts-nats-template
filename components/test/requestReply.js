@@ -9,7 +9,6 @@ export function reply(channelName, replyMessage, receiveMessage, channelParamete
   return requestReply(channelName, replyMessage, receiveMessage, channelParameters, false); 
 }
 
-
 /**
  * Request and reply test code
  * 
