@@ -1,25 +1,24 @@
 import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload} from '../../utils/index';
 
-
 /**
  * Return disconnect function based on the payload
  * 
  * @param {*} asyncapi 
  */
-function getDisconnectFunction(asyncapi){
+function getDisconnectFunction(asyncapi) {
   let disconnectWithBinaryClient = '';
-  if(containsBinaryPayload(asyncapi)){
-    disconnectWithBinaryClient = `await this.binaryClient!.drain();`;
+  if (containsBinaryPayload(asyncapi)) {
+    disconnectWithBinaryClient = 'await this.binaryClient!.drain();';
   }
 
   let disconnectWithStringPayload = '';
-  if(containsStringPayload(asyncapi)){
-    disconnectWithStringPayload =   `await this.stringClient!.drain();`;
+  if (containsStringPayload(asyncapi)) {
+    disconnectWithStringPayload =   'await this.stringClient!.drain();';
   }
 
   let disconnectWithJsonPayload = '';
-  if(containsJsonPayload(asyncapi)){
-    disconnectWithJsonPayload =  `await this.jsonClient!.drain();`;
+  if (containsJsonPayload(asyncapi)) {
+    disconnectWithJsonPayload =  'await this.jsonClient!.drain();';
   }
 
   return `        
@@ -40,9 +39,9 @@ function getDisconnectFunction(asyncapi){
  * 
  * @param {*} asyncapi 
  */
-function getConnectFunction(asyncapi){
+function getConnectFunction(asyncapi) {
   let connectWithBinaryClient = '';
-  if(containsBinaryPayload(asyncapi)){
+  if (containsBinaryPayload(asyncapi)) {
     connectWithBinaryClient = `
       if(!this.binaryClient || this.binaryClient!.isClosed()){
           this.options.payload = Payload.BINARY;
@@ -52,7 +51,7 @@ function getConnectFunction(asyncapi){
   }
 
   let connectWithStringPayload = '';
-  if(containsStringPayload(asyncapi)){
+  if (containsStringPayload(asyncapi)) {
     connectWithStringPayload =   `
       if(!this.stringClient || this.stringClient!.isClosed()){
           this.options.payload = Payload.STRING;
@@ -62,7 +61,7 @@ function getConnectFunction(asyncapi){
   }
 
   let connectWithJsonPayload = '';
-  if(containsJsonPayload(asyncapi)){
+  if (containsJsonPayload(asyncapi)) {
     connectWithJsonPayload =  `
       if(!this.jsonClient || this.jsonClient!.isClosed()){
           this.options.payload = Payload.JSON;
@@ -97,9 +96,9 @@ function getConnectFunction(asyncapi){
  * 
  * @param {*} asyncapi 
  */
-function getIsClosedFunction(asyncapi){
+function getIsClosedFunction(asyncapi) {
   let isClosedWithBinaryClient = '';
-  if(containsBinaryPayload(asyncapi)){
+  if (containsBinaryPayload(asyncapi)) {
     isClosedWithBinaryClient = `
       if (!this.binaryClient || this.binaryClient!.isClosed()){
         return true;
@@ -107,7 +106,7 @@ function getIsClosedFunction(asyncapi){
   }
 
   let isClosedWithStringPayload = '';
-  if(containsStringPayload(asyncapi)){
+  if (containsStringPayload(asyncapi)) {
     isClosedWithStringPayload = `
       if (!this.stringClient || this.stringClient!.isClosed()){
         return true;
@@ -115,7 +114,7 @@ function getIsClosedFunction(asyncapi){
   }
 
   let isClosedWithJsonPayload = '';
-  if(containsJsonPayload(asyncapi)){
+  if (containsJsonPayload(asyncapi)) {
     isClosedWithJsonPayload = `
       if (!this.jsonClient || this.jsonClient!.isClosed()){
         return true;
@@ -133,7 +132,6 @@ function getIsClosedFunction(asyncapi){
       return false;
    }`;
 }
-
 
 /**
  * Component which returns the standard setup for the client class
@@ -249,9 +247,8 @@ export function getStandardClassCode(asyncapi) {
     }`;
 }
 
-
-export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
-  let channels = asyncapi.channels();
+export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
+  const channels = asyncapi.channels();
   //Import the channel code and re-export them
   const imports = [];
   const exports = [];
@@ -263,7 +260,7 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
 
   //Import the messages and re-export them
   for (const [messageName, message] of asyncapi.allMessages()) {
-    if(messageHasNotNullPayload(message.payload())){
+    if (messageHasNotNullPayload(message.payload())) {
       const pascalMessageName = pascalCase(messageName);
       imports.push(`import * as ${pascalMessageName}Message from "${pathToRoot}/messages/${pascalMessageName}";`);
       exports.push(`export {${pascalMessageName}Message};`);

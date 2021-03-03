@@ -7,13 +7,13 @@ import { Reply } from '../../../components/index/reply';
 import { Request } from '../../../components/index/request';
 import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 /**
  * Return the correct channel functions for the test client on whether a channel is `pubSub` or `requestReply`
  * 
  * @param {*} asyncapi 
  * @param {*} params 
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function getChannelWrappers(asyncapi, params) {
   let channelWrappers = asyncapi.channels();
   channelWrappers = Object.keys(channelWrappers).length ? Object.entries(channelWrappers).map(([channelName, channel]) => {

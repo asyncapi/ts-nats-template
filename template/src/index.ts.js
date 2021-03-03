@@ -5,18 +5,19 @@ import { Publish } from '../../components/index/publish';
 import { Subscribe } from '../../components/index/subscribe';
 import { Reply } from '../../components/index/reply';
 import { Request } from '../../components/index/request';
-import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../utils/index';
+import { isRequestReply, isReplier, isRequester, isPubsub} from '../../utils/index';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 /**
  * Return the correct channel functions for the client based on whether a channel is `pubSub` or `requestReply`.
  * 
  * @param {*} asyncapi 
  * @param {*} params 
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function getChannelWrappers(asyncapi, params) {
   let channelWrappers = [];
-  channelWrappers = Object.keys(asyncapi.channels()).length ? Object.entries(asyncapi.channels()).map(([channelName, channel]) => {
+  const channelEntries = Object.keys(asyncapi.channels()).length ? Object.entries(asyncapi.channels()) : [];
+  channelWrappers = channelEntries.map(([channelName, channel]) => {
     const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
     const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
     const defaultContentType = asyncapi.defaultContentType();
@@ -64,16 +65,14 @@ function getChannelWrappers(asyncapi, params) {
           channelParameters);
       }
     }
-  }) : '';
+  });
   return channelWrappers;
 }
 
-
 export default function index({ asyncapi, params }) {
-
   return (
     <File name="index.ts">
-{`
+      {`
 
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 import * as TestClient from './tests/testclient/';
