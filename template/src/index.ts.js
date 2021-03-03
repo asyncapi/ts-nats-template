@@ -75,7 +75,7 @@ export default function index({ asyncapi, params }) {
       {`
 
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-import * as TestClient from './tests/testclient/';
+import * as TestClient from './testclient/';
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
 export {TestClient};

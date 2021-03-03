@@ -29,7 +29,9 @@ const deleteFolderRecursive = function(path) {
 module.exports = {
   'generate:after': (generator) => {
     if (generator.targetDir && generator.templateParams && !generator.templateParams.generateTestClient) {
-      const pathToTests = Path.resolve(generator.targetDir, 'src/tests/');
+      const pathToTestClient = Path.resolve(generator.targetDir, 'src/testclient/');
+      deleteFolderRecursive(pathToTestClient);
+      const pathToTests = Path.resolve(generator.targetDir, 'tests/');
       deleteFolderRecursive(pathToTests);
     }
   }

@@ -1,11 +1,11 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { Events } from '../../../../components/events';
-import { getStandardClassCode, getStandardHeaderCode } from '../../../../components/index/standard';
-import { Publish } from '../../../../components/index/publish';
-import { Subscribe } from '../../../../components/index/subscribe';
-import { Reply } from '../../../../components/index/reply';
-import { Request } from '../../../../components/index/request';
-import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../../utils/index';
+import { Events } from '../../../components/events';
+import { getStandardClassCode, getStandardHeaderCode } from '../../../components/index/standard';
+import { Publish } from '../../../components/index/publish';
+import { Subscribe } from '../../../components/index/subscribe';
+import { Reply } from '../../../components/index/reply';
+import { Request } from '../../../components/index/request';
+import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 
 /**
  * Return the correct channel functions for the test client on whether a channel is `pubSub` or `requestReply`
@@ -71,7 +71,7 @@ export default function indexFile({ asyncapi, params }) {
   return (
     <File name="index.ts">
       {`
-${getStandardHeaderCode(asyncapi, '../..', './testchannels')}
+${getStandardHeaderCode(asyncapi, '../', './testchannels')}
 
 export declare interface NatsAsyncApiTestClient {
   ${Events()}

@@ -55,9 +55,9 @@ export default function channelRender({ channelName, channel, params }) {
     {`
 import {describe, it, before} from 'mocha';
 import {expect} from 'chai';
-import * as Client from '../index'
-import * as TestClient from './testclient/index'
-import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
+import * as Client from '../../src'
+import * as TestClient from '../../src/testclient'
+import { NatsTypescriptTemplateError } from '../../src/NatsTypescriptTemplateError';
 
 describe('${channelName} can talk to itself', () => {
     var client: Client.NatsAsyncApiClient;
