@@ -16,6 +16,7 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../
  * @param {*} channelName 
  * @param {*} params 
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function getChannelCode(asyncapi, channel, channelName, params) {
   let channelcode;
   if (isRequestReply(channel)) {
