@@ -1,11 +1,11 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { Events } from '../../../../components/events';
-import { getStandardClassCode, getStandardHeaderCode } from '../../../../components/index/standard';
-import { Publish } from '../../../../components/index/publish';
-import { Subscribe } from '../../../../components/index/subscribe';
-import { Reply } from '../../../../components/index/reply';
-import { Request } from '../../../../components/index/request';
-import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../../utils/index';
+import { Events } from '../../../components/events';
+import { getStandardClassCode, getStandardHeaderCode } from '../../../components/index/standard';
+import { Publish } from '../../../components/index/publish';
+import { Subscribe } from '../../../components/index/subscribe';
+import { Reply } from '../../../components/index/reply';
+import { Request } from '../../../components/index/request';
+import { camelCase, pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 /**
