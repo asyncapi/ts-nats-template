@@ -64,7 +64,7 @@ export default function channelRender({ asyncapi, channelName, channel, params }
 
   return <File name={`${pascalCase(channelName)}.ts`}>
 {`
-${General(channel, publishMessage, subscribeMessage, '../../..')}
+${General(channel, publishMessage, subscribeMessage, '../..')}
 
 ${getChannelCode(asyncapi, channel, channelName, params)}
 `}

@@ -71,7 +71,7 @@ export default function indexFile({ asyncapi, params }) {
   return (
     <File name="index.ts">
       {`
-${getStandardHeaderCode(asyncapi, '../..', './testchannels')}
+${getStandardHeaderCode(asyncapi, '../', './testchannels')}
 
 export declare interface NatsAsyncApiTestClient {
   ${Events()}
