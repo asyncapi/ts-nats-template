@@ -21,10 +21,10 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
     it('can send message', async () => {
       
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
-var receivedMsg: TestClient.AnonymousMessage2Message.AnonymousMessage2 | undefined = undefined;
+var receivedMsg: TestClient.AnonymousSchema_5 | undefined = undefined;
 var receivedStreetlightId : string | undefined = undefined
 
-var publishMessage: Client.AnonymousMessage2Message.AnonymousMessage2 = {
+var publishMessage: Client.AnonymousSchema_5 = {
   "lumen": 0
 };
 var StreetlightIdToSend: string = "string"

@@ -1,7 +1,7 @@
 
 
-import * as TurnonCommandMessage from '../../messages/TurnonCommand'
-import * as GeneralReplyMessage from '../../messages/GeneralReply'
+import {AnonymousSchema_2} from '../../schemas/AnonymousSchema_2';
+import {GeneralReply} from '../../schemas/GeneralReply';
 
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../../NatsTypescriptTemplateError';
@@ -11,10 +11,10 @@ import { Hooks } from '../../hooks';
 
 
     export function request(
-      message: TurnonCommandMessage.TurnonCommand,
+      message: AnonymousSchema_2,
       nc: Client
       ,streetlight_id: string
-      ): Promise<GeneralReplyMessage.GeneralReply> {
+      ): Promise<GeneralReply> {
       return new Promise(async (resolve, reject) => {
         let timeout = undefined;
         
@@ -51,7 +51,9 @@ import { Hooks } from '../../hooks';
       receivedData = hook(receivedData);
     }
     
-    
+    if(receivedDataHooks.length == 0){
+      receivedData = receivedData;
+    }
   } catch (e) {
     const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
     throw error;

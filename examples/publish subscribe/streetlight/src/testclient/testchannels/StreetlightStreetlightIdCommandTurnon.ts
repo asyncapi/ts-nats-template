@@ -1,6 +1,6 @@
 
 
-import * as TurnonCommandMessage from '../../messages/TurnonCommand'
+import {AnonymousSchema_2} from '../../schemas/AnonymousSchema_2';
 
 
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
@@ -11,7 +11,7 @@ import { Hooks } from '../../hooks';
 
 
     export function publish(
-      message: TurnonCommandMessage.TurnonCommand,
+      message: AnonymousSchema_2,
       nc: Client
       ,streetlight_id: string
       ): Promise<void> {

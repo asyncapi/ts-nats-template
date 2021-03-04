@@ -1,5 +1,4 @@
 
-
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 import * as TestClient from './testclient/';
 
@@ -18,7 +17,7 @@ import {
   SubscriptionOptions
 } from 'ts-nats';
 
-import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";import * as TurnonCommandMessage from "./messages/TurnonCommand";import * as AnonymousMessage2Message from "./messages/AnonymousMessage2";
+import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";import {AnonymousSchema_2} from "./schemas/AnonymousSchema_2";import {AnonymousSchema_5} from "./schemas/AnonymousSchema_5";
 
 import * as events from 'events';
 export enum AvailableEvents {
@@ -38,7 +37,7 @@ export enum AvailableEvents {
   yield = 'yield'
 }
 
-export {streetlightStreetlightIdCommandTurnonChannel};export {streetlightStreetlightIdEventTurnonChannel};export {TurnonCommandMessage};export {AnonymousMessage2Message};
+export {streetlightStreetlightIdCommandTurnonChannel};export {streetlightStreetlightIdEventTurnonChannel};export {AnonymousSchema_2};export {AnonymousSchema_5};
 
   
 export {ErrorCode, NatsTypescriptTemplateError}
@@ -225,7 +224,7 @@ export class NatsAsyncApiClient extends events.EventEmitter{
   public subscribeToStreetlightStreetlightIdCommandTurnon(
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
-        msg?: TurnonCommandMessage.TurnonCommand
+        msg?: AnonymousSchema_2
         ,streetlight_id?: string) => void
       ,streetlight_id: string,
       flush?: boolean,
@@ -262,7 +261,7 @@ export class NatsAsyncApiClient extends events.EventEmitter{
     * @param requestMessage The message to publish.
     */
     public publishToStreetlightStreetlightIdEventTurnon(
-      requestMessage: AnonymousMessage2Message.AnonymousMessage2 
+      requestMessage: AnonymousSchema_5 
       ,streetlight_id: string
     ): Promise<void> {
       const nc: Client = this.jsonClient!;
