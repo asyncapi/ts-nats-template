@@ -1,11 +1,11 @@
 
 import {describe, it, before} from 'mocha';
 import {expect} from 'chai';
-import * as Client from '../index'
-import * as TestClient from './testclient/index'
-import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
+import * as Client from '../../src'
+import * as TestClient from '../../src/testclient'
+import { NatsTypescriptTemplateError } from '../../src/NatsTypescriptTemplateError';
 
-describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
+describe('streetlight/{streetlight_id}/command/turnon can talk to itself', () => {
     var client: Client.NatsAsyncApiClient;
     var testClient: TestClient.NatsAsyncApiTestClient;
     before(async () => {
@@ -21,19 +21,19 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
     it('can send message', async () => {
       
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
-var receivedMsg: Client.AnonymousMessage4Message.AnonymousMessage4 | undefined = undefined;
+var receivedMsg: TestClient.TurnonCommandMessage.TurnonCommand | undefined = undefined;
 
 var receivedStreetlightId : string | undefined = undefined
 
-var replyMessage: TestClient.GeneralReplyMessage.GeneralReply = {
+var replyMessage: Client.GeneralReplyMessage.GeneralReply = {
   "status_code": 0,
   "status_message": "string"
 };
-var receiveMessage: Client.AnonymousMessage4Message.AnonymousMessage4 = {
+var receiveMessage: TestClient.TurnonCommandMessage.TurnonCommand = {
   "lumen": 0
 };
 var StreetlightIdToSend: string = "string"
-const replySubscription = await testClient.replyToStreetlightStreetlightIdEventTurnon((err, msg 
+const replySubscription = await client.replyToStreetlightStreetlightIdCommandTurnon((err, msg 
       ,streetlight_id) => {
     return new Promise((resolve, reject) => {
         receivedError = err;
@@ -45,7 +45,7 @@ const replySubscription = await testClient.replyToStreetlightStreetlightIdEventT
     , StreetlightIdToSend,
     true
 );
-var reply = await client.requestStreetlightStreetlightIdEventTurnon(receiveMessage , StreetlightIdToSend);
+var reply = await testClient.requestStreetlightStreetlightIdCommandTurnon(receiveMessage , StreetlightIdToSend);
 expect(reply).to.be.deep.equal(replyMessage)
 expect(receivedError).to.be.undefined;
 expect(receivedMsg).to.be.deep.equal(receiveMessage);

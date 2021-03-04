@@ -1,7 +1,7 @@
 
 
 import {fromSeed} from 'ts-nkeys';
-import {ErrorCode, NatsTypescriptTemplateError} from '../../NatsTypescriptTemplateError';
+import {ErrorCode, NatsTypescriptTemplateError} from '..//NatsTypescriptTemplateError';
 import { 
   Client, 
   NatsConnectionOptions, 
@@ -15,7 +15,7 @@ import {
   SubscriptionOptions
 } from 'ts-nats';
 
-import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";import * as TurnonCommandMessage from "../../messages/TurnonCommand";import * as AnonymousMessage2Message from "../../messages/AnonymousMessage2";
+import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";import * as TurnonCommandMessage from "..//messages/TurnonCommand";import * as AnonymousMessage2Message from "..//messages/AnonymousMessage2";
 
 import * as events from 'events';
 export enum AvailableEvents {

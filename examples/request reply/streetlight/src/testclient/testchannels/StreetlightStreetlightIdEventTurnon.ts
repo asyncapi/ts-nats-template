@@ -1,11 +1,11 @@
 
 
-import * as GeneralReplyMessage from '../../../messages/GeneralReply'
-import * as AnonymousMessage4Message from '../../../messages/AnonymousMessage4'
+import * as GeneralReplyMessage from '../../messages/GeneralReply'
+import * as AnonymousMessage4Message from '../../messages/AnonymousMessage4'
 
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
-import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTemplateError';
-import { Hooks } from '../../../hooks';
+import {ErrorCode, NatsTypescriptTemplateError} from '../../NatsTypescriptTemplateError';
+import { Hooks } from '../../hooks';
 
   
 
