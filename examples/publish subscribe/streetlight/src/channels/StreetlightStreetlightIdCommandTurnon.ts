@@ -1,6 +1,6 @@
 
 
-import * as TurnonCommandMessage from '../messages/TurnonCommand'
+import {AnonymousSchema_2} from '../schemas/AnonymousSchema_2';
 
 
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
@@ -13,7 +13,7 @@ import { Hooks } from '../hooks';
     export function subscribe(
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
-        msg?: TurnonCommandMessage.TurnonCommand
+        msg?: AnonymousSchema_2
         ,streetlight_id?: string) => void, 
       nc: Client
       ,streetlight_id: string,
@@ -56,7 +56,9 @@ import { Hooks } from '../hooks';
       receivedData = hook(receivedData);
     }
     
-    
+    if(receivedDataHooks.length == 0){
+      receivedData = receivedData;
+    }
   } catch (e) {
     const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
     throw error;

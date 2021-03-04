@@ -15,7 +15,7 @@ import {
   SubscriptionOptions
 } from 'ts-nats';
 
-import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";import * as TurnonCommandMessage from "..//messages/TurnonCommand";import * as GeneralReplyMessage from "..//messages/GeneralReply";import * as AnonymousMessage4Message from "..//messages/AnonymousMessage4";
+import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";import {AnonymousSchema_2} from "..//schemas/AnonymousSchema_2";import {GeneralReply} from "..//schemas/GeneralReply";import {AnonymousSchema_7} from "..//schemas/AnonymousSchema_7";
 
 import * as events from 'events';
 export enum AvailableEvents {
@@ -35,7 +35,7 @@ export enum AvailableEvents {
   yield = 'yield'
 }
 
-export {streetlightStreetlightIdCommandTurnonChannel};export {streetlightStreetlightIdEventTurnonChannel};export {TurnonCommandMessage};export {GeneralReplyMessage};export {AnonymousMessage4Message};
+export {streetlightStreetlightIdCommandTurnonChannel};export {streetlightStreetlightIdEventTurnonChannel};export {AnonymousSchema_2};export {GeneralReply};export {AnonymousSchema_7};
 
   
 
@@ -216,9 +216,9 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
      * @param requestMessage The request message to send.
      */
      public requestStreetlightStreetlightIdCommandTurnon(
-       requestMessage:TurnonCommandMessage.TurnonCommand 
+       requestMessage:AnonymousSchema_2 
         ,streetlight_id: string
-     ): Promise<GeneralReplyMessage.GeneralReply> {
+     ): Promise<GeneralReply> {
       const nc: Client = this.jsonClient!;
        if(nc){
          return streetlightStreetlightIdCommandTurnonChannel.request(
@@ -239,9 +239,9 @@ export class NatsAsyncApiTestClient extends events.EventEmitter{
     public replyToStreetlightStreetlightIdEventTurnon(
         onRequest : (
           err?: NatsTypescriptTemplateError, 
-          msg?: AnonymousMessage4Message.AnonymousMessage4
+          msg?: AnonymousSchema_7
           ,streetlight_id?: string
-        ) => Promise<GeneralReplyMessage.GeneralReply>, 
+        ) => Promise<GeneralReply>, 
         onReplyError : (err: NatsTypescriptTemplateError) => void 
         ,streetlight_id: string, 
         flush?: boolean,

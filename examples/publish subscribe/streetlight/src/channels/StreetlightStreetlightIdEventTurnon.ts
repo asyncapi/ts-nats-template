@@ -1,7 +1,7 @@
 
 
 
-import * as AnonymousMessage2Message from '../messages/AnonymousMessage2'
+import {AnonymousSchema_5} from '../schemas/AnonymousSchema_5';
 
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '../NatsTypescriptTemplateError';
@@ -11,7 +11,7 @@ import { Hooks } from '../hooks';
 
 
     export function publish(
-      message: AnonymousMessage2Message.AnonymousMessage2,
+      message: AnonymousSchema_5,
       nc: Client
       ,streetlight_id: string
       ): Promise<void> {
