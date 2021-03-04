@@ -1,17 +1,17 @@
 
-import { messageHasNotNullPayload, pascalCase } from '../../utils/index';
+import { messageHasNotNullPayload, getSchemaFileName } from '../../utils/index';
 
 export function General(channel, publishMessage, subscribeMessage, path) {
   // Import the correct messages
   let publishMessageImport = '';
-  if(channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())){
+  if (channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())) {
     const publishMessageUid = getSchemaFileName(publishMessage.payload().uid());
-    publishMessageImport = `import {${publishMessageUid}} from '${path}/schemas/${publishMessageUid}';`
+    publishMessageImport = `import {${publishMessageUid}} from '${path}/schemas/${publishMessageUid}';`;
   }
   let subscribeMessageImport = '';
-  if(channel.hasSubscribe() && messageHasNotNullPayload(subscribeMessage.payload())){
+  if (channel.hasSubscribe() && messageHasNotNullPayload(subscribeMessage.payload())) {
     const subscribeMessageUid = getSchemaFileName(subscribeMessage.payload().uid());
-    subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/schemas/${subscribeMessageUid}';`
+    subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/schemas/${subscribeMessageUid}';`;
   }
 
   return `

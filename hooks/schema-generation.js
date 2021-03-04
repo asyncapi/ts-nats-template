@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 const {TypeScriptGenerator, FormatHelpers} = require('@asyncapi/generator-model-sdk');
 const fs = require('fs');
 const Path = require('path');
@@ -9,23 +10,21 @@ const preset = {
       return `${propertyName}${signature};`;
     }
   }
-}
+};
 /**
  * Use AsyncAPI generator model gen library to generate all schemas.
  */
 module.exports = {
   'generate:after': async (generator) => {
-    const typescriptGenerator = new TypeScriptGenerator({modelType: "interface", presets: [preset]});
+    const typescriptGenerator = new TypeScriptGenerator({modelType: 'interface', presets: [preset]});
     const generatedModels = await typescriptGenerator.generate(generator.asyncapi);
     const targetDir = Path.join(generator.targetDir, 'src/schemas/');
     for (const generatedModel of generatedModels) {
       const fileContent = `
-${generatedModel.model.getImmediateDependencies().map((value) => {return FormatHelpers.toPascalCase(value)}).join('\n')}
+${generatedModel.model.getImmediateDependencies().map((value) => {return FormatHelpers.toPascalCase(value);}).join('\n')}
 ${generatedModel.result}
-      `
-      await fs.promises
-        .mkdir(targetDir, { recursive: true })
-        .catch(console.error);
+      `;
+      await fs.promises.mkdir(`${targetDir}`, { recursive: true }).catch(console.error);
       fs.mkdirSync(targetDir, { recursive: true });
       fs.writeFileSync(
         Path.join(

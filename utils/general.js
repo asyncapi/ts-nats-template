@@ -90,7 +90,7 @@ export function getMessageType(message) {
   if (`${message.payload().type()}` === 'null') {
     return 'null';
   }
-  return `${pascalCase(message.uid())}Message.${pascalCase(message.uid())}`;
+  return `${getSchemaFileName(message.payload().uid())}`;
 }
 
 /**

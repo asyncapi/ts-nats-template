@@ -1,5 +1,5 @@
 
-import { isBinaryPayload, getMessageType, isStringPayload, isJsonPayload} from '../../utils/index';
+import { isBinaryPayload, isStringPayload, isJsonPayload} from '../../utils/index';
 
 /**
  * Component which ensures the hooks are called after receiving data.

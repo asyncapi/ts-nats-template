@@ -1,6 +1,5 @@
 import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload, getSchemaFileName} from '../../utils/index';
 
-
 /**
  * Return disconnect function based on the payload
  * 
@@ -248,9 +247,8 @@ export function getStandardClassCode(asyncapi) {
     }`;
 }
 
-
-export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
-  let channels = asyncapi.channels();
+export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
+  const channels = asyncapi.channels();
   //Import the channel code and re-export them
   const imports = [];
   const exports = [];
@@ -261,8 +259,8 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath){
   }
 
   //Import the messages and re-export them
-  for (const [messageName, message] of asyncapi.allMessages()) {
-    if(messageHasNotNullPayload(message.payload())){
+  for (const [, message] of asyncapi.allMessages()) {
+    if (messageHasNotNullPayload(message.payload())) {
       const schemaName = getSchemaFileName(message.payload().uid());
       imports.push(`import {${schemaName}} from "${pathToRoot}/schemas/${schemaName}";`);
       exports.push(`export {${schemaName}};`);
