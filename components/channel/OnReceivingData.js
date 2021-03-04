@@ -1,5 +1,5 @@
 
-import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/index';
+import { isBinaryPayload, isStringPayload, isJsonPayload} from '../../utils/index';
 
 /**
  * Component which ensures the hooks are called after receiving data.
@@ -9,20 +9,29 @@ import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/index'
  */
 export function OnReceivingData(message, defaultContentType) {
   //Check if we are converting from binary
-  let convertToBinary = '';
+  let convertFromBinary;
   if (isBinaryPayload(message.contentType(), defaultContentType)) {
-    convertToBinary = `
+    convertFromBinary = `
     if(receivedDataHooks.length == 0){
-      receivedData = ${pascalCase(message.uid())}Message.Convert.to${pascalCase(message.uid())}(receivedData.toString());
+      receivedData = JSON.parse(receivedData.toString());
     }`;
   }
 
   //Check if we are converting from string
-  let convertToString = '';
+  let convertFromString;
   if (isStringPayload(message.contentType(), defaultContentType)) {
-    convertToString = `
+    convertFromString = `
     if(receivedDataHooks.length == 0){
-      receivedData = ${pascalCase(message.uid())}Message.Convert.to${pascalCase(message.uid())}(receivedData);
+      receivedData = JSON.parse(receivedData);
+    }`;
+  }
+
+  //Check if we are converting from JSON
+  let convertFromJson;
+  if (isJsonPayload(message.contentType(), defaultContentType)) {
+    convertFromJson = `
+    if(receivedDataHooks.length == 0){
+      receivedData = receivedData;
     }`;
   }
 
@@ -32,8 +41,7 @@ export function OnReceivingData(message, defaultContentType) {
     for(let hook of receivedDataHooks){
       receivedData = hook(receivedData);
     }
-    ${convertToBinary}
-    ${convertToString}
+    ${convertFromBinary || convertFromString || convertFromJson}
   } catch (e) {
     const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
     throw error;

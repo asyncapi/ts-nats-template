@@ -1,4 +1,5 @@
 import _ from 'lodash';
+const {FormatHelpers} = require('@asyncapi/generator-model-sdk');
 
 /**
  * Should the callbacks be promisified.
@@ -19,6 +20,10 @@ export function pascalCase(string) {
 }
 export function kebabCase(string) {
   return _.kebabCase(string);
+}
+
+export function getSchemaFileName(string) {
+  return FormatHelpers.toPascalCase(string);
 }
 
 /**
@@ -85,7 +90,7 @@ export function getMessageType(message) {
   if (`${message.payload().type()}` === 'null') {
     return 'null';
   }
-  return `${pascalCase(message.uid())}Message.${pascalCase(message.uid())}`;
+  return `${getSchemaFileName(message.payload().uid())}`;
 }
 
 /**
