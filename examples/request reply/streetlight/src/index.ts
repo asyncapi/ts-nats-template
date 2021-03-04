@@ -1,7 +1,7 @@
 
 
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-import * as TestClient from './tests/testclient/';
+import * as TestClient from './testclient/';
 
 import {fromSeed} from 'ts-nkeys';
 import {ErrorCode, NatsTypescriptTemplateError} from './NatsTypescriptTemplateError';

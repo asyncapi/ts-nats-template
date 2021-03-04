@@ -1,11 +1,11 @@
 
 
-import * as TurnonCommandMessage from '../../../messages/TurnonCommand'
+import * as TurnonCommandMessage from '../../messages/TurnonCommand'
 
 
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
-import {ErrorCode, NatsTypescriptTemplateError} from '../../../NatsTypescriptTemplateError';
-import { Hooks } from '../../../hooks';
+import {ErrorCode, NatsTypescriptTemplateError} from '../../NatsTypescriptTemplateError';
+import { Hooks } from '../../hooks';
 
   
 
