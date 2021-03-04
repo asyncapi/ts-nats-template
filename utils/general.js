@@ -11,7 +11,6 @@ export function shouldPromisifyCallbacks(params) {
   return params.promisifyReplyCallback;
 }
 
-
 export function camelCase(string) {
   return _.camelCase(string);
 }
@@ -91,7 +90,7 @@ export function getMessageType(message) {
   if (`${message.payload().type()}` === 'null') {
     return 'null';
   }
-  return `${getSchemaFileName(message.payload().uid())}`;
+  return `${pascalCase(message.uid())}Message.${pascalCase(message.uid())}`;
 }
 
 /**

@@ -1,7 +1,7 @@
 
-import { messageHasNotNullPayload, pascalCase, getSchemaFileName } from '../../utils/index';
+import { messageHasNotNullPayload, pascalCase } from '../../utils/index';
 
-export function General( channel, publishMessage, subscribeMessage, path){
+export function General(channel, publishMessage, subscribeMessage, path) {
   // Import the correct messages
   let publishMessageImport = '';
   if(channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())){
@@ -22,5 +22,5 @@ import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 't
 import {ErrorCode, NatsTypescriptTemplateError} from '${path}/NatsTypescriptTemplateError';
 import { Hooks } from '${path}/hooks';
 
-  `
+  `;
 }

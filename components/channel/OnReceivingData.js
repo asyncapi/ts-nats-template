@@ -35,7 +35,6 @@ export function OnReceivingData(message, defaultContentType) {
     }`;
   }
 
-
   return `
   try {
     let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();

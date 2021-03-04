@@ -25,13 +25,13 @@
 		"generate:examples:requestReply": "cd \"examples/request reply\" && sh GenerateAndBuild.sh",
 		"generate:examples:clean": "cd \"node_modules/@asyncapi/generator/node_modules/@asyncapi\" && rimraf \"ts-nats-template\"",
 		"release": "semantic-release",
-		"lint": "echo \"No linter yet\"",
+		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
+		"lint:fix": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc . --fix",
 		"test": "echo \"No tests specified yet\"",
 		"test:examples:integration": "npm run test:examples:integration:pubSub && npm run test:examples:integration:requestReply",
 		"test:examples:integration:pubSub": "cd \"examples/publish subscribe\" && sh ./Test.sh",
 		"test:examples:integration:requestReply": "cd \"examples/request reply\" && sh ./Test.sh",
 		"generate:assets": "npm run generate:examples",
-		"postinstall": "cd \"node_modules/npmi\" && npm install global-npm@0.4.1",
 		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
 	"dependencies": {
@@ -48,7 +48,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@asyncapi/generator": "^1.1.11",
+		"@asyncapi/generator": "^1.2.0",
 		"@semantic-release/commit-analyzer": "^8.0.1",
 		"@semantic-release/github": "^7.0.4",
 		"@semantic-release/npm": "^7.0.3",
