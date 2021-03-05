@@ -1,6 +1,6 @@
 {
 	"name": "@asyncapi/ts-nats-template",
-	"version": "0.2.5",
+	"version": "0.3.0",
 	"description": "NATS TypeScript/Node.js template for the AsyncAPI generator.",
 	"keywords": [
 		"asyncapi",
@@ -35,8 +35,8 @@
 	},
 	"dependencies": {
 		"@asyncapi/generator-filters": "^1.1.0",
+		"@asyncapi/generator-model-sdk": "^0.2.1",
 		"@asyncapi/generator-react-sdk": "^0.2.0",
-		"@lagoni/asyncapi-quicktype-filter": "^1.2.3",
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
 		"is-url": "1.2.4",

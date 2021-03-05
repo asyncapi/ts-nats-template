@@ -73,7 +73,6 @@ export default function index({ asyncapi, params }) {
   return (
     <File name="index.ts">
       {`
-
 import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 import * as TestClient from './testclient/';
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
