@@ -73,12 +73,12 @@ export default function index({ asyncapi, params }) {
   return (
     <File name="index.ts">
       {`
-import {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
+import {AvailableHooks, ReceivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 import * as TestClient from './testclient/';
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
 export {TestClient};
-export {AvailableHooks, receivedDataHook, BeforeSendingDataHook, Hooks}
+export {AvailableHooks, ReceivedDataHook, BeforeSendingDataHook, Hooks}
 export {Client, ServerInfo, ServersChangedEvent, SubEvent}
 
 export declare interface NatsAsyncApiClient {
