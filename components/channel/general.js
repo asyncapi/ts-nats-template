@@ -1,6 +1,13 @@
 
 import { messageHasNotNullPayload, getSchemaFileName } from '../../utils/index';
 
+/**
+ * 
+ * @param {*} channel 
+ * @param {*} publishMessage 
+ * @param {*} subscribeMessage 
+ * @param {*} path 
+ */
 export function General(channel, publishMessage, subscribeMessage, path) {
   // Import the correct messages
   let publishMessageImport = '';

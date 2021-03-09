@@ -9,7 +9,7 @@ import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper,
  * @param {*} channelName to request to
  * @param {*} requestMessage which should be send
  * @param {*} receiveMessage which is received after request
- * @param {*} channelParameters parameters to the channel
+ * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
   //Include timeout if specified in the document

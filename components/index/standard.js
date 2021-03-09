@@ -1,9 +1,11 @@
 import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload, getSchemaFileName} from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { AsyncAPIDocument } from '@asyncapi/parser';
 
 /**
  * Return disconnect function based on the payload
  * 
- * @param {*} asyncapi 
+ * @param {AsyncAPIDocument} asyncapi 
  */
 function getDisconnectFunction(asyncapi) {
   let disconnectWithBinaryClient = '';
@@ -37,7 +39,7 @@ function getDisconnectFunction(asyncapi) {
 /**
  * Return connect function based on the payload
  * 
- * @param {*} asyncapi 
+ * @param {AsyncAPIDocument} asyncapi 
  */
 function getConnectFunction(asyncapi) {
   let connectWithBinaryClient = '';
@@ -94,7 +96,7 @@ function getConnectFunction(asyncapi) {
 /**
  * Return isClosed function based on the payload
  * 
- * @param {*} asyncapi 
+ * @param {AsyncAPIDocument} asyncapi 
  */
 function getIsClosedFunction(asyncapi) {
   let isClosedWithBinaryClient = '';
@@ -136,7 +138,7 @@ function getIsClosedFunction(asyncapi) {
 /**
  * Component which returns the standard setup for the client class
  * 
- * @param {*} asyncapi 
+ * @param {AsyncAPIDocument} asyncapi 
  */
 export function getStandardClassCode(asyncapi) {
   return `
@@ -255,6 +257,12 @@ export function getStandardClassCode(asyncapi) {
     }`;
 }
 
+/**
+ * 
+ * @param {AsyncAPIDocument} asyncapi 
+ * @param {*} pathToRoot 
+ * @param {*} channelPath 
+ */
 export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
   const channels = asyncapi.channels();
   //Import the channel code and re-export them

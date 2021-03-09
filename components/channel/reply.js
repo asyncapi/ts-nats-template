@@ -10,7 +10,7 @@ import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messag
  * @param {*} channelName to reply to
  * @param {*} replyMessage which is being send as a reply
  * @param {*} receiveMessage which is being received
- * @param {*} channelParameters parameters to the channel
+ * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  * @param {*} params template parameters
  */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {

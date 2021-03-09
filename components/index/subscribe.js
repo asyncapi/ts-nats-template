@@ -7,7 +7,7 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
  * @param {*} channelName to publish to
  * @param {*} message received
  * @param {*} messageDescription 
- * @param {*} channelParameters parameters to the channel 
+ * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return  `

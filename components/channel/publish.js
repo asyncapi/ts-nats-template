@@ -7,7 +7,7 @@ import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper,
  * @param {*} defaultContentType 
  * @param {*} channelName to publish to
  * @param {*} message which is being published
- * @param {*} channelParameters parameters to the channel
+ * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Publish(defaultContentType, channelName, message, channelParameters) {
   //Determine the publish operation based on whether the message type is null

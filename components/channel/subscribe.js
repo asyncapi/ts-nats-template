@@ -8,10 +8,9 @@ import { unwrap } from './ChannelParameterUnwrap';
  * @param {*} defaultContentType 
  * @param {*} channelName to subscribe to
  * @param {*} message which is being received
- * @param {*} channelParameters parameters to the channel
+ * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Subscribe(defaultContentType, channelName, message, channelParameters, operation) {
-  //Create an array of all the parameter names
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
     return `${camelCase(parameterName)}Param`;

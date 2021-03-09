@@ -37,6 +37,7 @@
 		"@asyncapi/generator-filters": "^1.1.0",
 		"@asyncapi/generator-model-sdk": "^0.3.0",
 		"@asyncapi/generator-react-sdk": "^0.2.0",
+		"@asyncapi/parser": "^1.4.0",
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
 		"is-url": "1.2.4",
