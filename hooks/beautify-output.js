@@ -47,7 +47,10 @@ const beautifyAllOutputFiles = function(dirPath) {
  */
 module.exports = {
   'generate:after': (generator) => {
-    const pathToSrc = path.resolve(generator.targetDir, 'src');
-    beautifyAllOutputFiles(pathToSrc);
+    let pathToDir = path.resolve(generator.targetDir, 'src');
+    beautifyAllOutputFiles(pathToDir);
+
+    pathToDir = path.resolve(generator.targetDir, 'tests');
+    beautifyAllOutputFiles(pathToDir);
   }
 };
