@@ -3,6 +3,9 @@ const {TypeScriptGenerator, FormatHelpers} = require('@asyncapi/generator-model-
 const fs = require('fs');
 const Path = require('path');
 
+/**
+ * Custom model preset to ensure property names are lower cased
+ */
 const preset = {
   interface: {
     async property({ renderer, model, propertyName, property }) {
@@ -11,6 +14,7 @@ const preset = {
     }
   }
 };
+
 /**
  * Use AsyncAPI generator model gen library to generate all schemas.
  */

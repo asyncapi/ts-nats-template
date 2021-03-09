@@ -31,7 +31,7 @@ module.exports = {
     if (generator.targetDir && generator.templateParams && !generator.templateParams.generateTestClient) {
       const pathToTestClient = Path.resolve(generator.targetDir, 'src/testclient/');
       deleteFolderRecursive(pathToTestClient);
-      const pathToTests = Path.resolve(generator.targetDir, 'tests/');
+      const pathToTests = Path.resolve(generator.targetDir, 'tests');
       deleteFolderRecursive(pathToTests);
     }
   }
