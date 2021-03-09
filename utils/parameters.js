@@ -53,3 +53,14 @@ function realizeParameterForChannelWithType(parameterName, parameter, required =
     parameter.schema().type()
   )}`;
 }
+
+/**
+ * Render channel parameters for JSDoc
+ * 
+ * @param {*} channelParameters to render
+ */
+export function renderJSDocParameters(channelParameters) {
+  return Object.keys(channelParameters).map((paramName) => {
+    return `* @param ${paramName} parameter to use in topic`;
+  }).join('\n');
+}

@@ -1,7 +1,7 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
-import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks } from '../../utils/index';
+import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks, renderJSDocParameters } from '../../utils/index';
 
 /**
  * Component which returns a function which sets up a reply for a given channel
@@ -36,7 +36,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   }
 
   //Determine the reply process based on whether the payload type is null
-  let replyOperation = 'await nc.publish(msg.reply, null);';
+  let replyOperation = 'await client.publish(msg.reply, null);';
   if (messageHasNotNullPayload(replyMessage.payload())) {
     replyOperation = `
     let dataToSend : any = message;
@@ -46,11 +46,21 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       onReplyError(e)
       return;
     }
-    await nc.publish(msg.reply, dataToSend);
+    await client.publish(msg.reply, dataToSend);
     `;
   }
   
   return `
+  /**
+   * Internal functionality to setup reply to channel 
+   * ${channelName}
+   * 
+   * @param onRequest called when request is received
+   * @param onReplyError called when it was not possible to send the reply
+   * @param client to setup reply with
+   ${renderJSDocParameters(channelParameters)}
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
     export function reply(
       onRequest : (
         err?: NatsTypescriptTemplateError, 
@@ -58,7 +68,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         ${realizeParametersForChannelWrapper(channelParameters, false)}
       ) => ${shouldPromisifyCallbacks(params) ? 'Promise<' : ''}${getMessageType(replyMessage)}${ shouldPromisifyCallbacks(params) ? '>' : ''}, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
-      nc: Client
+      client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}, 
       options?: SubscriptionOptions
     ): Promise<Subscription> {
@@ -69,7 +79,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         ${includeQueueForSubscription(operation)}
         ${includeUnsubAfterForSubscription(operation)}
   
-        let subscription = await nc.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err, msg) => {
+        let subscription = await client.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err, msg) => {
           if (err) {
             onRequest(err);
           } else {

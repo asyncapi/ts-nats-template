@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, realizeParametersForChannelWithoutType, getClientToUse } from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, realizeParametersForChannelWithoutType, getClientToUse, renderJSDocParameters } from '../../utils/index';
 
 /**
  * Component which returns a publish to function for the client
@@ -11,19 +11,24 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
  */
 export function Publish(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return `
-    /**
-    *  ${messageDescription}
-    * @param requestMessage The message to publish.
-    */
+  /**
+   * Publish to channel 
+   * ${channelName}
+   * 
+   * ${messageDescription}
+   * 
+   * @param message to publish
+   ${renderJSDocParameters(channelParameters)}
+   */
     public publishTo${pascalCase(channelName)}(
-      requestMessage: ${getMessageType(message)} 
+      message: ${getMessageType(message)} 
       ${realizeParametersForChannelWrapper(channelParameters)}
     ): Promise<void> {
       ${getClientToUse(message, defaultContentType)}
 
       if(nc) {
         return ${camelCase(channelName)}Channel.publish(
-          requestMessage, 
+          message, 
           nc
           ${Object.keys(channelParameters).length ? `,${realizeParametersForChannelWithoutType(channelParameters)}` : ''}
         );

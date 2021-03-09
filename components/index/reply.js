@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWithoutType, realizeParametersForChannelWrapper, getClientToUse} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWithoutType, realizeParametersForChannelWrapper, getClientToUse, renderParameterComments, renderJSDocParameters} from '../../utils/index';
 /**
  * Component which returns a reply to function for the client
  * 
@@ -13,9 +13,16 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWitho
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) {
   return `
   /**
-   *  ${messageDescription}
-   * @param onRequest Called when request received.
-   * @param onReplyError Called when it was not possible to send the reply.
+   * Reply to channel 
+   * ${channelName}
+   * 
+   * ${messageDescription}
+   * 
+   * @param onRequest called when request is received
+   * @param onReplyError called when it was not possible to send the reply
+   ${renderJSDocParameters(channelParameters)}
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
    */
     public replyTo${pascalCase(channelName)}(
         onRequest : (
