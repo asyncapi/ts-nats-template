@@ -40,6 +40,7 @@
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
 		"is-url": "1.2.4",
+		"js-beautify": "^1.13.5",
 		"lodash": "^4.17.20",
 		"quicktype-core": "6.0.66"
 	},
