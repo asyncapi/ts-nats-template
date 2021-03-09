@@ -144,10 +144,6 @@ export function getStandardClassCode(asyncapi) {
     private stringClient?: Client;
     private binaryClient?: Client;
     private options?: NatsConnectionOptions;
-
-    /**
-    *
-    */
     constructor() {
         super();
     }
@@ -201,39 +197,51 @@ export function getStandardClassCode(asyncapi) {
       });
     }
     
+  /**
+   * Try to connect to the NATS server with user credentials
+   * @param userCreds to use
+   * @param options to connect with
+   */
+   async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
+     await this.connect({
+     userCreds: userCreds,
+     ... options
+     });
+   }
+ 
     /**
-    * Try to connect to the NATS server with user credentials
-    */
-    async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
-      await this.connect({
-      userCreds: userCreds,
-      ... options
-      });
-    }
+     * Try to connect to the NATS server with user and password
+     * 
+     * @param user username to use
+     * @param pass password to use
+     * @param options to connect with
+     */
+   async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
+     await this.connect({
+     user: user,
+     pass: pass,
+     ... options
+     });
+   }
+     
+    /**
+     * Try to connect to the NATS server which has no authentication
+     * @param host to connect to
+     * @param options to connect with
+     */
+   async connectToHost(host: string, options?: NatsConnectionOptions){
+     await this.connect({
+     servers: [host],
+     ... options
+     });
+   }
 
     /**
-    * Try to connect to the NATS server with user and password
-    */
-    async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
-      await this.connect({
-      user: user,
-      pass: pass,
-      ... options
-      });
-    }
-    
-    /**
-    * Try to connect to the NATS server which has no authentication
-    */
-    async connectToHost(host: string, options?: NatsConnectionOptions){
-      await this.connect({
-      servers: [host],
-      ... options
-      });
-    }
-
-    /**
-    * Try to connect to the NATS server with nkey authentication
+    * Try to connect to the NATS server with NKey authentication
+    * 
+    * @param publicNkey User
+    * @param seed private key
+    * @param options to connect with
     */
     async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions){
       await this.connect({
@@ -282,7 +290,7 @@ import {
   SubscriptionOptions
 } from 'ts-nats';
 
-${imports.join('')}
+${imports.join('\n')}
 
 import * as events from 'events';
 export enum AvailableEvents {
@@ -302,7 +310,7 @@ export enum AvailableEvents {
   yield = 'yield'
 }
 
-${exports.join('')}
+${exports.join('\n')}
 
   `;
 }

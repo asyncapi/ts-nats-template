@@ -1,6 +1,6 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
-import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload } from '../../utils/index';
+import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
 
 /**
  * Component which returns a function which create a request to the given channel
@@ -22,11 +22,11 @@ export function Request(defaultContentType, channelName, requestMessage, receive
   }
 
   //Determine the request operation based on whether the message type is null
-  let requestOperation = `msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, timeout, null)`;
+  let requestOperation = `msg = await client.request(${realizeChannelName(channelParameters, channelName)}, timeout, null)`;
   if (messageHasNotNullPayload(requestMessage.payload())) {
     requestOperation = `
     ${OnSendingData(requestMessage, defaultContentType)}
-    msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, timeout, dataToSend)
+    msg = await client.request(${realizeChannelName(channelParameters, channelName)}, timeout, dataToSend)
     `;
   }
 
@@ -46,16 +46,24 @@ export function Request(defaultContentType, channelName, requestMessage, receive
   }
 
   return `
+  /**
+   * Internal functionality to send request to channel 
+   * ${channelName}
+   * 
+   * @param requestMessage to send
+   * @param client to send request with
+   ${renderJSDocParameters(channelParameters)}
+   */
     export function request(
-      message: ${getMessageType(requestMessage)},
-      nc: Client
+      requestMessage: ${getMessageType(requestMessage)},
+      client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}
       ): Promise<${getMessageType(receiveMessage)}> {
       return new Promise(async (resolve, reject) => {
         let timeout = undefined;
         ${includeTimeout}
         let msg;
-        let dataToSend : any = message;
+        let dataToSend : any = requestMessage;
         try {
           ${requestOperation}
         }catch(e){

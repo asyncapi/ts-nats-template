@@ -3,12 +3,17 @@
   <em>This is a TypeScript/Node.js NATS template for the AsyncAPI generator.</em>
 </p>
 
-This template is for generating a TypeScript/Node.js wrapper for a aNATS client based on your AsyncAPI document. The template is based on the [nats-ts](https://github.com/nats-io/nats.ts) library and can be used as both a TypeScript and Node.js library. 
+This template is for generating a TypeScript/Node.js wrapper for a NATS client based on your AsyncAPI document. The template is based on the [nats-ts](https://github.com/nats-io/nats.ts) library and can be used as both a TypeScript and Node.js library. 
+
+This template is not set in stone so if you have any feedback or suggestions feel free to reach out!
+
 
 # How to use
 Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example as well as [request and reply](./examples/request%20reply).
+
+Information about the generated files and a description can be found under [the documentation folder](./docs/general.md).
 ## Requirements
-* @asyncapi/generator < v2.0.0 >v1.0.0
+* @asyncapi/generator < v2.0.0 >v1.1.1
 
 Install the generator through [npm or run it from docker official installer](https://github.com/asyncapi/generator#install).
 
@@ -62,7 +67,7 @@ These are the available template parameters:
 * Supports wildcard channels. AsyncAPI describes the channel path to be defined as [RFC 6570 URI](https://www.asyncapi.com/docs/specifications/2.0.0/#a-name-channelsobject-a-channels-object). So a channel containing a wildcard needs to be defined with parameters such as `smartylighting/streetlights/{wildcard}`.
 * Supports [test/mirror client](#test-client) for testing or other useful scenarios.
 * This template can be used as a NodeJS library.
-* This template uses [quicktype](https://quicktype.io/) to generate the corresponding message payloads.
-
+* Generates payload models using the [AsyncAPI model generation library](https://github.com/asyncapi/generator-model-sdk). 
 # Restrictions 
 * Empty objects are not supported, use `null` types instead.
+

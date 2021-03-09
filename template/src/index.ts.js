@@ -85,6 +85,11 @@ export declare interface NatsAsyncApiClient {
   ${Events()}
 }
 
+/**
+ * @class NatsAsyncApiClient
+ * 
+ * The generated client based on your AsyncAPI document.
+ */
 export class NatsAsyncApiClient extends events.EventEmitter{
   ${getStandardClassCode(asyncapi)}
   ${getChannelWrappers(asyncapi, params).join('')}
