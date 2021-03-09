@@ -193,3 +193,15 @@ export function castToTsType(jsonSchemaType, variableToCast) {
   default: throw new Error(`Parameter type not supported - ${  jsonSchemaType}`);
   }
 }
+
+/**
+ * 
+ * @param {*} channelParameters 
+ */
+export function renderParameterComments(channelParameters) {
+  let returnString = '';
+  for (const paramName in channelParameters) {
+    returnString += `* ${paramName} `;
+  }
+  return returnString;
+}
