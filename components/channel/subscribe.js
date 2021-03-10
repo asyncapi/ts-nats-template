@@ -36,8 +36,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
   return `
   
   /**
-   * Internal functionality to setup subscription on channel 
-   * ${channelName}
+   * Internal functionality to setup subscription on the `${channelName}` channel 
    * 
    * @param onDataCallback to call when messages are received
    * @param client to subscribe with
