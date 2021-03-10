@@ -1,10 +1,29 @@
 import {generateExample} from '@asyncapi/generator-filters';
 import { pascalCase, getMessageType} from '../../utils/index';
 import {getReceivedVariableDeclaration, getExampleParameters, getFunctionParameters, getSetReceivedParameters, getVerifyExpectedParameters, getCallbackParameters} from './general';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter,  } from '@asyncapi/parser';
 
+/**
+ * Generate test code where the client publishes and test client subscribes
+ * 
+ * @param {string} channelName 
+ * @param {Message} message 
+ * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @returns 
+ */
 export function publish(channelName, message, channelParameters) {
   return publishSubscribe(channelName, message, channelParameters, true);
 }
+
+/**
+ * Generate test code where the client subscribes and test client publishes
+ * 
+ * @param {string} channelName 
+ * @param {Message} message 
+ * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @returns 
+ */
 export function subscribe(channelName, message, channelParameters) {
   return publishSubscribe(channelName, message, channelParameters, false);
 }
@@ -12,13 +31,13 @@ export function subscribe(channelName, message, channelParameters) {
 /**
  * Publish and subscribe test code
  * 
- * @param {*} channelName 
- * @param {*} message 
- * @param {*} channelParameters 
- * @param {Boolean} publish is the real client the one to publish 
+ * @param {string} channelName 
+ * @param {Message} message 
+ * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Boolean} realClientPublish is it the real client the one to publish 
  * 
  */
-function publishSubscribe(channelName, message, channelParameters, publish) {
+function publishSubscribe(channelName, message, channelParameters, realClientPublish) {
   const publishMessageExample = generateExample(message.payload().json());
   const exampleParameters = getExampleParameters(channelParameters);
   const receivedVariableDeclaration = getReceivedVariableDeclaration(channelParameters);
@@ -26,10 +45,10 @@ function publishSubscribe(channelName, message, channelParameters, publish) {
   const setReceivedVariable = getSetReceivedParameters(channelParameters);
   const functionParameters = getFunctionParameters(channelParameters);
   const verifyExpectedParameters = getVerifyExpectedParameters(channelParameters);
-  const subscribeClientClass = publish ? 'TestClient' : 'Client';
-  const subscribeClient = publish ? 'testClient' : 'client';
-  const publishClientClass = publish ? 'Client' : 'TestClient';
-  const publishClient = publish ? 'client' : 'testClient';
+  const subscribeClientClass = realClientPublish ? 'TestClient' : 'Client';
+  const subscribeClient = realClientPublish ? 'testClient' : 'client';
+  const publishClientClass = realClientPublish ? 'Client' : 'TestClient';
+  const publishClient = realClientPublish ? 'client' : 'testClient';
 
   return `
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 

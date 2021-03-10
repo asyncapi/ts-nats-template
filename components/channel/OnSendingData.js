@@ -1,11 +1,13 @@
 
 import { isBinaryPayload, pascalCase, isStringPayload } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message } from '@asyncapi/parser';
 
 /**
  * Component which ensures the hooks are called before transmitting data.
  * 
- * @param {*} message which is being transmitted.
- * @param {*} defaultContentType 
+ * @param {Message} message which is being transmitted.
+ * @param {string} defaultContentType 
  */
 export function OnSendingData(message, defaultContentType) {
   const messageName = pascalCase(message.uid());

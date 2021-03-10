@@ -1,13 +1,15 @@
 import { OnReceivingData } from './OnReceivingData';
 import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNotNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Component which returns a function which subscribes to the given channel
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to subscribe to
- * @param {*} message which is being received
+ * @param {string} defaultContentType 
+ * @param {string} channelName to subscribe to
+ * @param {Message} message which is being received
  * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Subscribe(defaultContentType, channelName, message, channelParameters, operation) {

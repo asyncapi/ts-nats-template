@@ -1,11 +1,13 @@
 
 import { isBinaryPayload, isStringPayload, isJsonPayload} from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message } from '@asyncapi/parser';
 
 /**
  * Component which ensures the hooks are called after receiving data.
  * 
- * @param {*} message which is being received
- * @param {*} defaultContentType 
+ * @param {Message} message which is being received
+ * @param {string} defaultContentType 
  */
 export function OnReceivingData(message, defaultContentType) {
   //Check if we are converting from binary

@@ -1,15 +1,17 @@
 
 import { messageHasNotNullPayload, getSchemaFileName } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, Channel} from '@asyncapi/parser';
 
 /**
+ * Component which includes all the general imports used for the channel
  * 
- * @param {*} channel 
- * @param {*} publishMessage 
- * @param {*} subscribeMessage 
- * @param {*} path 
+ * @param {Channel} channel used to check if message should be imported
+ * @param {Message} publishMessage to import 
+ * @param {Message} subscribeMessage to import 
+ * @param {string} path to where schemas are located
  */
 export function General(channel, publishMessage, subscribeMessage, path) {
-  // Import the correct messages
   let publishMessageImport = '';
   if (channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())) {
     const publishMessageUid = getSchemaFileName(publishMessage.payload().uid());
@@ -20,7 +22,6 @@ export function General(channel, publishMessage, subscribeMessage, path) {
     const subscribeMessageUid = getSchemaFileName(subscribeMessage.payload().uid());
     subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/schemas/${subscribeMessageUid}';`;
   }
-
   return `
 ${publishMessageImport}
 ${subscribeMessageImport}

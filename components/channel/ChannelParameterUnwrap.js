@@ -1,5 +1,7 @@
 
 import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Component which contains the parameter unwrapping functionality.
@@ -18,8 +20,8 @@ import { camelCase, castToTsType, realizeChannelNameWithoutParameters } from '..
   const streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
  * 
  * 
- * @param {*} channelName to be unwrapped
- * @param {*} channelParameters the parameters which are to be unwrapped from the NATS topic.
+ * @param {string} channelName to be unwrapped
+ * @param {{[key: string]: ChannelParameter}} channelParameters the parameters which are to be unwrapped from the NATS topic.
  */
 export function unwrap(channelName, channelParameters) {
   //Nothing to unwrap if no parameters are used
@@ -57,7 +59,7 @@ export function unwrap(channelName, channelParameters) {
     return `${parameterCamelCase}Split[0],`;
   });
 
-  //Retreive the actual parameters from the received NATS topic using the split array
+  //Retrieve the actual parameters from the received NATS topic using the split array
   prevParameterName = null;
   let parameterReplacement = '';
   parameterReplacement = Object.entries(channelParameters).map(([parameterName, parameter], index) => {
@@ -67,11 +69,11 @@ export function unwrap(channelName, channelParameters) {
       channelSplit = `channel = channel.substring(splits[${index}].length);`;
     }
     prevParameterName = camelCase(parameterName);
-    const paramconstToCast = `channel.substring(0, ${prevParameterName}End)`;
+    const paramToCast = `channel.substring(0, ${prevParameterName}End)`;
     return `
       ${channelSplit}
       const ${prevParameterName}End = channel.indexOf(splits[${index+1}]);
-      const ${prevParameterName}Param = ${castToTsType(parameter.schema().type(), paramconstToCast)};
+      const ${prevParameterName}Param = ${castToTsType(parameter.schema().type(), paramToCast)};
     `;
   });
 

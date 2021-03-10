@@ -260,8 +260,8 @@ export function getStandardClassCode(asyncapi) {
 /**
  * 
  * @param {AsyncAPIDocument} asyncapi 
- * @param {*} pathToRoot 
- * @param {*} channelPath 
+ * @param {string} pathToRoot 
+ * @param {string} channelPath 
  */
 export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
   const channels = asyncapi.channels();

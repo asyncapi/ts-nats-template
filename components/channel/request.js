@@ -1,14 +1,16 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Component which returns a function which create a request to the given channel
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to request to
- * @param {*} requestMessage which should be send
- * @param {*} receiveMessage which is received after request
+ * @param {string} defaultContentType 
+ * @param {string} channelName to request to
+ * @param {Message} requestMessage which should be send
+ * @param {Message} receiveMessage which is received after request
  * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {

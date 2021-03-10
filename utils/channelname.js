@@ -1,6 +1,12 @@
+// eslint-disable-next-line no-unused-vars
+import { ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Convert RFC 6570 URI with parameters to NATS topic. 
+ * 
+ * @param {{[key: string]: ChannelParameter}} parameters 
+ * @param {string} channelName 
+ * @returns 
  */
 export function realizeChannelName(parameters, channelName) {
   let returnString = `\`${  channelName  }\``;
@@ -13,7 +19,8 @@ export function realizeChannelName(parameters, channelName) {
   
 /**
  * Realize channel name to NATS topic without replacing parameters
- * @param {*} channelName 
+ * 
+ * @param {string} channelName 
  */
 export function realizeChannelNameWithoutParameters(channelName) {
   return realizeChannelName(null, channelName);

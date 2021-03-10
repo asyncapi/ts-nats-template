@@ -1,12 +1,14 @@
 import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType, renderJSDocParameters} from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Component which returns a subscribe to function for the client
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to publish to
- * @param {*} message received
- * @param {*} messageDescription 
+ * @param {string} defaultContentType 
+ * @param {string} channelName to publish to
+ * @param {Message} message received
+ * @param {string} messageDescription 
  * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {

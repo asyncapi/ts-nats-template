@@ -2,16 +2,25 @@ import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
 import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks, renderJSDocParameters } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
+
+/**
+ * @typedef TemplateParameters
+ * @type {object}
+ * @property {boolean} generateTestClient - whether or not test client should be generated.
+ * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
+ */
 
 /**
  * Component which returns a function which sets up a reply for a given channel
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to reply to
- * @param {*} replyMessage which is being send as a reply
- * @param {*} receiveMessage which is being received
+ * @param {string} defaultContentType 
+ * @param {string} channelName to reply to
+ * @param {Message} replyMessage which is being send as a reply
+ * @param {Message} receiveMessage which is being received
  * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
- * @param {*} params template parameters
+ * @param {TemplateParameters} params template parameters
  */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {
   //Create an array of all the parameter names
