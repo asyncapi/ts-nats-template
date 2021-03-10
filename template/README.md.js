@@ -1,15 +1,28 @@
 import { File } from '@asyncapi/generator-react-sdk';
+
 export default function readmeFile({ asyncapi }) {
   return <File name={'README.md'}>
     {
       `
-# ${asyncapi.info().title() }
+<h1 align="center">TypeScript/Node.js NATS client wrapper</h1>
+<p align="center">
+  <em>This is a generated TypeScript/Node.js NATS client for the application - ${asyncapi.info().title() }.</em>
+</p>
+
+**We highly recommend you do not modify this client in any way since it is build for you to re-generate it when your AsyncAPI document changes.** 
 
 ${asyncapi.info().description() || ''}
 
+You can find the general information about the different aspects of this library by checking [the documentation folder](./docs/general.md).
 
-Available nats encodings:
-https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings
+An [API document](./API.md) have also been generated which contains all the possible configurations and usages this client supports.
+
+## Example
+\`\`\`ts
+import * as GeneratedClient from "./nats-client";
+const natsClient = new GeneratedClient.NatsAsyncApiClient();
+natsClient.connect(...).catch((e) => {});
+\`\`\`
 
 
     `
