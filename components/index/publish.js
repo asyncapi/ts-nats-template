@@ -7,7 +7,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * 
  * @param {string} defaultContentType 
  * @param {string} channelName to publish to
- * @param {Message} message to publish
+ * @param {Message} message which is being published
  * @param {string} messageDescription 
  * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */

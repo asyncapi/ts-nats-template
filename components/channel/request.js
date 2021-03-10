@@ -9,11 +9,11 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * 
  * @param {string} defaultContentType 
  * @param {string} channelName to request to
- * @param {Message} requestMessage which should be send
- * @param {Message} receiveMessage which is received after request
+ * @param {Message} requestMessage used to send the request
+ * @param {Message} replyMessage which is receive in the reply
  * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
  */
-export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
+export function Request(defaultContentType, channelName, requestMessage, replyMessage, channelParameters) {
   //Include timeout if specified in the document
   let includeTimeout =  '';
   const natsBindings = requestMessage.bindings('nats');
@@ -34,11 +34,11 @@ export function Request(defaultContentType, channelName, requestMessage, receive
 
   //Determine the request callback operation based on whether the message type is null
   let requestCallbackOperation = 'resolve(null);';
-  if (messageHasNotNullPayload(receiveMessage.payload())) {
+  if (messageHasNotNullPayload(replyMessage.payload())) {
     requestCallbackOperation =  `
     let receivedData : any = msg.data;
     try{
-      ${OnReceivingData(receiveMessage, defaultContentType)}
+      ${OnReceivingData(replyMessage, defaultContentType)}
     }catch(e){
       reject(e)
       return;
@@ -59,7 +59,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
       requestMessage: ${getMessageType(requestMessage)},
       client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}
-      ): Promise<${getMessageType(receiveMessage)}> {
+      ): Promise<${getMessageType(replyMessage)}> {
       return new Promise(async (resolve, reject) => {
         let timeout = undefined;
         ${includeTimeout}
