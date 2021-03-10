@@ -12,8 +12,7 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return  `
   /**
-    * Subscribe to
-    * ${channelName}
+    * Subscribe to the `${channelName}`
     * 
     * ${messageDescription}
     * 
