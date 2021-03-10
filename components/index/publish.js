@@ -12,7 +12,7 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
 export function Publish(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return `
   /**
-   * Publish to the `${channelName}` channel 
+   * Publish to the \`${channelName}\` channel 
    * 
    * ${messageDescription}
    * 

@@ -47,7 +47,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
 
   return `
   /**
-   * Internal functionality to send request to the `${channelName}` channel 
+   * Internal functionality to send request to the \`${channelName}\` channel 
    * 
    * @param requestMessage to send
    * @param client to send request with
