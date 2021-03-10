@@ -15,8 +15,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, messageDescription, channelParameters) {
   return `
     /**
-     * Reply to channel 
-     * ${channelName}
+     * Reply to the \`${channelName}\` channel 
      * 
      * ${messageDescription}
      * 

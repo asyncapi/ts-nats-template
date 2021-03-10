@@ -61,8 +61,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   
   return `
   /**
-   * Internal functionality to setup reply to channel 
-   * ${channelName}
+   * Internal functionality to setup reply to the \`${channelName}\` channel
    * 
    * @param onRequest called when request is received
    * @param onReplyError called when it was not possible to send the reply

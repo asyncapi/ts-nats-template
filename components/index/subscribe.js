@@ -14,8 +14,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return  `
   /**
-    * Subscribe to
-    * ${channelName}
+    * Subscribe to the \`${channelName}\`
     * 
     * ${messageDescription}
     * 

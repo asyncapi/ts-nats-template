@@ -201,6 +201,7 @@ export function getStandardClassCode(asyncapi) {
     
   /**
    * Try to connect to the NATS server with user credentials
+   *
    * @param userCreds to use
    * @param options to connect with
    */
@@ -228,6 +229,7 @@ export function getStandardClassCode(asyncapi) {
      
     /**
      * Try to connect to the NATS server which has no authentication
+     
      * @param host to connect to
      * @param options to connect with
      */
@@ -258,7 +260,8 @@ export function getStandardClassCode(asyncapi) {
 }
 
 /**
- * 
+ * Get all the standard import and exports
+ *
  * @param {AsyncAPIDocument} asyncapi 
  * @param {string} pathToRoot 
  * @param {string} channelPath 

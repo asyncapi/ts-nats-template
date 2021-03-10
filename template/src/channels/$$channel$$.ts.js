@@ -93,7 +93,7 @@ export default function channelRender({ asyncapi, channelName, channel, params }
 ${General(channel, publishMessage, subscribeMessage, '..')}
 
 /**
- * Module which wraps functionality for the channel ${channelName} 
+ * Module which wraps functionality for the \`${channelName}\` channel
  * @module ${camelCase(channelName)}
  */
 
