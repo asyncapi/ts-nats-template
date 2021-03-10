@@ -199,6 +199,7 @@ export function getStandardClassCode(asyncapi) {
     
   /**
    * Try to connect to the NATS server with user credentials
+   *
    * @param userCreds to use
    * @param options to connect with
    */
