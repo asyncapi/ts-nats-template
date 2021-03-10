@@ -13,8 +13,7 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWitho
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) {
   return `
   /**
-   * Reply to channel 
-   * ${channelName}
+   * Reply to the `${channelName}` channel 
    * 
    * ${messageDescription}
    * 
