@@ -4,7 +4,7 @@ import { Subscribe } from '../../../components/channel/subscribe';
 import { Reply } from '../../../components/channel/reply';
 import { Request } from '../../../components/channel/request';
 import { General } from '../../../components/channel/general';
-import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
+import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase} from '../../../utils/index';
 
 /**
  * Return the correct channel component based on whether its `pubSub` or `requestReply`.
@@ -69,6 +69,11 @@ export default function channelRender({ asyncapi, channelName, channel, params }
   return <File name={`${pascalCase(channelName)}.ts`}>
     {`
 ${General(channel, publishMessage, subscribeMessage, '..')}
+
+/**
+ * Module which wraps functionality for the \`${channelName}\` channel
+ * @module ${camelCase(channelName)}
+ */
 
 ${getChannelCode(asyncapi, channel, channelName, params)}
     `}

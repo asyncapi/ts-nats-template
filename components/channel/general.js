@@ -21,6 +21,5 @@ ${subscribeMessageImport}
 import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '${path}/NatsTypescriptTemplateError';
 import { Hooks } from '${path}/hooks';
-
   `;
 }

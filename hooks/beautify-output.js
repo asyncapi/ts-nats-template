@@ -6,7 +6,7 @@ const beautify = require('js-beautify').js;
 const beautifyConfig = {
   indent_size: '2',
   indent_char: ' ',
-  max_preserve_newlines: '5',
+  max_preserve_newlines: '1',
   preserve_newlines: true,
   keep_array_indentation: false,
   break_chained_methods: false,

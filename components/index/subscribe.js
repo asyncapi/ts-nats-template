@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType, renderJSDocParameters} from '../../utils/index';
 
 /**
  * Component which returns a subscribe to function for the client
@@ -12,9 +12,15 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
 export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return  `
   /**
-  *  ${messageDescription}
-  * @param onDataCallback Called when message received.
-  */
+    * Subscribe to the \`${channelName}\`
+    * 
+    * ${messageDescription}
+    * 
+    * @param onDataCallback to call when messages are received
+    ${renderJSDocParameters(channelParameters)}
+    * @param flush ensure client is force flushed after subscribing
+    * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+    */
   public subscribeTo${pascalCase(channelName)}(
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 

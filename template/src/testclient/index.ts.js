@@ -76,7 +76,11 @@ ${getStandardHeaderCode(asyncapi, '../', './testchannels')}
 export declare interface NatsAsyncApiTestClient {
   ${Events()}
 }
-
+/**
+ * @class NatsAsyncApiTestClient
+ * 
+ * The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
+ */
 export class NatsAsyncApiTestClient extends events.EventEmitter{
   ${getStandardClassCode(asyncapi)}
   ${getChannelWrappers(asyncapi, params).join('')}

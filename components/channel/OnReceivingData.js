@@ -37,7 +37,7 @@ export function OnReceivingData(message, defaultContentType) {
 
   return `
   try {
-    let receivedDataHooks = Hooks.getInstance().getreceivedDataHook();
+    let receivedDataHooks = Hooks.getInstance().getReceivedDataHook();
     for(let hook of receivedDataHooks){
       receivedData = hook(receivedData);
     }

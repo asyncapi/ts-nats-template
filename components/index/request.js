@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType, renderJSDocParameters} from '../../utils/index';
 
 /**
  * Component which returns a request to function for the client
@@ -13,8 +13,12 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, messageDescription, channelParameters) {
   return `
     /**
-     *  ${messageDescription}
-     * @param requestMessage The request message to send.
+     * Reply to the \`${channelName}\` channel 
+     * 
+     * ${messageDescription}
+     * 
+     * @param requestMessage to send
+     ${renderJSDocParameters(channelParameters)}
      */
      public request${pascalCase(channelName)}(
        requestMessage:${getMessageType(requestMessage)} 
