@@ -3,6 +3,7 @@
 Sometimes to you want to change the data before sending or receiving it. For this purpose hooks has been added to control the flow of information outside the generated code. The hooks can be used to alter the payload before sending or after receiving any data i.e. encrypt, compress data, etc. It is possible to register as many hooks as you want however there are certain restrictions, see [hook restrictions](#Hook-restrictions).
 
 These are the available hooks:
+
 |Hook name|Callback type|Description|
 |---|---|---|
 | BeforeSendingData | (messageToSend: any) => any | Called before sending any data. 
