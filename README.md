@@ -67,7 +67,7 @@ These are the available template parameters:
 
 ## Features
 * Supports wildcard channels. AsyncAPI describes the channel path to be defined as [RFC 6570 URI](https://www.asyncapi.com/docs/specifications/2.0.0/#a-name-channelsobject-a-channels-object). So a channel containing a wildcard needs to be defined with parameters such as `smartylighting/streetlights/{wildcard}`.
-* Supports [test/mirror client](#test-client) for testing or other useful scenarios.
+* Supports [test/mirror client](./docs/general.md#test-client) for testing or other useful scenarios.
 * This template can be used as a NodeJS library.
 * Generates payload models using the [AsyncAPI model generation library](https://github.com/asyncapi/generator-model-sdk). 
 
