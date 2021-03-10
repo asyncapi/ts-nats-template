@@ -13,8 +13,7 @@ import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapp
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, messageDescription, channelParameters) {
   return `
     /**
-     * Reply to channel 
-     * ${channelName}
+     * Reply to the `${channelName}` channel 
      * 
      * ${messageDescription}
      * 
