@@ -1,5 +1,7 @@
 # Available events
-The generated client can emit multiple events, all of these are re-emitted from the [nats-ts](https://github.com/nats-io/nats.ts#notifications) library. `nats-client` is the generated client wrapper.
+The generated client can emit multiple events, all of these are re-emitted from the [nats-ts](https://github.com/nats-io/nats.ts#notifications) library. 
+
+In the following examples `nats-client` is the generated client wrapper.
 
 ## TypeScript example
 ```js
