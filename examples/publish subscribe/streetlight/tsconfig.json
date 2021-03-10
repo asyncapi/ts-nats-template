@@ -1,15 +1,22 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es5",
+		"outDir": "./lib",
+		"baseUrl": "./src",
 		"declaration": true,
-		"strict": true,
-		"noImplicitAny": true,
-		"removeComments": true,
-		"preserveConstEnums": true,
+		"target": "es6",
+		"lib": [
+		  "esnext"
+		],
 		"sourceMap": true,
-		"outDir": "dist/",
-		"baseUrl": "./src"
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"resolveJsonModule": true
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "**/*.spec.ts"]
