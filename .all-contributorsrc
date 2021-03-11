@@ -19,6 +19,15 @@
         "question",
         "test"
       ]
+    },
+    {
+      "login": "magicmatatjahu",
+      "name": "Maciej Urbańczyk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20404945?v=4",
+      "profile": "https://github.com/magicmatatjahu",
+      "contributions": [
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
