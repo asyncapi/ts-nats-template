@@ -47,6 +47,15 @@
       "contributions": [
         "review"
       ]
+    },
+    {
+      "login": "ColinSullivan1",
+      "name": "Colin Sullivan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11180189?v=4",
+      "profile": "https://nats.io",
+      "contributions": [
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
