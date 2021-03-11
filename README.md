@@ -3,9 +3,13 @@
   <em>This is a TypeScript/Node.js NATS template for the AsyncAPI generator.</em>
 </p>
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-BADGE:END --> 
+
 This template is for generating a TypeScript/Node.js wrapper for the NATS client based on your AsyncAPI document. The template is based on the [nats-ts](https://github.com/nats-io/nats.ts) library and can be used as both a TypeScript and Node.js library. 
 
-Have you found a bug or have an idea for improvement? Feel free to contribute!
+Have you found a bug or have an idea for improvement? Feel free to contribute! See [the contribution guidelines](#Contributing) how to do so.
+
 # How to use
 Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example as well as [request and reply](./examples/request%20reply).
 
@@ -54,17 +58,29 @@ async function connect(){
 connect();
 ```
 
-# Template Parameters
+## Template Parameters
 These are the available template parameters:
 |Parameter|Type|Description|
 |---|---|---|
 | generateTestClient | Boolean | Use this parameter to generate the [test client](#test-client). Add the following to the CLI when generating your code `--param "generateTestClient=true"`
 | promisifyReplyCallback | Boolean | Use this parameter to change from the default regular callback when using the request operation. Add the following to the CLI when generating your code `--param "promisifyReplyCallback=true"`
 
-# Features
+## Features
 * Supports wildcard channels. AsyncAPI describes the channel path to be defined as [RFC 6570 URI](https://www.asyncapi.com/docs/specifications/2.0.0/#a-name-channelsobject-a-channels-object). So a channel containing a wildcard needs to be defined with parameters such as `smartylighting/streetlights/{wildcard}`.
-* Supports [test/mirror client](#test-client) for testing or other useful scenarios.
+* Supports [test/mirror client](./docs/general.md#test-client) for testing or other useful scenarios.
 * This template can be used as a NodeJS library.
 * Generates payload models using the [AsyncAPI model generation library](https://github.com/asyncapi/generator-model-sdk). 
-# Restrictions 
+
+## Restrictions 
 * Empty objects are not supported, use `null` types instead.
+
+# Contributing
+
+Before contributing please read the [CONTRIBUTING](CONTRIBUTING.md) document.
+
+# Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->

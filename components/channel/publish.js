@@ -1,13 +1,15 @@
 import { OnSendingData } from './OnSendingData';
 import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Component which returns a function which publishes to the given channel
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to publish to
- * @param {*} message which is being published
- * @param {*} channelParameters parameters to the channel
+ * @param {string} defaultContentType 
+ * @param {string} channelName to publish to
+ * @param {Message} message which is being published
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Publish(defaultContentType, channelName, message, channelParameters) {
   //Determine the publish operation based on whether the message type is null

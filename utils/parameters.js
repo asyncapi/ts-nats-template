@@ -1,7 +1,12 @@
 import { toTsType } from './general';
+// eslint-disable-next-line no-unused-vars
+import {ChannelParameter} from '@asyncapi/parser';
 
 /**
  * Realize parameters without using types and without trailing comma
+ * 
+ * @param {Object.<string, ChannelParameter>} parameters 
+ * @returns 
  */
 export function realizeParametersForChannelWithoutType(parameters) {
   let returnString = '';
@@ -17,8 +22,8 @@ export function realizeParametersForChannelWithoutType(parameters) {
 /**
  * Realize parameters for channels for function definitions in typescript
  * 
- * @param {*} channelParameters parameters to realize
- * @param {*} required optional or required
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to realize
+ * @param {boolean} required optional or required
  */
 export function realizeParametersForChannelWrapper(channelParameters, required = true) {
   return Object.keys(channelParameters).length ? `,${realizeParametersForChannel(channelParameters, required)}` : '';
@@ -26,8 +31,8 @@ export function realizeParametersForChannelWrapper(channelParameters, required =
 
 /**
   * Realize parameters using types without trailing comma
-  * @param {*} channelParameters parameters to realize
-  * @param {*} required optional or required
+  * @param {Object.<string, ChannelParameter>} channelParameters parameters to realize
+  * @param {boolean} required optional or required
   */
 export function realizeParametersForChannel(channelParameters, required = true) {
   let returnString = '';
@@ -43,9 +48,9 @@ export function realizeParametersForChannel(channelParameters, required = true) 
 /**
  * Realize a single parameter with its type 
  * 
- * @param {*} parameterName parameter name to use as
- * @param {*} parameter which contains the schema 
- * @param {*} required should it be optional or required
+ * @param {string} parameterName parameter name to use as
+ * @param {ChannelParameter} parameter which contains the schema 
+ * @param {boolean} required should it be optional or required
  */
 function realizeParameterForChannelWithType(parameterName, parameter, required = true) {
   const requiredType = !required ? '?' : '';
@@ -57,7 +62,7 @@ function realizeParameterForChannelWithType(parameterName, parameter, required =
 /**
  * Render channel parameters for JSDoc
  * 
- * @param {*} channelParameters to render
+ * @param {Object.<string, ChannelParameter>} channelParameters to render
  */
 export function renderJSDocParameters(channelParameters) {
   return Object.keys(channelParameters).map((paramName) => {

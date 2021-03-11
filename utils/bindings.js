@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-unused-vars
+import { Operation, Channel } from '@asyncapi/parser';
 
 /**
  * Wrapper to include subscriptions option code if specified in the spec.
  * 
- * @param {*} operation to check for queue bindings on 
+ * @param {Operation} operation to check for queue bindings on 
  */
 export function includeUnsubAfterForSubscription(operation) {
   if (operation !== undefined && operation.hasBinding('nats') && operation.binding('nats').unsubAfter) {
@@ -25,6 +27,9 @@ export function includeQueueForSubscription(operation) {
 
 /**
  * Is the channel a publish and subscribe. This is the default type if none is defined.
+ * 
+ * @param {Channel} channel 
+ * @returns {boolean}
  */
 export function isPubsub(channel) {
   if (!channel.hasBinding('nats') ||
@@ -37,6 +42,9 @@ export function isPubsub(channel) {
   
 /**
  * Is the channel a request and reply.
+ * 
+ * @param {Channel} channel 
+ * @returns {boolean}
  */
 export function isRequestReply(channel) {
   if (channel.hasBinding('nats') &&
@@ -49,6 +57,9 @@ export function isRequestReply(channel) {
   
 /**
  * Is the request reply a requester
+ * 
+ * @param {Channel} channel 
+ * @returns {boolean}
  */
 export function isRequester(channel) {
   if (isRequestReply(channel) &&
@@ -61,6 +72,9 @@ export function isRequester(channel) {
   
 /**
  * Is the request reply a replier
+ * 
+ * @param {Channel} channel 
+ * @returns {boolean}
  */
 export function isReplier(channel) {
   if (isRequestReply(channel) &&

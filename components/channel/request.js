@@ -1,17 +1,19 @@
 import { OnSendingData } from './OnSendingData';
 import { OnReceivingData } from './OnReceivingData';
 import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
 
 /**
  * Component which returns a function which create a request to the given channel
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to request to
- * @param {*} requestMessage which should be send
- * @param {*} receiveMessage which is received after request
- * @param {*} channelParameters parameters to the channel
+ * @param {string} defaultContentType 
+ * @param {string} channelName to request to
+ * @param {Message} requestMessage used to send the request
+ * @param {Message} replyMessage which is receive in the reply
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Request(defaultContentType, channelName, requestMessage, receiveMessage, channelParameters) {
+export function Request(defaultContentType, channelName, requestMessage, replyMessage, channelParameters) {
   //Include timeout if specified in the document
   let includeTimeout =  '';
   const natsBindings = requestMessage.bindings('nats');
@@ -32,11 +34,11 @@ export function Request(defaultContentType, channelName, requestMessage, receive
 
   //Determine the request callback operation based on whether the message type is null
   let requestCallbackOperation = 'resolve(null);';
-  if (messageHasNotNullPayload(receiveMessage.payload())) {
+  if (messageHasNotNullPayload(replyMessage.payload())) {
     requestCallbackOperation =  `
     let receivedData : any = msg.data;
     try{
-      ${OnReceivingData(receiveMessage, defaultContentType)}
+      ${OnReceivingData(replyMessage, defaultContentType)}
     }catch(e){
       reject(e)
       return;
@@ -57,7 +59,7 @@ export function Request(defaultContentType, channelName, requestMessage, receive
       requestMessage: ${getMessageType(requestMessage)},
       client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}
-      ): Promise<${getMessageType(receiveMessage)}> {
+      ): Promise<${getMessageType(replyMessage)}> {
       return new Promise(async (resolve, reject) => {
         let timeout = undefined;
         ${includeTimeout}

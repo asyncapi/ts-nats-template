@@ -1,14 +1,24 @@
 import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWithoutType, realizeParametersForChannelWrapper, getClientToUse, renderJSDocParameters} from '../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Message, ChannelParameter } from '@asyncapi/parser';
+
+/**
+ * @typedef TemplateParameters
+ * @type {object}
+ * @property {boolean} generateTestClient - whether or not test client should be generated.
+ * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
+ */
+
 /**
  * Component which returns a reply to function for the client
  * 
- * @param {*} defaultContentType 
- * @param {*} channelName to setup reply to
- * @param {*} replyMessage which is being received
- * @param {*} receiveMessage which is to be returned 
- * @param {*} messageDescription 
- * @param {*} channelParameters parameters to the channel
- * @param {*} params passed template parameters 
+ * @param {string} defaultContentType 
+ * @param {string} channelName to setup reply to
+ * @param {Message} replyMessage used to reply to request
+ * @param {Message} receiveMessage which is received by the request 
+ * @param {string} messageDescription 
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
+ * @param {TemplateParameters} params passed template parameters 
  */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) {
   return `

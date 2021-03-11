@@ -2,14 +2,15 @@ import { File } from '@asyncapi/generator-react-sdk';
 import { publish, subscribe } from '../../../components/test/publishSubscribe';
 import { request, reply } from '../../../components/test/requestReply';
 import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
+// eslint-disable-next-line no-unused-vars
+import { Channel } from '@asyncapi/parser';
 
 /**
  * Return the correct test code based on whether the channel is `pubSub` or `requestReply`
- * @param {*} channel 
- * @param {*} channelName 
- * @param {*} params passed template parameters
+ * @param {Channel} channel 
+ * @param {string} channelName 
  */
-function getTestCode(channel, channelName, params) {
+function getTestCode(channel, channelName) {
   const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
   const channelParameters = channel.parameters();
@@ -50,7 +51,7 @@ function getTestCode(channel, channelName, params) {
   return testMethod;
 }
 
-export default function channelRender({ channelName, channel, params }) {
+export default function channelRender({ channelName, channel }) {
   return <File name={`${pascalCase(channelName)}.spec.ts`}>
     {`
 import {describe, it, before} from 'mocha';
@@ -73,7 +74,7 @@ describe('${channelName} can talk to itself', () => {
     });
 
     it('can send message', async () => {
-      ${getTestCode(channel, channelName, params)}
+      ${getTestCode(channel, channelName)}
     });
 
     after( async () => {

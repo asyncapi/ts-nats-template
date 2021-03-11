@@ -1,4 +1,9 @@
 
+/**
+ * Used to retrieve all events that can be emitted.
+ * 
+ * @returns {string} all events
+ */
 export function Events() {
   return `
 on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
