@@ -6,7 +6,7 @@ import { ChannelParameter } from '@asyncapi/parser';
 /**
  * Get the code for received variable declaration
  * 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  */
 export function getReceivedVariableDeclaration(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, param]) => {
@@ -17,7 +17,7 @@ export function getReceivedVariableDeclaration(channelParameters) {
 /**
  * Get the code for example parameters
  * 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  */
 export function getExampleParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, param]) => {
@@ -28,7 +28,7 @@ export function getExampleParameters(channelParameters) {
 /**
  * Get the code for function parameters
  * 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  */
 export function getFunctionParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, _]) => {
@@ -38,7 +38,7 @@ export function getFunctionParameters(channelParameters) {
 
 /**
  * Get the code for setting the received parameter variables
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  */
 export function getSetReceivedParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, _]) => {
@@ -48,7 +48,7 @@ export function getSetReceivedParameters(channelParameters) {
 
 /**
  * Get the code for the expected received parameters
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  */
 export function getVerifyExpectedParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, _]) => {
@@ -58,7 +58,7 @@ export function getVerifyExpectedParameters(channelParameters) {
 
 /**
  * Get the code for the callback parameters
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  */
 export function getCallbackParameters(channelParameters) {
   return Object.keys(channelParameters).length ? `,${realizeParametersForChannelWithoutType(channelParameters)}` : '';

@@ -9,7 +9,7 @@ import { Message, ChannelParameter,  } from '@asyncapi/parser';
  * 
  * @param {string} channelName 
  * @param {Message} message 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  * @returns 
  */
 export function publish(channelName, message, channelParameters) {
@@ -21,7 +21,7 @@ export function publish(channelName, message, channelParameters) {
  * 
  * @param {string} channelName 
  * @param {Message} message 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  * @returns 
  */
 export function subscribe(channelName, message, channelParameters) {
@@ -33,7 +33,7 @@ export function subscribe(channelName, message, channelParameters) {
  * 
  * @param {string} channelName 
  * @param {Message} message 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  * @param {Boolean} realClientPublish is it the real client the one to publish 
  * 
  */

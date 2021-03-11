@@ -9,7 +9,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} defaultContentType 
  * @param {string} channelName to publish to
  * @param {Message} message which is being published
- * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Publish(defaultContentType, channelName, message, channelParameters) {
   //Determine the publish operation based on whether the message type is null

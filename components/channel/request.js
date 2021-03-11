@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} channelName to request to
  * @param {Message} requestMessage used to send the request
  * @param {Message} replyMessage which is receive in the reply
- * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, channelParameters) {
   //Include timeout if specified in the document

@@ -5,7 +5,7 @@ import {ChannelParameter} from '@asyncapi/parser';
 /**
  * Realize parameters without using types and without trailing comma
  * 
- * @param {{[key: string]: ChannelParameter}} parameters 
+ * @param {Object.<string, ChannelParameter>} parameters 
  * @returns 
  */
 export function realizeParametersForChannelWithoutType(parameters) {
@@ -22,7 +22,7 @@ export function realizeParametersForChannelWithoutType(parameters) {
 /**
  * Realize parameters for channels for function definitions in typescript
  * 
- * @param {{[key: string]: ChannelParameter}} channelParameters parameters to realize
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to realize
  * @param {boolean} required optional or required
  */
 export function realizeParametersForChannelWrapper(channelParameters, required = true) {
@@ -31,7 +31,7 @@ export function realizeParametersForChannelWrapper(channelParameters, required =
 
 /**
   * Realize parameters using types without trailing comma
-  * @param {{[key: string]: ChannelParameters}} channelParameters parameters to realize
+  * @param {Object.<string, ChannelParameter>} channelParameters parameters to realize
   * @param {boolean} required optional or required
   */
 export function realizeParametersForChannel(channelParameters, required = true) {
@@ -62,7 +62,7 @@ function realizeParameterForChannelWithType(parameterName, parameter, required =
 /**
  * Render channel parameters for JSDoc
  * 
- * @param {{[key: string]: ChannelParameters}} channelParameters to render
+ * @param {Object.<string, ChannelParameter>} channelParameters to render
  */
 export function renderJSDocParameters(channelParameters) {
   return Object.keys(channelParameters).map((paramName) => {

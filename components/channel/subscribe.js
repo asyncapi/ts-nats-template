@@ -10,7 +10,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} defaultContentType 
  * @param {string} channelName to subscribe to
  * @param {Message} message which is being received
- * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Subscribe(defaultContentType, channelName, message, channelParameters, operation) {
   let parameters = [];

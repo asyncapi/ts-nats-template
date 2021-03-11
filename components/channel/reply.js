@@ -19,7 +19,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} channelName to reply to
  * @param {Message} replyMessage used to reply to request
  * @param {Message} receiveMessage which is received by the request 
- * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  * @param {TemplateParameters} params template parameters
  */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {

@@ -10,7 +10,7 @@ import { Message, ChannelParameter,  } from '@asyncapi/parser';
  * @param {string} channelName 
  * @param {Message} replyMessage 
  * @param {Message} receiveMessage 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  * @returns 
  */
 export function request(channelName, replyMessage, receiveMessage, channelParameters) {
@@ -23,7 +23,7 @@ export function request(channelName, replyMessage, receiveMessage, channelParame
  * @param {string} channelName 
  * @param {Message} replyMessage 
  * @param {Message} receiveMessage
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  * @returns 
  */
 export function reply(channelName, replyMessage, receiveMessage, channelParameters) {
@@ -36,7 +36,7 @@ export function reply(channelName, replyMessage, receiveMessage, channelParamete
  * @param {string} channelName 
  * @param {Message} replyMessage 
  * @param {Message} receiveMessage 
- * @param {{[key: string]: ChannelParameter}} channelParameters 
+ * @param {Object.<string, ChannelParameter>} channelParameters 
  * @param {boolean} realClientRequests is it the real client which does the request
  */ 
 function requestReply(channelName, replyMessage, receiveMessage, channelParameters, realClientRequests) {

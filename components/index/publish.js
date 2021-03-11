@@ -9,7 +9,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} channelName to publish to
  * @param {Message} message which is being published
  * @param {string} messageDescription 
- * @param {{[key: string]: ChannelParameter}} channelParameters parameters to the channel
+ * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Publish(defaultContentType, channelName, message, messageDescription, channelParameters) {
   return `

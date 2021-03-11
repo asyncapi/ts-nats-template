@@ -21,7 +21,7 @@ import { ChannelParameter } from '@asyncapi/parser';
  * 
  * 
  * @param {string} channelName to be unwrapped
- * @param {{[key: string]: ChannelParameter}} channelParameters the parameters which are to be unwrapped from the NATS topic.
+ * @param {Object.<string, ChannelParameter>} channelParameters the parameters which are to be unwrapped from the NATS topic.
  */
 export function unwrap(channelName, channelParameters) {
   //Nothing to unwrap if no parameters are used

@@ -4,7 +4,7 @@ import { ChannelParameter } from '@asyncapi/parser';
 /**
  * Convert RFC 6570 URI with parameters to NATS topic. 
  * 
- * @param {{[key: string]: ChannelParameter}} parameters 
+ * @param {Object.<string, ChannelParameter>} parameters 
  * @param {string} channelName 
  * @returns 
  */
