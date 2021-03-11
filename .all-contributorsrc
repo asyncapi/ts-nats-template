@@ -47,6 +47,15 @@
       "contributions": [
         "review"
       ]
+    },
+    {
+      "login": "aricart",
+      "name": "Alberto Ricart",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1032976?v=4",
+      "profile": "https://github.com/aricart",
+      "contributions": [
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
