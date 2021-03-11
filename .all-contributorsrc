@@ -1,0 +1,30 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "jonaslagoni",
+      "name": "Jonas Lagoni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13396189?v=4",
+      "profile": "https://github.com/jonaslagoni",
+      "contributions": [
+        "bug",
+        "maintenance",
+        "code",
+        "doc",
+        "ideas",
+        "question",
+        "test"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ts-nats-template",
+  "projectOwner": "asyncapi",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
