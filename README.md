@@ -1,13 +1,12 @@
 <h1 align="center">TypeScript/Node.js NATS template</h1>
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 <p align="center">
   <em>This is a TypeScript/Node.js NATS template for the AsyncAPI generator.</em>
 </p>
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<!-- ALL-CONTRIBUTORS-BADGE:END --> 
 
 This template is for generating a TypeScript/Node.js wrapper for the NATS client based on your AsyncAPI document. The template is based on the [nats-ts](https://github.com/nats-io/nats.ts) library and can be used as both a TypeScript and Node.js library. 
 
