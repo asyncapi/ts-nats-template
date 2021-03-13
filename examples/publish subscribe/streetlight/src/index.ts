@@ -217,10 +217,9 @@ export class NatsAsyncApiClient extends events.EventEmitter {
   }
   /**
    * Try to connect to the NATS server which has no authentication
-   *
+   
    * @param host to connect to
    * @param options to connect with
-
    */
   async connectToHost(host: string, options ? : NatsConnectionOptions) {
     await this.connect({
