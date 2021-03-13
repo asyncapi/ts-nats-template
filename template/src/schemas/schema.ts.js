@@ -1,5 +1,12 @@
 import { File } from '@asyncapi/generator-react-sdk';
 const {TypeScriptGenerator, FormatHelpers} = require('@asyncapi/generator-model-sdk');
+
+/**
+ * @typedef RenderArgument
+ * @type {object}
+ * @property {AsyncAPIDocument} asyncapi received from the generator.
+ */
+
 /**
  * Custom model preset to ensure property names are lower cased
  */
@@ -12,6 +19,11 @@ const preset = {
   }
 };
 
+/**
+ * Render all schema models
+ * @param {RenderArgument} param0 
+ * @returns 
+ */
 export default async function schemaRender({ asyncapi }) {
   const typescriptGenerator = new TypeScriptGenerator({modelType: 'interface', presets: [preset]});
   const generatedModels = typescriptGenerator.generate(asyncapi);
