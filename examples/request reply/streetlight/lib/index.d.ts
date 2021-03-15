@@ -92,10 +92,9 @@ export declare class NatsAsyncApiClient extends events.EventEmitter {
     connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions): Promise<void>;
     /**
      * Try to connect to the NATS server which has no authentication
-     *
+     
      * @param host to connect to
      * @param options to connect with
-  
      */
     connectToHost(host: string, options?: NatsConnectionOptions): Promise<void>;
     /**
