@@ -7,8 +7,8 @@ export default function packageFile({ asyncapi }) {
     name: 'NatsTSclient',
     description: '',
     version: '0.0.1',
-    main: 'dist/index.js',
-    types: 'dist/index.d.ts',
+    main: 'lib/index.js',
+    types: 'lib/index.d.ts',
     scripts: {
       watch: 'tsc --watch',
       build: 'tsc && npm run docs',
