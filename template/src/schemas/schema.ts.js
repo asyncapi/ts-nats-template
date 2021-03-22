@@ -26,7 +26,7 @@ const preset = {
  */
 export default async function schemaRender({ asyncapi }) {
   const typescriptGenerator = new TypeScriptGenerator({modelType: 'interface', presets: [preset]});
-  const generatedModels = typescriptGenerator.generate(asyncapi);
+  const generatedModels = await typescriptGenerator.generate(asyncapi);
   const files = [];
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;
