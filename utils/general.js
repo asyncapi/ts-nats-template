@@ -2,6 +2,9 @@ import _ from 'lodash';
 const {FormatHelpers} = require('@asyncapi/generator-model-sdk');
 // eslint-disable-next-line no-unused-vars
 import { Message, Schema, AsyncAPIDocument} from '@asyncapi/parser';
+const contentTypeJSON = 'application/json';
+const contentTypeString = 'text/plain';
+const contentTypeBinary = 'application/octet-stream';
 
 /**
  * @typedef TemplateParameters
@@ -59,13 +62,13 @@ function containsPayload(messageContentType, defaultContentType, payload) {
   return false;
 }
 export function isBinaryPayload (messageContentType, defaultContentType) {
-  return containsPayload(messageContentType, defaultContentType, 'binary');
+  return containsPayload(messageContentType, defaultContentType, contentTypeBinary);
 }
 export function isStringPayload(messageContentType, defaultContentType) {
-  return containsPayload(messageContentType, defaultContentType, 'string');
+  return containsPayload(messageContentType, defaultContentType, contentTypeString);
 }
 export function isJsonPayload(messageContentType, defaultContentType) {
-  return containsPayload(messageContentType, defaultContentType, 'json');
+  return containsPayload(messageContentType, defaultContentType, contentTypeJSON);
 }
 
 /**
@@ -79,9 +82,7 @@ export function getClientToUse(message, defaultContentType) {
     return 'const nc: Client = this.binaryClient!;';
   } else if (isStringPayload(message.contentType(), defaultContentType)) {
     return 'const nc: Client = this.stringClient!;';
-  } else if (isJsonPayload(message.contentType(), defaultContentType)) {
-    return 'const nc: Client = this.jsonClient!;';
-  } 
+  }
   //Default to JSON client
   return 'const nc: Client = this.jsonClient!;';
 }
@@ -116,7 +117,7 @@ export function getMessageType(message) {
  */
 function containsPayloadInDocument(document, payload) {
   if (
-    document.defaultContentType() !== undefined &&
+    document.hasDefaultContentType() &&
     document.defaultContentType().toLowerCase() === payload
   ) {
     return true;
@@ -156,13 +157,15 @@ function containsPayloadInDocument(document, payload) {
   return false;
 }
 export function containsBinaryPayload(document) {
-  return containsPayloadInDocument(document, 'binary');
+  return containsPayloadInDocument(document, contentTypeBinary);
 }
 export function containsStringPayload(document) {
-  return containsPayloadInDocument(document, 'string');
+  return containsPayloadInDocument(document, contentTypeString);
 }
 export function containsJsonPayload(document) {
-  return containsPayloadInDocument(document, 'json');
+  const containsJsonPayload = containsPayloadInDocument(document, contentTypeJSON);
+  //Default to JSON type
+  return containsJsonPayload || (!containsBinaryPayload(document) && !containsStringPayload(document));
 }
 
 /**
