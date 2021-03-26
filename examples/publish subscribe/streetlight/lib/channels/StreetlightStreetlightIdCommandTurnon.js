@@ -48,9 +48,7 @@ function subscribe(onDataCallback, client, streetlight_id, options) {
                             for (let hook of receivedDataHooks) {
                                 receivedData = hook(receivedData);
                             }
-                            if (receivedDataHooks.length == 0) {
-                                receivedData = receivedData;
-                            }
+                            undefined;
                         }
                         catch (e) {
                             const error = NatsTypescriptTemplateError_1.NatsTypescriptTemplateError.errorForCode(NatsTypescriptTemplateError_1.ErrorCode.HOOK_ERROR, e);

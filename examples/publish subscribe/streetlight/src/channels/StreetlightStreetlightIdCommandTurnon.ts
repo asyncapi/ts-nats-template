@@ -60,9 +60,7 @@ export function subscribe(
               for (let hook of receivedDataHooks) {
                 receivedData = hook(receivedData);
               }
-              if (receivedDataHooks.length == 0) {
-                receivedData = receivedData;
-              }
+              undefined
             } catch (e) {
               const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
               throw error;

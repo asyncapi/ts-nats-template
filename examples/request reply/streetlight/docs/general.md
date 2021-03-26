@@ -15,9 +15,9 @@ The test client is like a mirror client. It does everything the opposite, when y
 ## Supported Content Types
 The following payload types are supported, this is limited to the underlying NATS TypeScript library:
 
-* For binary payloads use: `binary` content type
-* For json payloads use: `json` content type
-* For string payloads use: `string` content type
+* For binary payloads use: `application/octet-stream` content type
+* For JSON payloads use: `application/json` content type, this is default if nothing is specified
+* For string payloads use: `text/plain` content type
 
 ## Client Hooks
 Sometimes to you want to change the data before sending or receiving it. For this purpose hooks has been added to control the flow of information outside the generated code. 
