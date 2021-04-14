@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@asyncapi/generator-filters": "^1.1.0",
-		"@asyncapi/generator-model-sdk": "^0.3.3",
+		"@asyncapi/generator-model-sdk": "^0.3.4",
 		"@asyncapi/generator-react-sdk": "^0.2.4",
 		"@asyncapi/parser": "^1.4.5",
 		"cross-env": "^7.0.2",
