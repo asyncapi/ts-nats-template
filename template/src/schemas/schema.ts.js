@@ -31,7 +31,7 @@ export default async function schemaRender({ asyncapi }) {
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;
     const fileContent = `
-${generatedModel.model.getImmediateDependencies().map((value) => {return FormatHelpers.toPascalCase(value);}).join('\n')}
+${generatedModel.model.getNearestDependencies().map((value) => {return FormatHelpers.toPascalCase(value);}).join('\n')}
 ${generatedModel.result}
     `;
     files.push(<File name={modelFileName}>{fileContent}</File>);
