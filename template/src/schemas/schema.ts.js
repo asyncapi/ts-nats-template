@@ -1,5 +1,5 @@
 import { File } from '@asyncapi/generator-react-sdk';
-const {TypeScriptGenerator, FormatHelpers} = require('@asyncapi/generator-model-sdk');
+import { TypeScriptGenerator, FormatHelpers } from '@asyncapi/modelina';
 
 /**
  * @typedef RenderArgument

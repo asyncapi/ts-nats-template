@@ -1,5 +1,5 @@
 import _ from 'lodash';
-const {FormatHelpers} = require('@asyncapi/generator-model-sdk');
+import {FormatHelpers} from '@asyncapi/modelina';
 // eslint-disable-next-line no-unused-vars
 import { Message, Schema, AsyncAPIDocument} from '@asyncapi/parser';
 const contentTypeJSON = 'application/json';
