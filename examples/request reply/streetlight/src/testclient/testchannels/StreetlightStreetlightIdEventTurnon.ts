@@ -2,8 +2,8 @@ import {
   GeneralReply
 } from '../../schemas/GeneralReply';
 import {
-  AnonymousSchema_7
-} from '../../schemas/AnonymousSchema_7';
+  AnonymousSchema_5
+} from '../../schemas/AnonymousSchema_5';
 import {
   Client,
   NatsError,
@@ -34,7 +34,7 @@ import {
 export function reply(
   onRequest: (
     err ? : NatsTypescriptTemplateError,
-    msg ? : AnonymousSchema_7, streetlight_id ? : string
+    msg ? : AnonymousSchema_5, streetlight_id ? : string
   ) => Promise < GeneralReply > ,
   onReplyError: (err: NatsTypescriptTemplateError) => void,
   client: Client, streetlight_id: string,

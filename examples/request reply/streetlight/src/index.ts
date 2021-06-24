@@ -27,14 +27,14 @@ import {
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";
 import {
-  AnonymousSchema_2
-} from "./schemas/AnonymousSchema_2";
+  AnonymousSchema_1
+} from "./schemas/AnonymousSchema_1";
 import {
   GeneralReply
 } from "./schemas/GeneralReply";
 import {
-  AnonymousSchema_7
-} from "./schemas/AnonymousSchema_7";
+  AnonymousSchema_5
+} from "./schemas/AnonymousSchema_5";
 import * as events from 'events';
 export enum AvailableEvents {
   permissionError = 'permissionError',
@@ -59,13 +59,13 @@ export {
   streetlightStreetlightIdEventTurnonChannel
 };
 export {
-  AnonymousSchema_2
+  AnonymousSchema_1
 };
 export {
   GeneralReply
 };
 export {
-  AnonymousSchema_7
+  AnonymousSchema_5
 };
 export {
   ErrorCode,
@@ -264,7 +264,7 @@ export class NatsAsyncApiClient extends events.EventEmitter {
   public replyToStreetlightStreetlightIdCommandTurnon(
     onRequest: (
       err ? : NatsTypescriptTemplateError,
-      msg ? : AnonymousSchema_2, streetlight_id ? : string
+      msg ? : AnonymousSchema_1, streetlight_id ? : string
     ) => Promise < GeneralReply > ,
     onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string,
     flush ? : boolean,
@@ -304,7 +304,7 @@ export class NatsAsyncApiClient extends events.EventEmitter {
    * @param streetlight_id parameter to use in topic
    */
   public requestStreetlightStreetlightIdEventTurnon(
-    requestMessage: AnonymousSchema_7, streetlight_id: string
+    requestMessage: AnonymousSchema_5, streetlight_id: string
   ): Promise < GeneralReply > {
     const nc: Client = this.jsonClient!;
     if (nc) {

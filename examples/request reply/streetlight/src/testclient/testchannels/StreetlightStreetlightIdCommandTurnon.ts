@@ -1,6 +1,6 @@
 import {
-  AnonymousSchema_2
-} from '../../schemas/AnonymousSchema_2';
+  AnonymousSchema_1
+} from '../../schemas/AnonymousSchema_1';
 import {
   GeneralReply
 } from '../../schemas/GeneralReply';
@@ -30,7 +30,7 @@ import {
  * @param streetlight_id parameter to use in topic
  */
 export function request(
-  requestMessage: AnonymousSchema_2,
+  requestMessage: AnonymousSchema_1,
   client: Client, streetlight_id: string
 ): Promise < GeneralReply > {
   return new Promise(async (resolve, reject) => {

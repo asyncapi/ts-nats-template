@@ -1,6 +1,6 @@
 import {
-  AnonymousSchema_2
-} from '../schemas/AnonymousSchema_2';
+  AnonymousSchema_1
+} from '../schemas/AnonymousSchema_1';
 import {
   GeneralReply
 } from '../schemas/GeneralReply';
@@ -34,7 +34,7 @@ import {
 export function reply(
   onRequest: (
     err ? : NatsTypescriptTemplateError,
-    msg ? : AnonymousSchema_2, streetlight_id ? : string
+    msg ? : AnonymousSchema_1, streetlight_id ? : string
   ) => Promise < GeneralReply > ,
   onReplyError: (err: NatsTypescriptTemplateError) => void,
   client: Client, streetlight_id: string,

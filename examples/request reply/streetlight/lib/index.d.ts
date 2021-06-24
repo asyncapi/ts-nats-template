@@ -5,9 +5,9 @@ import { ErrorCode, NatsTypescriptTemplateError } from './NatsTypescriptTemplate
 import { Client, NatsConnectionOptions, Subscription, ServersChangedEvent, SubEvent, ServerInfo, SubscriptionOptions } from 'ts-nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";
-import { AnonymousSchema_2 } from "./schemas/AnonymousSchema_2";
+import { AnonymousSchema_1 } from "./schemas/AnonymousSchema_1";
 import { GeneralReply } from "./schemas/GeneralReply";
-import { AnonymousSchema_7 } from "./schemas/AnonymousSchema_7";
+import { AnonymousSchema_5 } from "./schemas/AnonymousSchema_5";
 import * as events from 'events';
 export declare enum AvailableEvents {
     permissionError = "permissionError",
@@ -27,9 +27,9 @@ export declare enum AvailableEvents {
 }
 export { streetlightStreetlightIdCommandTurnonChannel };
 export { streetlightStreetlightIdEventTurnonChannel };
-export { AnonymousSchema_2 };
+export { AnonymousSchema_1 };
 export { GeneralReply };
-export { AnonymousSchema_7 };
+export { AnonymousSchema_5 };
 export { ErrorCode, NatsTypescriptTemplateError };
 export { TestClient };
 export { AvailableHooks, ReceivedDataHook, BeforeSendingDataHook, Hooks };
@@ -116,7 +116,7 @@ export declare class NatsAsyncApiClient extends events.EventEmitter {
      * @param flush ensure client is force flushed after subscribing
      * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
      */
-    replyToStreetlightStreetlightIdCommandTurnon(onRequest: (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_2, streetlight_id?: string) => Promise<GeneralReply>, onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string, flush?: boolean, options?: SubscriptionOptions): Promise<Subscription>;
+    replyToStreetlightStreetlightIdCommandTurnon(onRequest: (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_1, streetlight_id?: string) => Promise<GeneralReply>, onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string, flush?: boolean, options?: SubscriptionOptions): Promise<Subscription>;
     /**
      * Reply to the `streetlight/{streetlight_id}/event/turnon` channel
      *
@@ -125,5 +125,5 @@ export declare class NatsAsyncApiClient extends events.EventEmitter {
      * @param requestMessage to send
      * @param streetlight_id parameter to use in topic
      */
-    requestStreetlightStreetlightIdEventTurnon(requestMessage: AnonymousSchema_7, streetlight_id: string): Promise<GeneralReply>;
+    requestStreetlightStreetlightIdEventTurnon(requestMessage: AnonymousSchema_5, streetlight_id: string): Promise<GeneralReply>;
 }

@@ -20,14 +20,14 @@ import {
 import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";
 import {
-  AnonymousSchema_2
-} from "..//schemas/AnonymousSchema_2";
+  AnonymousSchema_1
+} from "..//schemas/AnonymousSchema_1";
 import {
   GeneralReply
 } from "..//schemas/GeneralReply";
 import {
-  AnonymousSchema_7
-} from "..//schemas/AnonymousSchema_7";
+  AnonymousSchema_5
+} from "..//schemas/AnonymousSchema_5";
 import * as events from 'events';
 export enum AvailableEvents {
   permissionError = 'permissionError',
@@ -52,13 +52,13 @@ export {
   streetlightStreetlightIdEventTurnonChannel
 };
 export {
-  AnonymousSchema_2
+  AnonymousSchema_1
 };
 export {
   GeneralReply
 };
 export {
-  AnonymousSchema_7
+  AnonymousSchema_5
 };
 export declare interface NatsAsyncApiTestClient {
   on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
@@ -233,7 +233,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
    * @param streetlight_id parameter to use in topic
    */
   public requestStreetlightStreetlightIdCommandTurnon(
-    requestMessage: AnonymousSchema_2, streetlight_id: string
+    requestMessage: AnonymousSchema_1, streetlight_id: string
   ): Promise < GeneralReply > {
     const nc: Client = this.jsonClient!;
     if (nc) {
@@ -259,7 +259,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
   public replyToStreetlightStreetlightIdEventTurnon(
     onRequest: (
       err ? : NatsTypescriptTemplateError,
-      msg ? : AnonymousSchema_7, streetlight_id ? : string
+      msg ? : AnonymousSchema_5, streetlight_id ? : string
     ) => Promise < GeneralReply > ,
     onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string,
     flush ? : boolean,

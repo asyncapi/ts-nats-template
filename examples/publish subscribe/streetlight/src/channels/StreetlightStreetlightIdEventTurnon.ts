@@ -1,6 +1,6 @@
 import {
-  AnonymousSchema_5
-} from '../schemas/AnonymousSchema_5';
+  AnonymousSchema_3
+} from '../schemas/AnonymousSchema_3';
 import {
   Client,
   NatsError,
@@ -28,7 +28,7 @@ import {
  * @param streetlight_id parameter to use in topic
  */
 export function publish(
-  message: AnonymousSchema_5,
+  message: AnonymousSchema_3,
   client: Client, streetlight_id: string
 ): Promise < void > {
   return new Promise < void > (async (resolve, reject) => {

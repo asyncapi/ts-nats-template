@@ -1,5 +1,5 @@
 import { GeneralReply } from '../schemas/GeneralReply';
-import { AnonymousSchema_7 } from '../schemas/AnonymousSchema_7';
+import { AnonymousSchema_5 } from '../schemas/AnonymousSchema_5';
 import { Client } from 'ts-nats';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
@@ -12,4 +12,4 @@ import { Client } from 'ts-nats';
  * @param client to send request with
  * @param streetlight_id parameter to use in topic
  */
-export declare function request(requestMessage: AnonymousSchema_7, client: Client, streetlight_id: string): Promise<GeneralReply>;
+export declare function request(requestMessage: AnonymousSchema_5, client: Client, streetlight_id: string): Promise<GeneralReply>;

@@ -1,4 +1,4 @@
-import { AnonymousSchema_2 } from '../schemas/AnonymousSchema_2';
+import { AnonymousSchema_1 } from '../schemas/AnonymousSchema_1';
 import { Client, Subscription, SubscriptionOptions } from 'ts-nats';
 import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
 /**
@@ -13,4 +13,4 @@ import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
  * @param streetlight_id parameter to use in topic
  * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
  */
-export declare function subscribe(onDataCallback: (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_2, streetlight_id?: string) => void, client: Client, streetlight_id: string, options?: SubscriptionOptions): Promise<Subscription>;
+export declare function subscribe(onDataCallback: (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_1, streetlight_id?: string) => void, client: Client, streetlight_id: string, options?: SubscriptionOptions): Promise<Subscription>;
