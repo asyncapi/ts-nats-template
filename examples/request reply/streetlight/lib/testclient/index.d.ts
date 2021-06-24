@@ -3,9 +3,9 @@ import { NatsTypescriptTemplateError } from '..//NatsTypescriptTemplateError';
 import { Client, NatsConnectionOptions, Subscription, ServersChangedEvent, SubEvent, ServerInfo, SubscriptionOptions } from 'ts-nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";
-import { AnonymousSchema_2 } from "..//schemas/AnonymousSchema_2";
+import { AnonymousSchema_1 } from "..//schemas/AnonymousSchema_1";
 import { GeneralReply } from "..//schemas/GeneralReply";
-import { AnonymousSchema_7 } from "..//schemas/AnonymousSchema_7";
+import { AnonymousSchema_5 } from "..//schemas/AnonymousSchema_5";
 import * as events from 'events';
 export declare enum AvailableEvents {
     permissionError = "permissionError",
@@ -25,9 +25,9 @@ export declare enum AvailableEvents {
 }
 export { streetlightStreetlightIdCommandTurnonChannel };
 export { streetlightStreetlightIdEventTurnonChannel };
-export { AnonymousSchema_2 };
+export { AnonymousSchema_1 };
 export { GeneralReply };
-export { AnonymousSchema_7 };
+export { AnonymousSchema_5 };
 export declare interface NatsAsyncApiTestClient {
     on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
     on(event: AvailableEvents.close, listener: (error: NatsTypescriptTemplateError) => void): this;
@@ -107,7 +107,7 @@ export declare class NatsAsyncApiTestClient extends events.EventEmitter {
      * @param requestMessage to send
      * @param streetlight_id parameter to use in topic
      */
-    requestStreetlightStreetlightIdCommandTurnon(requestMessage: AnonymousSchema_2, streetlight_id: string): Promise<GeneralReply>;
+    requestStreetlightStreetlightIdCommandTurnon(requestMessage: AnonymousSchema_1, streetlight_id: string): Promise<GeneralReply>;
     /**
      * Reply to the `streetlight/{streetlight_id}/event/turnon` channel
      *
@@ -119,5 +119,5 @@ export declare class NatsAsyncApiTestClient extends events.EventEmitter {
      * @param flush ensure client is force flushed after subscribing
      * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
      */
-    replyToStreetlightStreetlightIdEventTurnon(onRequest: (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_7, streetlight_id?: string) => Promise<GeneralReply>, onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string, flush?: boolean, options?: SubscriptionOptions): Promise<Subscription>;
+    replyToStreetlightStreetlightIdEventTurnon(onRequest: (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_5, streetlight_id?: string) => Promise<GeneralReply>, onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string, flush?: boolean, options?: SubscriptionOptions): Promise<Subscription>;
 }

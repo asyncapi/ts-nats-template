@@ -1,4 +1,4 @@
-import { AnonymousSchema_2 } from '../../schemas/AnonymousSchema_2';
+import { AnonymousSchema_1 } from '../../schemas/AnonymousSchema_1';
 import { GeneralReply } from '../../schemas/GeneralReply';
 import { Client } from 'ts-nats';
 /**
@@ -12,4 +12,4 @@ import { Client } from 'ts-nats';
  * @param client to send request with
  * @param streetlight_id parameter to use in topic
  */
-export declare function request(requestMessage: AnonymousSchema_2, client: Client, streetlight_id: string): Promise<GeneralReply>;
+export declare function request(requestMessage: AnonymousSchema_1, client: Client, streetlight_id: string): Promise<GeneralReply>;

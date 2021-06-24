@@ -20,11 +20,11 @@ import {
 import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";
 import {
-  AnonymousSchema_2
-} from "..//schemas/AnonymousSchema_2";
+  AnonymousSchema_1
+} from "..//schemas/AnonymousSchema_1";
 import {
-  AnonymousSchema_5
-} from "..//schemas/AnonymousSchema_5";
+  AnonymousSchema_3
+} from "..//schemas/AnonymousSchema_3";
 import * as events from 'events';
 export enum AvailableEvents {
   permissionError = 'permissionError',
@@ -49,10 +49,10 @@ export {
   streetlightStreetlightIdEventTurnonChannel
 };
 export {
-  AnonymousSchema_2
+  AnonymousSchema_1
 };
 export {
-  AnonymousSchema_5
+  AnonymousSchema_3
 };
 export declare interface NatsAsyncApiTestClient {
   on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
@@ -227,7 +227,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
    * @param streetlight_id parameter to use in topic
    */
   public publishToStreetlightStreetlightIdCommandTurnon(
-    message: AnonymousSchema_2, streetlight_id: string
+    message: AnonymousSchema_1, streetlight_id: string
   ): Promise < void > {
     const nc: Client = this.jsonClient!;
     if (nc) {
@@ -252,7 +252,7 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
   public subscribeToStreetlightStreetlightIdEventTurnon(
     onDataCallback: (
       err ? : NatsTypescriptTemplateError,
-      msg ? : AnonymousSchema_5, streetlight_id ? : string) => void, streetlight_id: string,
+      msg ? : AnonymousSchema_3, streetlight_id ? : string) => void, streetlight_id: string,
     flush ? : boolean,
     options ? : SubscriptionOptions
   ): Promise < Subscription > {

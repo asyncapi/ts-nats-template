@@ -2,8 +2,8 @@ import {
   GeneralReply
 } from '../schemas/GeneralReply';
 import {
-  AnonymousSchema_7
-} from '../schemas/AnonymousSchema_7';
+  AnonymousSchema_5
+} from '../schemas/AnonymousSchema_5';
 import {
   Client,
   NatsError,
@@ -30,7 +30,7 @@ import {
  * @param streetlight_id parameter to use in topic
  */
 export function request(
-  requestMessage: AnonymousSchema_7,
+  requestMessage: AnonymousSchema_5,
   client: Client, streetlight_id: string
 ): Promise < GeneralReply > {
   return new Promise(async (resolve, reject) => {

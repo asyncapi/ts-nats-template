@@ -1,4 +1,4 @@
-import { AnonymousSchema_2 } from '../../schemas/AnonymousSchema_2';
+import { AnonymousSchema_1 } from '../../schemas/AnonymousSchema_1';
 import { Client } from 'ts-nats';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/command/turnon` channel
@@ -12,4 +12,4 @@ import { Client } from 'ts-nats';
  * @param client to publish with
  * @param streetlight_id parameter to use in topic
  */
-export declare function publish(message: AnonymousSchema_2, client: Client, streetlight_id: string): Promise<void>;
+export declare function publish(message: AnonymousSchema_1, client: Client, streetlight_id: string): Promise<void>;

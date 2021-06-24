@@ -1,6 +1,6 @@
 import {
-  AnonymousSchema_2
-} from '../schemas/AnonymousSchema_2';
+  AnonymousSchema_1
+} from '../schemas/AnonymousSchema_1';
 import {
   Client,
   NatsError,
@@ -30,7 +30,7 @@ import {
 export function subscribe(
   onDataCallback: (
     err ? : NatsTypescriptTemplateError,
-    msg ? : AnonymousSchema_2, streetlight_id ? : string) => void,
+    msg ? : AnonymousSchema_1, streetlight_id ? : string) => void,
   client: Client, streetlight_id: string,
   options ? : SubscriptionOptions
 ): Promise < Subscription > {
