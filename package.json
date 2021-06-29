@@ -34,10 +34,10 @@
 		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
 	"dependencies": {
-		"@asyncapi/generator-filters": "^1.1.0",
+		"@asyncapi/generator-filters": "^2.0.0",
 		"@asyncapi/generator-react-sdk": "^0.2.11",
 		"@asyncapi/modelina": "^0.16.0",
-		"@asyncapi/parser": "^1.6.0",
+		"@asyncapi/parser": "^1.7.0",
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
 		"is-url": "1.2.4",
@@ -48,7 +48,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@asyncapi/generator": "^1.7.4",
+		"@asyncapi/generator": "^1.8.0",
 		"@semantic-release/commit-analyzer": "^8.0.1",
 		"@semantic-release/github": "^7.0.4",
 		"@semantic-release/npm": "^7.0.3",
