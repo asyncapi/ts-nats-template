@@ -31,7 +31,6 @@ const beautifyConfig = {
 const beautifyAllOutputFiles = function(dirPath) {
   //Exclude models as some syntax ruins the code.
   if (dirPath.includes('models')) {
-    console.log(dirPath);
     return;
   }
   const files = fs.readdirSync(dirPath);
