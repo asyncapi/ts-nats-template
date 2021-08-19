@@ -12,6 +12,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Publish(defaultContentType, channelName, message, channelParameters) {
+  const messageType = getMessageType(message);
   //Determine the publish operation based on whether the message type is null
   let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, null);`;
   if (messageHasNotNullPayload(message.payload())) {
@@ -30,13 +31,13 @@ export function Publish(defaultContentType, channelName, message, channelParamet
    ${renderJSDocParameters(channelParameters)}
    */
     export function publish(
-      message: ${getMessageType(message)},
+      message: ${messageType},
       client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}
       ): Promise<void> {
       return new Promise<void>(async (resolve, reject) => {
         try{
-          let dataToSend : any = message;
+          let dataToSend : any = message.marshal();
           ${publishOperation}
           resolve();
         }catch(e){

@@ -58,8 +58,8 @@ var receivedMsg: ${requesterClientClass}.${getMessageType(receiveMessage)} | und
 
 ${receivedVariableDeclaration}
 
-var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replyMessageExample};
-var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${receiveMessageExample};
+var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replierClientClass}.${getMessageType(replyMessage)}.unmarshal(${replyMessageExample});
+var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${requesterClientClass}.${getMessageType(receiveMessage)}.unmarshal(${receiveMessageExample});
 ${exampleParameters}
 const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName)}((err, msg 
       ${replyCallbackParameters}) => {
@@ -76,7 +76,8 @@ const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName
 var reply = await ${requesterClient}.request${pascalCase(channelName)}(receiveMessage ${functionParameters});
 expect(reply).to.be.deep.equal(replyMessage)
 expect(receivedError).to.be.undefined;
-expect(receivedMsg).to.be.deep.equal(receiveMessage);
+expect(receivedMsg).to.not.be.undefined;
+expect(receivedMsg!.marshal()).to.equal(receiveMessage.marshal());
 ${verifyExpectedParameters}
     `;
 }
