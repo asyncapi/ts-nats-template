@@ -71,8 +71,7 @@ function getConnectFunction(asyncapi) {
           this.chainEvents(this.jsonClient);
       }`;
   }
-
-  return `        
+  return `
   /**
   * Try to connect to the NATS server with the different payloads.
   * @param options to use, payload is omitted if sat in the AsyncAPI document.
@@ -84,7 +83,6 @@ function getConnectFunction(asyncapi) {
               ${connectWithBinaryClient}
               ${connectWithStringPayload}
               ${connectWithJsonPayload}
-
               resolve();
           } catch(e) {
               reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -141,6 +139,15 @@ function getIsClosedFunction(asyncapi) {
  * @param {AsyncAPIDocument} asyncapi 
  */
 export function getStandardClassCode(asyncapi) {
+  const serverWrapperFunctions = [];
+  for (const [serverName, server] of Object.entries(asyncapi.servers())) {
+    serverWrapperFunctions.push(`
+/**
+ * Connects the client to the AsyncAPI server called ${serverName}.
+ * ${server.description() || ''}
+ */
+async connectTo${pascalCase(serverName)}(){ await this.connect({ servers: ["${server.url()}"] }); }`);
+  }
   return `
     private jsonClient?: Client;
     private stringClient?: Client;
@@ -149,7 +156,6 @@ export function getStandardClassCode(asyncapi) {
     constructor() {
         super();
     }
-
     ${getConnectFunction(asyncapi)}
     ${getDisconnectFunction(asyncapi)}
     ${getIsClosedFunction(asyncapi)}
@@ -256,7 +262,9 @@ export function getStandardClassCode(asyncapi) {
         },
         ... options
       });
-    }`;
+    }
+    
+    ${serverWrapperFunctions.join('\n')}`;
 }
 
 /**
