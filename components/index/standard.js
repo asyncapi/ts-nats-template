@@ -132,15 +132,12 @@ function getIsClosedFunction(asyncapi) {
       return false;
    }`;
 }
-
 /**
- * Component which returns the standard setup for the client class
- * 
- * @param {AsyncAPIDocument} asyncapi 
+ * Render all the connect function based on the AsyncAPI servers 
  */
-export function getStandardClassCode(asyncapi) {
+function renderConnectServerFunctions(servers) {
   const serverWrapperFunctions = [];
-  for (const [serverName, server] of Object.entries(asyncapi.servers())) {
+  for (const [serverName, server] of servers) {
     serverWrapperFunctions.push(`
 /**
  * Connects the client to the AsyncAPI server called ${serverName}.
@@ -148,6 +145,14 @@ export function getStandardClassCode(asyncapi) {
  */
 async connectTo${pascalCase(serverName)}(){ await this.connect({ servers: ["${server.url()}"] }); }`);
   }
+  return serverWrapperFunctions;
+}
+/**
+ * Component which returns the standard setup for the client class
+ * 
+ * @param {AsyncAPIDocument} asyncapi 
+ */
+export function getStandardClassCode(asyncapi) {
   return `
     private jsonClient?: Client;
     private stringClient?: Client;
@@ -264,7 +269,7 @@ async connectTo${pascalCase(serverName)}(){ await this.connect({ servers: ["${se
       });
     }
     
-    ${serverWrapperFunctions.join('\n')}`;
+    ${renderConnectServerFunctions(Object.entries(asyncapi.servers())).join('\n')}`;
 }
 
 /**
