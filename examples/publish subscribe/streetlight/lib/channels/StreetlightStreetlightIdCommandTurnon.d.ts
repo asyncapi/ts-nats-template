@@ -1,4 +1,4 @@
-import { AnonymousSchema_1 } from '../schemas/AnonymousSchema_1';
+import { AnonymousSchema_1 } from '../models/AnonymousSchema_1';
 import { Client, Subscription, SubscriptionOptions } from 'ts-nats';
 import { NatsTypescriptTemplateError } from '../NatsTypescriptTemplateError';
 /**

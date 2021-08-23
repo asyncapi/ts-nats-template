@@ -1,6 +1,6 @@
 import {
   AnonymousSchema_3
-} from '../schemas/AnonymousSchema_3';
+} from '../models/AnonymousSchema_3';
 import {
   Client,
   NatsError,
@@ -33,7 +33,7 @@ export function publish(
 ): Promise < void > {
   return new Promise < void > (async (resolve, reject) => {
     try {
-      let dataToSend: any = message;
+      let dataToSend: any = message.marshal();
       try {
         let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
         for (let hook of beforeSendingHooks) {

@@ -30,6 +30,10 @@ const streetlightStreetlightIdCommandTurnonChannel = __importStar(require("./cha
 exports.streetlightStreetlightIdCommandTurnonChannel = streetlightStreetlightIdCommandTurnonChannel;
 const streetlightStreetlightIdEventTurnonChannel = __importStar(require("./channels/StreetlightStreetlightIdEventTurnon"));
 exports.streetlightStreetlightIdEventTurnonChannel = streetlightStreetlightIdEventTurnonChannel;
+const AnonymousSchema_1_1 = require("./models/AnonymousSchema_1");
+exports.AnonymousSchema_1 = AnonymousSchema_1_1.AnonymousSchema_1;
+const AnonymousSchema_3_1 = require("./models/AnonymousSchema_3");
+exports.AnonymousSchema_3 = AnonymousSchema_3_1.AnonymousSchema_3;
 const events = __importStar(require("events"));
 var AvailableEvents;
 (function (AvailableEvents) {
