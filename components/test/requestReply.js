@@ -49,17 +49,19 @@ function requestReply(channelName, replyMessage, receiveMessage, channelParamete
   const verifyExpectedParameters = getVerifyExpectedParameters(channelParameters);
   const replyCallbackParameters = getCallbackParameters(channelParameters);
   const requesterClientClass = realClientRequests ? 'Client' : 'TestClient';
+  const requesterClientMessageType = `${requesterClientClass}.${getMessageType(receiveMessage)}`;
   const requesterClient = realClientRequests ? 'client' : 'testClient';
   const replierClientClass = realClientRequests ? 'TestClient' : 'Client';
+  const replierClientMessageType = `${replierClientClass}.${getMessageType(replyMessage)}`;
   const replierClient = realClientRequests ? 'testClient' : 'client';
   return `
 var receivedError: NatsTypescriptTemplateError | undefined = undefined; 
-var receivedMsg: ${requesterClientClass}.${getMessageType(receiveMessage)} | undefined = undefined;
+var receivedMsg: ${requesterClientMessageType} | undefined = undefined;
 
 ${receivedVariableDeclaration}
 
-var replyMessage: ${replierClientClass}.${getMessageType(replyMessage)} = ${replierClientClass}.${getMessageType(replyMessage)}.unmarshal(${replyMessageExample});
-var receiveMessage: ${requesterClientClass}.${getMessageType(receiveMessage)} = ${requesterClientClass}.${getMessageType(receiveMessage)}.unmarshal(${receiveMessageExample});
+var replyMessage: ${replierClientMessageType} = ${replierClientMessageType}.unmarshal(${replyMessageExample});
+var receiveMessage: ${requesterClientMessageType} = ${requesterClientMessageType}.unmarshal(${receiveMessageExample});
 ${exampleParameters}
 const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName)}((err, msg 
       ${replyCallbackParameters}) => {
