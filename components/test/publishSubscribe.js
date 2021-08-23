@@ -55,7 +55,7 @@ var receivedError: NatsTypescriptTemplateError | undefined = undefined;
 var receivedMsg: ${subscribeClientClass}.${getMessageType(message)} | undefined = undefined;
 ${receivedVariableDeclaration}
 
-var publishMessage: ${publishClientClass}.${getMessageType(message)} = ${publishMessageExample};
+var publishMessage: ${publishClientClass}.${getMessageType(message)} = ${publishClientClass}.${getMessageType(message)}.unmarshal(${publishMessageExample});
 ${exampleParameters}
 const subscription = await ${subscribeClient}.subscribeTo${pascalCase(channelName)}((err, msg 
       ${subscribeToCallbackParameters}) => {
@@ -83,7 +83,8 @@ const tryAndWaitForResponse = new Promise((resolve, reject) => {
 await ${publishClient}.publishTo${pascalCase(channelName)}(publishMessage ${functionParameters});
 await tryAndWaitForResponse;
 expect(receivedError).to.be.undefined;
-expect(receivedMsg).to.be.deep.equal(publishMessage);
+expect(receivedMsg).to.not.be.undefined;
+expect(receivedMsg!.marshal()).to.equal(publishMessage.marshal());
 ${verifyExpectedParameters}
     `;
 }

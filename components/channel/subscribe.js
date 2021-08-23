@@ -13,6 +13,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Subscribe(defaultContentType, channelName, message, channelParameters, operation) {
+  const messageType = getMessageType(message);
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
     return `${camelCase(parameterName)}Param`;
@@ -30,7 +31,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
       onDataCallback(e)
       return;
     }
-    onDataCallback(undefined, receivedData ${parameters.length > 0 && `, ${parameters.join(',')}`});
+    onDataCallback(undefined, ${messageType}.unmarshal(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`});
     `;
   }
   
@@ -47,7 +48,7 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
     export function subscribe(
       onDataCallback : (
         err?: NatsTypescriptTemplateError, 
-        msg?: ${getMessageType(message)}
+        msg?: ${messageType}
         ${realizeParametersForChannelWrapper(channelParameters, false)}) => void, 
       client: Client
       ${realizeParametersForChannelWrapper(channelParameters)},
