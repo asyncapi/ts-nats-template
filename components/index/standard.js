@@ -137,7 +137,7 @@ function getIsClosedFunction(asyncapi) {
  */
 function renderConnectServerFunctions(servers) {
   const serverWrapperFunctions = [];
-  for (const [serverName, server] of servers) {
+  for (const [serverName, server] of Object.entries(servers || {})) {
     serverWrapperFunctions.push(`
 /**
  * Connects the client to the AsyncAPI server called ${serverName}.
@@ -269,7 +269,7 @@ export function getStandardClassCode(asyncapi) {
       });
     }
     
-    ${renderConnectServerFunctions(Object.entries(asyncapi.servers())).join('\n')}`;
+    ${renderConnectServerFunctions(asyncapi.servers()).join('\n')}`;
 }
 
 /**
