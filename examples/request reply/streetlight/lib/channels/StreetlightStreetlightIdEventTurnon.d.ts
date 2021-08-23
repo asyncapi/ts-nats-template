@@ -1,5 +1,5 @@
-import { GeneralReply } from '../schemas/GeneralReply';
-import { AnonymousSchema_5 } from '../schemas/AnonymousSchema_5';
+import { GeneralReply } from '../models/GeneralReply';
+import { AnonymousSchema_5 } from '../models/AnonymousSchema_5';
 import { Client } from 'ts-nats';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel

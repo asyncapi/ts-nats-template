@@ -21,10 +21,10 @@ import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/St
 import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";
 import {
   AnonymousSchema_1
-} from "..//schemas/AnonymousSchema_1";
+} from "..//models/AnonymousSchema_1";
 import {
   AnonymousSchema_3
-} from "..//schemas/AnonymousSchema_3";
+} from "..//models/AnonymousSchema_3";
 import * as events from 'events';
 export enum AvailableEvents {
   permissionError = 'permissionError',

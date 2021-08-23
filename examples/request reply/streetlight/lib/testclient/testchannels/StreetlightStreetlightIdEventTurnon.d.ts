@@ -1,5 +1,5 @@
-import { GeneralReply } from '../../schemas/GeneralReply';
-import { AnonymousSchema_5 } from '../../schemas/AnonymousSchema_5';
+import { GeneralReply } from '../../models/GeneralReply';
+import { AnonymousSchema_5 } from '../../models/AnonymousSchema_5';
 import { Client, Subscription, SubscriptionOptions } from 'ts-nats';
 import { NatsTypescriptTemplateError } from '../../NatsTypescriptTemplateError';
 /**

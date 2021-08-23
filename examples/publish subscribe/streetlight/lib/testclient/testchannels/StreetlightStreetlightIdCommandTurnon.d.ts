@@ -1,4 +1,4 @@
-import { AnonymousSchema_1 } from '../../schemas/AnonymousSchema_1';
+import { AnonymousSchema_1 } from '../../models/AnonymousSchema_1';
 import { Client } from 'ts-nats';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/command/turnon` channel

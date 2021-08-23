@@ -1,6 +1,6 @@
 import {
   AnonymousSchema_1
-} from '../schemas/AnonymousSchema_1';
+} from '../models/AnonymousSchema_1';
 import {
   Client,
   NatsError,
@@ -69,7 +69,7 @@ export function subscribe(
             onDataCallback(e)
             return;
           }
-          onDataCallback(undefined, receivedData, streetlightIdParam);
+          onDataCallback(undefined, AnonymousSchema_1.unmarshal(receivedData), streetlightIdParam);
         }
       }, subscribeOptions);
       resolve(subscription);

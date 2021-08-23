@@ -27,9 +27,9 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
     var receivedMsg: TestClient.AnonymousSchema_3 | undefined = undefined;
     var receivedStreetlightId: string | undefined = undefined
-    var publishMessage: Client.AnonymousSchema_3 = {
+    var publishMessage: Client.AnonymousSchema_3 = Client.AnonymousSchema_3.unmarshal({
       "lumen": 0
-    };
+    });
     var StreetlightIdToSend: string = "string"
     const subscription = await testClient.subscribeToStreetlightStreetlightIdEventTurnon((err, msg, streetlight_id) => {
         receivedError = err;
@@ -55,7 +55,8 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
     await client.publishToStreetlightStreetlightIdEventTurnon(publishMessage, StreetlightIdToSend);
     await tryAndWaitForResponse;
     expect(receivedError).to.be.undefined;
-    expect(receivedMsg).to.be.deep.equal(publishMessage);
+    expect(receivedMsg).to.not.be.undefined;
+    expect(receivedMsg!.marshal()).to.equal(publishMessage.marshal());
     expect(receivedStreetlightId).to.be.equal(StreetlightIdToSend);
   });
   after(async () => {

@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const AnonymousSchema_5_1 = require("../../models/AnonymousSchema_5");
 const NatsTypescriptTemplateError_1 = require("../../NatsTypescriptTemplateError");
 const hooks_1 = require("../../hooks");
 /**
@@ -60,9 +61,9 @@ function reply(onRequest, onReplyError, client, streetlight_id, options) {
                         onReplyError(e);
                         return;
                     }
-                    let message = yield onRequest(undefined, receivedData, streetlightIdParam);
+                    let message = yield onRequest(undefined, AnonymousSchema_5_1.AnonymousSchema_5.unmarshal(receivedData), streetlightIdParam);
                     if (msg.reply) {
-                        let dataToSend = message;
+                        let dataToSend = message.marshal();
                         try {
                             try {
                                 let beforeSendingHooks = hooks_1.Hooks.getInstance().getBeforeSendingDataHook();

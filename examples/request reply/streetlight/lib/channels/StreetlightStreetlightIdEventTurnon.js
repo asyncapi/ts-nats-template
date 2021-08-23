@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const GeneralReply_1 = require("../models/GeneralReply");
 const NatsTypescriptTemplateError_1 = require("../NatsTypescriptTemplateError");
 const hooks_1 = require("../hooks");
 /**
@@ -25,7 +26,7 @@ function request(requestMessage, client, streetlight_id) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         let timeout = undefined;
         let msg;
-        let dataToSend = requestMessage;
+        let dataToSend = requestMessage.marshal();
         try {
             try {
                 let beforeSendingHooks = hooks_1.Hooks.getInstance().getBeforeSendingDataHook();
@@ -61,7 +62,7 @@ function request(requestMessage, client, streetlight_id) {
             reject(e);
             return;
         }
-        resolve(receivedData);
+        resolve(GeneralReply_1.GeneralReply.unmarshal(receivedData));
     }));
 }
 exports.request = request;

@@ -25,7 +25,7 @@ const hooks_1 = require("../../hooks");
 function publish(message, client, streetlight_id) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         try {
-            let dataToSend = message;
+            let dataToSend = message.marshal();
             try {
                 let beforeSendingHooks = hooks_1.Hooks.getInstance().getBeforeSendingDataHook();
                 for (let hook of beforeSendingHooks) {
