@@ -5,8 +5,8 @@ import { ErrorCode, NatsTypescriptTemplateError } from './NatsTypescriptTemplate
 import { Client, NatsConnectionOptions, Subscription, ServersChangedEvent, SubEvent, ServerInfo, SubscriptionOptions } from 'ts-nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./channels/StreetlightStreetlightIdEventTurnon";
-import { AnonymousSchema_1 } from "./schemas/AnonymousSchema_1";
-import { AnonymousSchema_3 } from "./schemas/AnonymousSchema_3";
+import { AnonymousSchema_1 } from "./models/AnonymousSchema_1";
+import { AnonymousSchema_3 } from "./models/AnonymousSchema_3";
 import * as events from 'events';
 export declare enum AvailableEvents {
     permissionError = "permissionError",

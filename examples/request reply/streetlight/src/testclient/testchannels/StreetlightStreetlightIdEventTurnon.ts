@@ -1,9 +1,9 @@
 import {
   GeneralReply
-} from '../../schemas/GeneralReply';
+} from '../../models/GeneralReply';
 import {
   AnonymousSchema_5
-} from '../../schemas/AnonymousSchema_5';
+} from '../../models/AnonymousSchema_5';
 import {
   Client,
   NatsError,
@@ -45,7 +45,7 @@ export function reply(
       let subscribeOptions: SubscriptionOptions = {
         ...options
       };
-      let subscription = await client.subscribe(`streetlight.${streetlight_id}.event.turnon`, async (err, msg) => {
+      let subscription = await client.subscribe(`streetlight.${streetlight_id}.event.turnon`, async (err: any, msg) => {
         if (err) {
           onRequest(err);
         } else {
@@ -75,9 +75,9 @@ export function reply(
             onReplyError(e)
             return;
           }
-          let message = await onRequest(undefined, receivedData, streetlightIdParam);
+          let message = await onRequest(undefined, AnonymousSchema_5.unmarshal(receivedData), streetlightIdParam);
           if (msg.reply) {
-            let dataToSend: any = message;
+            let dataToSend: any = message.marshal();
             try {
               try {
                 let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();

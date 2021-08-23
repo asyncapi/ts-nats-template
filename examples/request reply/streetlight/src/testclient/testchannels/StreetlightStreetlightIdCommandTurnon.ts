@@ -1,9 +1,9 @@
 import {
   AnonymousSchema_1
-} from '../../schemas/AnonymousSchema_1';
+} from '../../models/AnonymousSchema_1';
 import {
   GeneralReply
-} from '../../schemas/GeneralReply';
+} from '../../models/GeneralReply';
 import {
   Client,
   NatsError,
@@ -36,7 +36,7 @@ export function request(
   return new Promise(async (resolve, reject) => {
     let timeout = undefined;
     let msg;
-    let dataToSend: any = requestMessage;
+    let dataToSend: any = requestMessage.marshal();
     try {
       try {
         let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
@@ -68,6 +68,6 @@ export function request(
       reject(e)
       return;
     }
-    resolve(receivedData);
+    resolve(GeneralReply.unmarshal(receivedData));
   })
 }

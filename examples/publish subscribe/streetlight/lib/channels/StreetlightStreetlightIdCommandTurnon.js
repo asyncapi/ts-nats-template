@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const AnonymousSchema_1_1 = require("../models/AnonymousSchema_1");
 const NatsTypescriptTemplateError_1 = require("../NatsTypescriptTemplateError");
 const hooks_1 = require("../hooks");
 /**
@@ -59,7 +60,7 @@ function subscribe(onDataCallback, client, streetlight_id, options) {
                         onDataCallback(e);
                         return;
                     }
-                    onDataCallback(undefined, receivedData, streetlightIdParam);
+                    onDataCallback(undefined, AnonymousSchema_1_1.AnonymousSchema_1.unmarshal(receivedData), streetlightIdParam);
                 }
             }, subscribeOptions);
             resolve(subscription);

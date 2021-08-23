@@ -23,6 +23,8 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {TemplateParameters} params template parameters
  */
 export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {
+  const replyMessageType = getMessageType(replyMessage);
+  const receiveMessageType = getMessageType(receiveMessage);
   //Create an array of all the parameter names
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
@@ -40,7 +42,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
       onReplyError(e)
       return;
     }
-    let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, receivedData ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
+    let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, ${receiveMessageType}.unmarshal(receivedData) ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
     `;
   }
 
@@ -48,7 +50,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   let replyOperation = 'await client.publish(msg.reply, null);';
   if (messageHasNotNullPayload(replyMessage.payload())) {
     replyOperation = `
-    let dataToSend : any = message;
+    let dataToSend : any = message.marshal();
     try{
       ${OnSendingData(replyMessage, defaultContentType)}
     }catch(e){
@@ -74,7 +76,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         err?: NatsTypescriptTemplateError, 
         msg?: ${getMessageType(receiveMessage)}
         ${realizeParametersForChannelWrapper(channelParameters, false)}
-      ) => ${shouldPromisifyCallbacks(params) ? 'Promise<' : ''}${getMessageType(replyMessage)}${ shouldPromisifyCallbacks(params) ? '>' : ''}, 
+      ) => ${shouldPromisifyCallbacks(params) ? 'Promise<' : ''}${replyMessageType}${ shouldPromisifyCallbacks(params) ? '>' : ''}, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
       client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}, 
@@ -87,7 +89,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         ${includeQueueForSubscription(operation)}
         ${includeUnsubAfterForSubscription(operation)}
   
-        let subscription = await client.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err, msg) => {
+        let subscription = await client.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err: any, msg) => {
           if (err) {
             onRequest(err);
           } else {

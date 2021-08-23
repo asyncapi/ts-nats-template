@@ -14,14 +14,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
 export function Request(defaultContentType, channelName, requestMessage, replyMessage, channelParameters) {
-  //Include timeout if specified in the document
-  let includeTimeout =  '';
-  const natsBindings = requestMessage.bindings('nats');
-  if (requestMessage.hasBinding('nats') && 
-      natsBindings.requestReply && 
-      natsBindings.requestReply.timeout) {
-    includeTimeout = `timeout = '${natsBindings.requestReply.timeout}';`;
-  }
+  const replyMessageType = getMessageType(replyMessage);
 
   //Determine the request operation based on whether the message type is null
   let requestOperation = `msg = await client.request(${realizeChannelName(channelParameters, channelName)}, timeout, null)`;
@@ -43,7 +36,7 @@ export function Request(defaultContentType, channelName, requestMessage, replyMe
       reject(e)
       return;
     }
-    resolve(receivedData);
+    resolve(${replyMessageType}.unmarshal(receivedData));
     `;
   }
 
@@ -59,12 +52,11 @@ export function Request(defaultContentType, channelName, requestMessage, replyMe
       requestMessage: ${getMessageType(requestMessage)},
       client: Client
       ${realizeParametersForChannelWrapper(channelParameters)}
-      ): Promise<${getMessageType(replyMessage)}> {
+      ): Promise<${replyMessageType}> {
       return new Promise(async (resolve, reject) => {
         let timeout = undefined;
-        ${includeTimeout}
         let msg;
-        let dataToSend : any = requestMessage;
+        let dataToSend : any = requestMessage.marshal();
         try {
           ${requestOperation}
         }catch(e){

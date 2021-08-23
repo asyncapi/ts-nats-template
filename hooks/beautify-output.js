@@ -29,6 +29,10 @@ const beautifyConfig = {
  * @param {string} dirPath to recursively beautify files in
  */
 const beautifyAllOutputFiles = function(dirPath) {
+  //Exclude models as some syntax ruins the code.
+  if (dirPath.includes('models')) {
+    return;
+  }
   const files = fs.readdirSync(dirPath);
   files.forEach((file) => {
     const filePath = path.join(dirPath, file);
