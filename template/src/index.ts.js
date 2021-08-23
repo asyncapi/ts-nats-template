@@ -95,7 +95,7 @@ export default function index({ asyncapi, params }) {
     <File name="index.ts">
       {`
 import {AvailableHooks, ReceivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
-import * as TestClient from './testclient/';
+${params.generateTestClient && 'import * as TestClient from \'./testclient/\';'}
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
 export {TestClient};
