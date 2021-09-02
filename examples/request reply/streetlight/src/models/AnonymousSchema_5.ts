@@ -26,7 +26,7 @@ export class AnonymousSchema_5 {
       for (const [key, value] of this.additionalProperties.entries()) {
         //Only render additionalProperties which are not already a property
         if(Object.keys(this).includes(String(key))) continue;
-        json += `"${key}": ${typeof value === 'number' || typeof value === 'boolean' ? value : JSON.stringify(value)},`;    
+        json += `"${key}": ${typeof value === 'number' || typeof value === 'boolean' ? value : JSON.stringify(value)},`;
       }
     }
 
