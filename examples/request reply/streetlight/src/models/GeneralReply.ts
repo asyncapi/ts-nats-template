@@ -3,7 +3,7 @@
 export class GeneralReply {
   private _statusCode?: number;
   private _statusMessage?: string;
-  private _additionalProperties?: Map<String, object | string | number | Array<unknown> | boolean | null | number>;
+  private _additionalProperties?: Map<String, object | string | number | Array<unknown> | boolean | null>;
 
   constructor(input: {
     statusCode?: number,
@@ -19,8 +19,8 @@ export class GeneralReply {
   get statusMessage(): string | undefined { return this._statusMessage; }
   set statusMessage(statusMessage: string | undefined) { this._statusMessage = statusMessage; }
 
-  get additionalProperties(): Map<String, object | string | number | Array<unknown> | boolean | null | number> | undefined { return this._additionalProperties; }
-  set additionalProperties(additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null | number> | undefined) { this._additionalProperties = additionalProperties; }
+  get additionalProperties(): Map<String, object | string | number | Array<unknown> | boolean | null> | undefined { return this._additionalProperties; }
+  set additionalProperties(additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null> | undefined) { this._additionalProperties = additionalProperties; }
 
   public marshal() : string {
     let json = '{'
