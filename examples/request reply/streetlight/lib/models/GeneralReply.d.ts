@@ -8,7 +8,7 @@ export declare class GeneralReply {
     });
     statusCode: number | undefined;
     statusMessage: string | undefined;
-    additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null | number> | undefined;
+    additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null> | undefined;
     marshal(): string;
     static unmarshal(json: string | object): GeneralReply;
 }

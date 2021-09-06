@@ -5,7 +5,7 @@ export declare class AnonymousSchema_1 {
         lumen: number;
     });
     lumen: number;
-    additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null | number> | undefined;
+    additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null> | undefined;
     marshal(): string;
     static unmarshal(json: string | object): AnonymousSchema_1;
 }
