@@ -1,7 +1,6 @@
 import { File } from '@asyncapi/generator-react-sdk';
 import { publish, subscribe } from '../../../components/test/publishSubscribe';
-import { request, reply } from '../../../components/test/requestReply';
-import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
+import { pascalCase} from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Channel } from '@asyncapi/parser';
 
@@ -15,38 +14,17 @@ function getTestCode(channel, channelName) {
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
   const channelParameters = channel.parameters();
   let testMethod;
-  if (isRequestReply(channel)) {
-    if (isRequester(channel)) {
-      testMethod = request(
-        channelName, 
-        publishMessage,
-        subscribeMessage,
-        channelParameters
-      );
-    }
-    if (isReplier(channel)) {
-      testMethod = reply(
-        channelName, 
-        subscribeMessage,
-        publishMessage,
-        channelParameters
-      );
-    }
+  if (channel.hasSubscribe()) {
+    testMethod = publish(
+      channelName, 
+      subscribeMessage, 
+      channelParameters);
   }
-
-  if (isPubsub(channel)) {
-    if (channel.hasSubscribe()) {
-      testMethod = publish(
-        channelName, 
-        subscribeMessage, 
-        channelParameters);
-    }
-    if (channel.hasPublish()) {
-      testMethod = subscribe(
-        channelName, 
-        publishMessage, 
-        channelParameters);
-    }
+  if (channel.hasPublish()) {
+    testMethod = subscribe(
+      channelName, 
+      publishMessage, 
+      channelParameters);
   }
   return testMethod;
 }

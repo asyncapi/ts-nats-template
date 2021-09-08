@@ -26,10 +26,6 @@ jobs:
         run: |
           npm run generate:examples:pubSub
           npm run test:examples:integration:pubSub
-      - name: Build request/reply example and test clients can talk to each other
-        run: |
-          npm run generate:examples:requestReply
-          npm run test:examples:integration:requestReply
       - name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v1

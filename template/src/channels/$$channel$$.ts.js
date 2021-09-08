@@ -1,10 +1,8 @@
 import { File } from '@asyncapi/generator-react-sdk';
 import { Publish } from '../../../components/channel/publish';
 import { Subscribe } from '../../../components/channel/subscribe';
-import { Reply } from '../../../components/channel/reply';
-import { Request } from '../../../components/channel/request';
 import { General } from '../../../components/channel/general';
-import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase} from '../../../utils/index';
+import { pascalCase, camelCase} from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 
@@ -36,45 +34,21 @@ function getChannelCode(asyncapi, channel, channelName, params) {
   const publishMessage = publishOperation ? publishOperation.message(0) : undefined;
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
   let channelcode;
-  if (isRequestReply(channel)) {
-    if (isRequester(channel)) {
-      channelcode = Request(
-        asyncapi.defaultContentType(), 
-        channelName, 
-        subscribeMessage,
-        publishMessage,
-        channel.parameters()
-      );
-    }
-    if (isReplier(channel)) {
-      channelcode = Reply(
-        asyncapi.defaultContentType(), 
-        channelName, 
-        subscribeMessage,
-        publishMessage,
-        channel.parameters(),
-        params,
-        publishOperation
-      );
-    }
-  }
 
-  if (isPubsub(channel)) {
-    if (channel.hasSubscribe()) {
-      channelcode = Publish(
-        asyncapi.defaultContentType(), 
-        channelName, 
-        subscribeMessage, 
-        channel.parameters());
-    }
-    if (channel.hasPublish()) {
-      channelcode = Subscribe(
-        asyncapi.defaultContentType(), 
-        channelName, 
-        publishMessage, 
-        channel.parameters(),
-        publishOperation);
-    }
+  if (channel.hasSubscribe()) {
+    channelcode = Publish(
+      asyncapi.defaultContentType(), 
+      channelName, 
+      subscribeMessage, 
+      channel.parameters());
+  }
+  if (channel.hasPublish()) {
+    channelcode = Subscribe(
+      asyncapi.defaultContentType(), 
+      channelName, 
+      publishMessage, 
+      channel.parameters(),
+      publishOperation);
   }
   return channelcode;
 }

@@ -3,9 +3,6 @@ import { Events } from '../../../components/events';
 import { getStandardClassCode, getStandardHeaderCode } from '../../../components/index/standard';
 import { Publish } from '../../../components/index/publish';
 import { Subscribe } from '../../../components/index/subscribe';
-import { Reply } from '../../../components/index/reply';
-import { Request } from '../../../components/index/request';
-import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
 
@@ -38,46 +35,22 @@ function getChannelWrappers(asyncapi, params) {
     const defaultContentType = asyncapi.defaultContentType();
     const channelDescription = channel.description();
     const channelParameters = channel.parameters();
-    if (isRequestReply(channel)) {
-      if (isRequester(channel)) {
-        return Reply(defaultContentType, 
-          channelName, 
-          publishMessage,
-          subscribeMessage,
-          channelDescription,
-          channelParameters,
-          params
-        );
-      }
-      if (isReplier(channel)) {
-        return Request(
-          defaultContentType, 
-          channelName, 
-          publishMessage,
-          subscribeMessage,
-          channelDescription,
-          channelParameters
-        );
-      }
-    }
 
-    if (isPubsub(channel)) {
-      if (channel.hasSubscribe()) {
-        return Subscribe(
-          defaultContentType, 
-          channelName, 
-          subscribeMessage, 
-          channelDescription, 
-          channelParameters);
-      }
-      if (channel.hasPublish()) {
-        return Publish(
-          defaultContentType, 
-          channelName, 
-          publishMessage, 
-          channelDescription, 
-          channelParameters);
-      }
+    if (channel.hasSubscribe()) {
+      return Subscribe(
+        defaultContentType, 
+        channelName, 
+        subscribeMessage, 
+        channelDescription, 
+        channelParameters);
+    }
+    if (channel.hasPublish()) {
+      return Publish(
+        defaultContentType, 
+        channelName, 
+        publishMessage, 
+        channelDescription, 
+        channelParameters);
     }
   }) : '';
   return channelWrappers;

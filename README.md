@@ -13,7 +13,7 @@ This template is for generating a TypeScript/Node.js wrapper for the NATS client
 Have you found a bug or have an idea for improvement? Feel free to contribute! See [the contribution guidelines](#Contributing) how to do so.
 
 # How to use
-Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example as well as [request and reply](./examples/request%20reply).
+Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example.
 
 Information about the generated files and a description can be found under [the documentation folder](./docs/general.md).
 ## Requirements
@@ -26,7 +26,7 @@ The leading examples are both in TypeScript and in Node.js since this template c
 
 Given any AsyncAPI file (`AsyncAPI.yml`) first generate the client with the [AsyncAPI generator](https://github.com/asyncapi/generator) such as 
 ```bash
-ag --install --output ./nats-client ./AsyncAPI.yml @asyncapi/ts-nats-template --param "generateTestClient=true"  --param "promisifyReplyCallback=true"
+ag --install --output ./nats-client ./AsyncAPI.yml @asyncapi/ts-nats-template --param "generateTestClient=true"
 ```
 
 Afterward, go into the generated folder `nats-client` and run the commands `npm i` and `npm run build`. The generated NATS client is now ready to be used in either TypeScript or Node.js.
@@ -65,7 +65,7 @@ These are the available template parameters:
 |Parameter|Type|Description|
 |---|---|---|
 | generateTestClient | Boolean | Use this parameter to generate the [test client](#test-client). Add the following to the CLI when generating your code `--param "generateTestClient=true"`
-| promisifyReplyCallback | Boolean | Use this parameter to change from the default regular callback when using the request operation. Add the following to the CLI when generating your code `--param "promisifyReplyCallback=true"`
+
 
 ## Features
 * Supports wildcard channels. AsyncAPI describes the channel path to be defined as [RFC 6570 URI](https://www.asyncapi.com/docs/specifications/2.0.0/#a-name-channelsobject-a-channels-object). So a channel containing a wildcard needs to be defined with parameters such as `smartylighting/streetlights/{wildcard}`.
