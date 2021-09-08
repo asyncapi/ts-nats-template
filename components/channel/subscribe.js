@@ -1,5 +1,5 @@
 import { OnReceivingData } from './OnReceivingData';
-import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNotNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
+import { realizeChannelName, camelCase, getMessageType, messageHasNotNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
@@ -57,7 +57,6 @@ export function Subscribe(defaultContentType, channelName, message, channelParam
     return new Promise(async (resolve, reject) => {
       let subscribeOptions: SubscriptionOptions = {... options};
       ${includeQueueForSubscription(operation)}
-      ${includeUnsubAfterForSubscription(operation)}
 
       try{
         let subscription = await client.subscribe(${realizeChannelName(channelParameters, channelName)}, (err, msg) => {
