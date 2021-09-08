@@ -10,7 +10,6 @@ import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
  * @typedef TemplateParameters
  * @type {object}
  * @property {boolean} generateTestClient - whether or not test client should be generated.
- * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
  */
 /**
  * @typedef RenderArgument
