@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AnonymousSchema_3 = void 0;
 class AnonymousSchema_3 {
     constructor(input) {
         this._lumen = input.lumen;

@@ -6,9 +6,12 @@ export declare class GeneralReply {
         statusCode?: number;
         statusMessage?: string;
     });
-    statusCode: number | undefined;
-    statusMessage: string | undefined;
-    additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null> | undefined;
+    get statusCode(): number | undefined;
+    set statusCode(statusCode: number | undefined);
+    get statusMessage(): string | undefined;
+    set statusMessage(statusMessage: string | undefined);
+    get additionalProperties(): Map<String, object | string | number | Array<unknown> | boolean | null> | undefined;
+    set additionalProperties(additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null> | undefined);
     marshal(): string;
     static unmarshal(json: string | object): GeneralReply;
 }

@@ -1,20 +1,11 @@
 import {
   AnonymousSchema_3
 } from '../../models/AnonymousSchema_3';
-import {
-  Client,
-  NatsError,
-  Subscription,
-  SubscriptionOptions,
-  Payload
-} from 'ts-nats';
+import * as Nats from 'nats';
 import {
   ErrorCode,
   NatsTypescriptTemplateError
 } from '../../NatsTypescriptTemplateError';
-import {
-  Hooks
-} from '../../hooks';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
  * @module streetlightStreetlightIdEventTurnon
@@ -23,7 +14,8 @@ import {
  * Internal functionality to setup subscription on the `streetlight/{streetlight_id}/event/turnon` channel 
  * 
  * @param onDataCallback to call when messages are received
- * @param client to subscribe with
+ * @param nc to subscribe with
+ * @param codec used to convert messages
  * @param streetlight_id parameter to use in topic
  * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
  */
@@ -31,18 +23,18 @@ export function subscribe(
   onDataCallback: (
     err ? : NatsTypescriptTemplateError,
     msg ? : AnonymousSchema_3, streetlight_id ? : string) => void,
-  client: Client, streetlight_id: string,
-  options ? : SubscriptionOptions
-): Promise < Subscription > {
+  nc: Nats.NatsConnection,
+  codec: Nats.Codec < any > , streetlight_id: string,
+  options ? : Nats.SubscriptionOptions
+): Promise < Nats.Subscription > {
   return new Promise(async (resolve, reject) => {
-    let subscribeOptions: SubscriptionOptions = {
+    let subscribeOptions: Nats.SubscriptionOptions = {
       ...options
     };
     try {
-      let subscription = await client.subscribe(`streetlight.${streetlight_id}.event.turnon`, (err, msg) => {
-        if (err) {
-          onDataCallback(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, err));
-        } else {
+      let subscription = nc.subscribe(`streetlight.${streetlight_id}.event.turnon`, subscribeOptions);
+      (async () => {
+        for await (const msg of subscription) {
           const unmodifiedChannel = `streetlight.{streetlight_id}.event.turnon`;
           let channel = msg.subject;
           const streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
@@ -53,27 +45,13 @@ export function subscribe(
           channel = channel.substring(splits[0].length);
           const streetlightIdEnd = channel.indexOf(splits[1]);
           const streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
-          let receivedData: any = msg.data;
-          try {
-            try {
-              let receivedDataHooks = Hooks.getInstance().getReceivedDataHook();
-              for (let hook of receivedDataHooks) {
-                receivedData = hook(receivedData);
-              }
-              undefined
-            } catch (e) {
-              const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-              throw error;
-            }
-          } catch (e) {
-            onDataCallback(e)
-            return;
-          }
+          let receivedData: any = codec.decode(msg.data);
           onDataCallback(undefined, AnonymousSchema_3.unmarshal(receivedData), streetlightIdParam);
         }
-      }, subscribeOptions);
+        console.log("subscription closed");
+      })();
       resolve(subscription);
-    } catch (e) {
+    } catch (e: any) {
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
     }
   })

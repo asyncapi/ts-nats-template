@@ -47,7 +47,7 @@ describe('streetlight/{streetlight_id}/command/turnon can talk to itself', () =>
       }, 3000)
       setInterval(async () => {
         if (subscription.getReceived() === 1) {
-          resolve();
+          resolve(undefined);
           isReturned = true
         }
       }, 100);

@@ -1,47 +1,16 @@
 import {
-  fromSeed
-} from 'ts-nkeys';
-import {
   ErrorCode,
   NatsTypescriptTemplateError
-} from '..//NatsTypescriptTemplateError';
-import {
-  Client,
-  NatsConnectionOptions,
-  connect,
-  Payload,
-  NatsError,
-  Subscription,
-  ServersChangedEvent,
-  SubEvent,
-  ServerInfo,
-  SubscriptionOptions
-} from 'ts-nats';
+} from '../NatsTypescriptTemplateError';
+import * as Nats from 'nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";
 import * as streetlightStreetlightIdEventTurnonChannel from "./testchannels/StreetlightStreetlightIdEventTurnon";
 import {
   AnonymousSchema_1
-} from "..//models/AnonymousSchema_1";
+} from "../models/AnonymousSchema_1";
 import {
   AnonymousSchema_3
-} from "..//models/AnonymousSchema_3";
-import * as events from 'events';
-export enum AvailableEvents {
-  permissionError = 'permissionError',
-    close = 'close',
-    connect = 'connect',
-    connecting = 'connecting',
-    disconnect = 'disconnect',
-    error = 'error',
-    pingcount = 'pingcount',
-    pingtimer = 'pingtimer',
-    reconnect = 'reconnect',
-    reconnecting = 'reconnecting',
-    serversChanged = 'serversChanged',
-    subscribe = 'subscribe',
-    unsubscribe = 'unsubscribe',
-    yield = 'yield'
-}
+} from "../models/AnonymousSchema_3";
 export {
   streetlightStreetlightIdCommandTurnonChannel
 };
@@ -54,50 +23,34 @@ export {
 export {
   AnonymousSchema_3
 };
-export declare interface NatsAsyncApiTestClient {
-  on(event: AvailableEvents.permissionError, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.close, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.connect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
-  on(event: AvailableEvents.connecting, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.disconnect, listener: (serverURL: string) => void): this;
-  on(event: AvailableEvents.error, listener: (error: NatsTypescriptTemplateError) => void): this;
-  on(event: AvailableEvents.pingcount, listener: () => void): this;
-  on(event: AvailableEvents.pingtimer, listener: () => void): this;
-  on(event: AvailableEvents.reconnect, listener: (connection: Client, serverURL: string, info: ServerInfo) => void): this;
-  on(event: AvailableEvents.reconnecting, listener: (serverURL: string) => void): this;
-  on(event: AvailableEvents.serversChanged, listener: (e: ServersChangedEvent) => void): this;
-  on(event: AvailableEvents.subscribe, listener: (e: SubEvent) => void): this;
-  on(event: AvailableEvents.unsubscribe, listener: (e: SubEvent) => void): this;
-  on(event: AvailableEvents.yield, listener: () => void): this;
-}
 /**
  * @class NatsAsyncApiTestClient
  * 
  * The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
  */
-export class NatsAsyncApiTestClient extends events.EventEmitter {
-  private jsonClient ? : Client;
-  private stringClient ? : Client;
-  private binaryClient ? : Client;
-  private options ? : NatsConnectionOptions;
-  constructor() {
-    super();
-  }
+export class NatsAsyncApiTestClient {
+  private nc ? : Nats.NatsConnection;
+  private codec ? : Nats.Codec < any > ;
+  private options ? : Nats.ConnectionOptions;
   /**
    * Try to connect to the NATS server with the different payloads.
    * @param options to use, payload is omitted if sat in the AsyncAPI document.
    */
-  connect(options: NatsConnectionOptions): Promise < void > {
+  connect(options: Nats.ConnectionOptions, codec ? : Nats.Codec < any > ): Promise < void > {
     return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
+      if (!this.isClosed()) {
+        return reject('Client is still connected, please close it first.');
+      }
       this.options = options;
+      if (codec) {
+        this.codec = codec;
+      } else {
+        this.codec = Nats.JSONCodec();
+      }
       try {
-        if (!this.jsonClient || this.jsonClient!.isClosed()) {
-          this.options.payload = Payload.JSON;
-          this.jsonClient = await connect(this.options);
-          this.chainEvents(this.jsonClient);
-        }
+        this.nc = await Nats.connect(this.options);
         resolve();
-      } catch (e) {
+      } catch (e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       }
     })
@@ -106,62 +59,18 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
    * Disconnect all clients from the server
    */
   async disconnect() {
-    if (!this.isClosed()) {
-      await this.jsonClient!.drain();
+    if (!this.isClosed() && this.nc !== undefined) {
+      await this.nc.drain();
     }
   }
   /**
    * Returns whether or not any of the clients are closed
    */
   isClosed() {
-    if (!this.jsonClient || this.jsonClient!.isClosed()) {
+    if (!this.nc || this.nc!.isClosed()) {
       return true;
     }
     return false;
-  }
-  private chainEvents(ns: Client) {
-    ns.on('permissionError', (e: NatsError) => {
-      this.emit(AvailableEvents.permissionError, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-    });
-    ns.on('close', (e: NatsError) => {
-      this.emit(AvailableEvents.close, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-    });
-    ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) => {
-      this.emit(AvailableEvents.connect, connection, serverURL, info)
-    });
-    ns.on('connecting', (serverURL: string) => {
-      this.emit(AvailableEvents.connecting, serverURL)
-    });
-    ns.on('disconnect', (serverURL: string) => {
-      this.emit(AvailableEvents.disconnect, serverURL)
-    });
-    ns.on('error', (e: NatsError) => {
-      this.emit(AvailableEvents.error, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-    });
-    ns.on('pingcount', () => {
-      this.emit(AvailableEvents.pingcount)
-    });
-    ns.on('pingtimer', () => {
-      this.emit(AvailableEvents.pingtimer)
-    });
-    ns.on('reconnect', (connection: Client, serverURL: string, info: ServerInfo) => {
-      this.emit(AvailableEvents.reconnect, connection, serverURL, info)
-    });
-    ns.on('reconnecting', (serverURL: string) => {
-      this.emit(AvailableEvents.reconnecting, serverURL)
-    });
-    ns.on('serversChanged', (e: ServersChangedEvent) => {
-      this.emit(AvailableEvents.serversChanged, e)
-    });
-    ns.on('subscribe', (e: SubEvent) => {
-      this.emit(AvailableEvents.subscribe, e)
-    });
-    ns.on('unsubscribe', (e: SubEvent) => {
-      this.emit(AvailableEvents.unsubscribe, e)
-    });
-    ns.on('yield', () => {
-      this.emit(AvailableEvents.yield)
-    });
   }
   /**
    * Try to connect to the NATS server with user credentials
@@ -169,11 +78,11 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
    * @param userCreds to use
    * @param options to connect with
    */
-  async connectWithUserCreds(userCreds: string, options ? : NatsConnectionOptions) {
+  async connectWithUserCreds(userCreds: string, options ? : Nats.ConnectionOptions, codec ? : Nats.Codec < any > ) {
     await this.connect({
-      userCreds: userCreds,
+      user: userCreds,
       ...options
-    });
+    }, codec);
   }
   /**
    * Try to connect to the NATS server with user and password
@@ -182,41 +91,24 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
    * @param pass password to use
    * @param options to connect with
    */
-  async connectWithUserPass(user: string, pass: string, options ? : NatsConnectionOptions) {
+  async connectWithUserPass(user: string, pass: string, options ? : Nats.ConnectionOptions, codec ? : Nats.Codec < any > ) {
     await this.connect({
       user: user,
       pass: pass,
       ...options
-    });
+    }, codec);
   }
   /**
    * Try to connect to the NATS server which has no authentication
    
-   * @param host to connect to
-   * @param options to connect with
-   */
-  async connectToHost(host: string, options ? : NatsConnectionOptions) {
+    * @param host to connect to
+    * @param options to connect with
+    */
+  async connectToHost(host: string, options ? : Nats.ConnectionOptions, codec ? : Nats.Codec < any > ) {
     await this.connect({
       servers: [host],
       ...options
-    });
-  }
-  /**
-   * Try to connect to the NATS server with NKey authentication
-   * 
-   * @param publicNkey User
-   * @param seed private key
-   * @param options to connect with
-   */
-  async connectWithNkey(publicNkey: string, seed: string, options ? : NatsConnectionOptions) {
-    await this.connect({
-      nkey: publicNkey,
-      nonceSigner: (nonce: string): Buffer => {
-        const sk = fromSeed(Buffer.from(seed));
-        return sk.sign(Buffer.from(nonce));
-      },
-      ...options
-    });
+    }, codec);
   }
   /**
    * Publish to the `streetlight/{streetlight_id}/command/turnon` channel 
@@ -227,13 +119,15 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
    * @param streetlight_id parameter to use in topic
    */
   public publishToStreetlightStreetlightIdCommandTurnon(
-    message: AnonymousSchema_1, streetlight_id: string
+    message: AnonymousSchema_1, streetlight_id: string,
+    options ? : Nats.PublishOptions
   ): Promise < void > {
-    const nc: Client = this.jsonClient!;
-    if (nc) {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
       return streetlightStreetlightIdCommandTurnonChannel.publish(
         message,
-        nc, streetlight_id
+        this.nc,
+        this.codec, streetlight_id,
+        options
       );
     } else {
       return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
@@ -254,24 +148,22 @@ export class NatsAsyncApiTestClient extends events.EventEmitter {
       err ? : NatsTypescriptTemplateError,
       msg ? : AnonymousSchema_3, streetlight_id ? : string) => void, streetlight_id: string,
     flush ? : boolean,
-    options ? : SubscriptionOptions
-  ): Promise < Subscription > {
+    options ? : Nats.SubscriptionOptions
+  ): Promise < Nats.Subscription > {
     return new Promise(async (resolve, reject) => {
-      const nc: Client = this.jsonClient!;
-      if (nc) {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
         try {
           const sub = await streetlightStreetlightIdEventTurnonChannel.subscribe(
-            onDataCallback, nc, streetlight_id,
+            onDataCallback,
+            this.nc,
+            this.codec, streetlight_id,
             options
           );
           if (flush) {
-            this.jsonClient!.flush(() => {
-              resolve(sub);
-            });
-          } else {
-            resolve(sub);
+            await this.nc.flush();
           }
-        } catch (e) {
+          resolve(sub);
+        } catch (e: any) {
           reject(e);
         }
       } else {
