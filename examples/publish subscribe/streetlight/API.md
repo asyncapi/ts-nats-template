@@ -29,7 +29,7 @@ Module which wraps functionality for the `streetlight/{streetlight_id}/command/t
 
 <a name="module_streetlightStreetlightIdCommandTurnon..subscribe"></a>
 
-### streetlightStreetlightIdCommandTurnon~subscribe(onDataCallback, client, streetlight_id, options)
+### streetlightStreetlightIdCommandTurnon~subscribe(onDataCallback, nc, codec, streetlight_id, options)
 Internal functionality to setup subscription on the `streetlight/{streetlight_id}/command/turnon` channel
 
 **Kind**: inner method of [<code>streetlightStreetlightIdCommandTurnon</code>](#module_streetlightStreetlightIdCommandTurnon)  
@@ -37,7 +37,8 @@ Internal functionality to setup subscription on the `streetlight/{streetlight_id
 | Param | Description |
 | --- | --- |
 | onDataCallback | to call when messages are received |
-| client | to subscribe with |
+| nc | to subscribe with |
+| codec | used to convert messages |
 | streetlight_id | parameter to use in topic |
 | options | to subscribe with, bindings from the AsyncAPI document overwrite these if specified |
 
@@ -48,7 +49,7 @@ Module which wraps functionality for the `streetlight/{streetlight_id}/event/tur
 
 <a name="module_streetlightStreetlightIdEventTurnon..publish"></a>
 
-### streetlightStreetlightIdEventTurnon~publish(message, client, streetlight_id)
+### streetlightStreetlightIdEventTurnon~publish(message, nc, codec, streetlight_id, options)
 Internal functionality to publish message to channel
 streetlight/{streetlight_id}/event/turnon
 
@@ -57,8 +58,10 @@ streetlight/{streetlight_id}/event/turnon
 | Param | Description |
 | --- | --- |
 | message | to publish |
-| client | to publish with |
+| nc | to publish with |
+| codec | used to convert messages |
 | streetlight_id | parameter to use in topic |
+| options | to publish with |
 
 <a name="NatsAsyncApiClient"></a>
 
@@ -76,7 +79,6 @@ The generated client based on your AsyncAPI document.
     * [.connectWithUserCreds(userCreds, options)](#NatsAsyncApiClient+connectWithUserCreds)
     * [.connectWithUserPass(user, pass, options)](#NatsAsyncApiClient+connectWithUserPass)
     * [.connectToHost(host, options)](#NatsAsyncApiClient+connectToHost)
-    * [.connectWithNkey(publicNkey, seed, options)](#NatsAsyncApiClient+connectWithNkey)
     * [.subscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)](#NatsAsyncApiClient+subscribeToStreetlightStreetlightIdCommandTurnon)
     * [.publishToStreetlightStreetlightIdEventTurnon(message, streetlight_id)](#NatsAsyncApiClient+publishToStreetlightStreetlightIdEventTurnon)
 
@@ -140,19 +142,6 @@ Try to connect to the NATS server which has no authentication
 | host | to connect to |
 | options | to connect with |
 
-<a name="NatsAsyncApiClient+connectWithNkey"></a>
-
-### natsAsyncApiClient.connectWithNkey(publicNkey, seed, options)
-Try to connect to the NATS server with NKey authentication
-
-**Kind**: instance method of [<code>NatsAsyncApiClient</code>](#NatsAsyncApiClient)  
-
-| Param | Description |
-| --- | --- |
-| publicNkey | User |
-| seed | private key |
-| options | to connect with |
-
 <a name="NatsAsyncApiClient+subscribeToStreetlightStreetlightIdCommandTurnon"></a>
 
 ### natsAsyncApiClient.subscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)
@@ -199,7 +188,6 @@ The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
     * [.connectWithUserCreds(userCreds, options)](#NatsAsyncApiTestClient+connectWithUserCreds)
     * [.connectWithUserPass(user, pass, options)](#NatsAsyncApiTestClient+connectWithUserPass)
     * [.connectToHost(host, options)](#NatsAsyncApiTestClient+connectToHost)
-    * [.connectWithNkey(publicNkey, seed, options)](#NatsAsyncApiTestClient+connectWithNkey)
     * [.publishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)](#NatsAsyncApiTestClient+publishToStreetlightStreetlightIdCommandTurnon)
     * [.subscribeToStreetlightStreetlightIdEventTurnon(onDataCallback, streetlight_id, flush, options)](#NatsAsyncApiTestClient+subscribeToStreetlightStreetlightIdEventTurnon)
 
@@ -261,19 +249,6 @@ Try to connect to the NATS server which has no authentication
 | Param | Description |
 | --- | --- |
 | host | to connect to |
-| options | to connect with |
-
-<a name="NatsAsyncApiTestClient+connectWithNkey"></a>
-
-### natsAsyncApiTestClient.connectWithNkey(publicNkey, seed, options)
-Try to connect to the NATS server with NKey authentication
-
-**Kind**: instance method of [<code>NatsAsyncApiTestClient</code>](#NatsAsyncApiTestClient)  
-
-| Param | Description |
-| --- | --- |
-| publicNkey | User |
-| seed | private key |
 | options | to connect with |
 
 <a name="NatsAsyncApiTestClient+publishToStreetlightStreetlightIdCommandTurnon"></a>

@@ -1,20 +1,11 @@
 import {
   AnonymousSchema_3
 } from '../models/AnonymousSchema_3';
-import {
-  Client,
-  NatsError,
-  Subscription,
-  SubscriptionOptions,
-  Payload
-} from 'ts-nats';
+import * as Nats from 'nats';
 import {
   ErrorCode,
   NatsTypescriptTemplateError
 } from '../NatsTypescriptTemplateError';
-import {
-  Hooks
-} from '../hooks';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
  * @module streetlightStreetlightIdEventTurnon
@@ -24,28 +15,24 @@ import {
  * streetlight/{streetlight_id}/event/turnon
  * 
  * @param message to publish
- * @param client to publish with
+ * @param nc to publish with
+ * @param codec used to convert messages
  * @param streetlight_id parameter to use in topic
+ * @param options to publish with
  */
 export function publish(
   message: AnonymousSchema_3,
-  client: Client, streetlight_id: string
+  nc: Nats.NatsConnection,
+  codec: Nats.Codec < any > , streetlight_id: string,
+  options ? : Nats.PublishOptions
 ): Promise < void > {
   return new Promise < void > (async (resolve, reject) => {
     try {
       let dataToSend: any = message.marshal();
-      try {
-        let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
-        for (let hook of beforeSendingHooks) {
-          dataToSend = hook(dataToSend);
-        }
-      } catch (e) {
-        const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-        throw error;
-      }
-      await client.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend);
+      dataToSend = codec.encode(dataToSend);
+      nc.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend, options);
       resolve();
-    } catch (e) {
+    } catch (e: any) {
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
     }
   });

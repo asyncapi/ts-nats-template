@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GeneralReply = void 0;
 class GeneralReply {
     constructor(input) {
         this._statusCode = input.statusCode;

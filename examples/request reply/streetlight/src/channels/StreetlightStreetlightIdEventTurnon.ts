@@ -4,20 +4,11 @@ import {
 import {
   AnonymousSchema_5
 } from '../models/AnonymousSchema_5';
-import {
-  Client,
-  NatsError,
-  Subscription,
-  SubscriptionOptions,
-  Payload
-} from 'ts-nats';
+import * as Nats from 'nats';
 import {
   ErrorCode,
   NatsTypescriptTemplateError
 } from '../NatsTypescriptTemplateError';
-import {
-  Hooks
-} from '../hooks';
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
  * @module streetlightStreetlightIdEventTurnon
@@ -26,48 +17,26 @@ import {
  * Internal functionality to send request to the `streetlight/{streetlight_id}/event/turnon` channel 
  * 
  * @param requestMessage to send
- * @param client to send request with
+ * @param nc to send request with
+ * @param codec used to convert messages
  * @param streetlight_id parameter to use in topic
+ * @param options to use for the request
  */
 export function request(
   requestMessage: AnonymousSchema_5,
-  client: Client, streetlight_id: string
+  nc: Nats.NatsConnection,
+  codec: Nats.Codec < any > , streetlight_id: string,
+  options ? : Nats.RequestOptions
 ): Promise < GeneralReply > {
   return new Promise(async (resolve, reject) => {
-    let timeout = undefined;
-    let msg;
-    let dataToSend: any = requestMessage.marshal();
     try {
-      try {
-        let beforeSendingHooks = Hooks.getInstance().getBeforeSendingDataHook();
-        for (let hook of beforeSendingHooks) {
-          dataToSend = hook(dataToSend);
-        }
-      } catch (e) {
-        const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-        throw error;
-      }
-      msg = await client.request(`streetlight.${streetlight_id}.event.turnon`, timeout, dataToSend)
-    } catch (e) {
+      let dataToSend: any = codec.encode(requestMessage.marshal());
+      const msg = await nc.request(`streetlight.${streetlight_id}.event.turnon`, dataToSend, options)
+      let receivedData = codec.decode(msg.data);
+      resolve(GeneralReply.unmarshal(receivedData));
+    } catch (e: any) {
       reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       return;
     }
-    let receivedData: any = msg.data;
-    try {
-      try {
-        let receivedDataHooks = Hooks.getInstance().getReceivedDataHook();
-        for (let hook of receivedDataHooks) {
-          receivedData = hook(receivedData);
-        }
-        undefined
-      } catch (e) {
-        const error = NatsTypescriptTemplateError.errorForCode(ErrorCode.HOOK_ERROR, e);
-        throw error;
-      }
-    } catch (e) {
-      reject(e)
-      return;
-    }
-    resolve(GeneralReply.unmarshal(receivedData));
   })
 }

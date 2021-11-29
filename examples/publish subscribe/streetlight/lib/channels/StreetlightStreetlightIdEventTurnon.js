@@ -1,15 +1,16 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.publish = void 0;
 const NatsTypescriptTemplateError_1 = require("../NatsTypescriptTemplateError");
-const hooks_1 = require("../hooks");
 /**
  * Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
  * @module streetlightStreetlightIdEventTurnon
@@ -19,24 +20,17 @@ const hooks_1 = require("../hooks");
  * streetlight/{streetlight_id}/event/turnon
  *
  * @param message to publish
- * @param client to publish with
+ * @param nc to publish with
+ * @param codec used to convert messages
  * @param streetlight_id parameter to use in topic
+ * @param options to publish with
  */
-function publish(message, client, streetlight_id) {
+function publish(message, nc, codec, streetlight_id, options) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         try {
             let dataToSend = message.marshal();
-            try {
-                let beforeSendingHooks = hooks_1.Hooks.getInstance().getBeforeSendingDataHook();
-                for (let hook of beforeSendingHooks) {
-                    dataToSend = hook(dataToSend);
-                }
-            }
-            catch (e) {
-                const error = NatsTypescriptTemplateError_1.NatsTypescriptTemplateError.errorForCode(NatsTypescriptTemplateError_1.ErrorCode.HOOK_ERROR, e);
-                throw error;
-            }
-            yield client.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend);
+            dataToSend = codec.encode(dataToSend);
+            nc.publish(`streetlight.${streetlight_id}.event.turnon`, dataToSend, options);
             resolve();
         }
         catch (e) {
