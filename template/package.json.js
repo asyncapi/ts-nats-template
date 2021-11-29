@@ -10,26 +10,24 @@ export default function packageFile({ asyncapi }) {
     main: 'lib/index.js',
     types: 'lib/index.d.ts',
     scripts: {
-      watch: 'tsc --watch',
       build: 'tsc && npm run docs',
       'test:integration': 'mocha -r ts-node/register tests/integration/**/*.spec.ts --exit --timeout 10000',
       docs: 'npm run docs:markdown',
       'docs:markdown': 'jsdoc2md lib/index.js -f lib/**/*.js > API.md'
     },
     dependencies: {
-      '@types/klaw-sync': '^6.0.0',
-      '@types/node': '13.9.5',
-      'ts-nats': '1.2.4',
-      typescript: '3.4.3',
-      'ts-nkeys': '1.0.16',
-      'jsdoc-to-markdown': '^6.0.1'
+      nats: '^2.4.0'
     },
     devDependencies: {
       'ts-node': '^8.10.2',
       '@types/mocha': '^8.0.4',
       '@types/chai': '^4.2.14',
+      '@types/node': '13.9.5',
+      '@types/klaw-sync': '^6.0.0',
       chai: '^4.2.0',
-      mocha: '^8.2.1'
+      mocha: '^8.2.1',
+      'jsdoc-to-markdown': '^6.0.1',
+      typescript: '3.4.3'
     }
   };
   if (asyncapi.info().title()) {

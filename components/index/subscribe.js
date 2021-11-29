@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, getClientToUse, realizeParametersForChannelWithoutType, renderJSDocParameters} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, realizeParametersForChannelWithoutType, renderJSDocParameters} from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} messageDescription 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Subscribe(defaultContentType, channelName, message, messageDescription, channelParameters) {
+export function Subscribe(channelName, message, messageDescription, channelParameters) {
   return  `
   /**
     * Subscribe to the \`${channelName}\`
@@ -30,25 +30,22 @@ export function Subscribe(defaultContentType, channelName, message, messageDescr
         ${realizeParametersForChannelWrapper(channelParameters, false)}) => void
       ${realizeParametersForChannelWrapper(channelParameters)},
       flush?: boolean,
-      options?: SubscriptionOptions
-    ): Promise<Subscription> {
+      options?: Nats.SubscriptionOptions
+    ): Promise<Nats.Subscription> {
     return new Promise(async (resolve, reject) => {
-      ${getClientToUse(message, defaultContentType)}
-
-      if(nc){
+      if(!this.isClosed() && this.nc !== undefined && this.codec !== undefined){
         try{
           const sub = await ${camelCase(channelName)}Channel.subscribe(
-            onDataCallback, nc
-            ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)}` : ''}, 
+            onDataCallback, 
+            this.nc,
+            this.codec
+            ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)},` : ''}
             options
           );
           if(flush){
-            this.jsonClient!.flush(() => {
-              resolve(sub);
-            });
-          }else{
-            resolve(sub);
+            await this.nc.flush();
           }
+          resolve(sub);
         }catch(e){
           reject(e);
         }

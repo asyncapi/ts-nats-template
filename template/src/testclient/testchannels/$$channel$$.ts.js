@@ -17,7 +17,6 @@ import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 /**
  * @typedef RenderArgument
  * @type {object}
- * @property {AsyncAPIDocument} asyncapi received from the generator.
  * @property {Channel} channel 
  * @property {string} channelName 
  * @property {TemplateParameters} params received from the generator.
@@ -39,7 +38,6 @@ function getChannelCode(asyncapi, channel, channelName, params) {
   if (isRequestReply(channel)) {
     if (isRequester(channel)) {
       channelcode = Reply(
-        asyncapi.defaultContentType(), 
         channelName, 
         channel.publish() ? channel.publish().message(0) : undefined,
         channel.subscribe() ? channel.subscribe().message(0) : undefined,
@@ -49,7 +47,6 @@ function getChannelCode(asyncapi, channel, channelName, params) {
     }
     if (isReplier(channel)) {
       channelcode = Request(
-        asyncapi.defaultContentType(), 
         channelName, 
         channel.publish() ? channel.publish().message(0) : undefined,
         channel.subscribe() ? channel.subscribe().message(0) : undefined,
@@ -61,14 +58,12 @@ function getChannelCode(asyncapi, channel, channelName, params) {
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
       channelcode = Subscribe(
-        asyncapi.defaultContentType(), 
         channelName, 
         channel.subscribe() ? channel.subscribe().message(0) : undefined,
         channel.parameters());
     }
     if (channel.hasPublish()) {
       channelcode = Publish(
-        asyncapi.defaultContentType(), 
         channelName, 
         channel.publish() ? channel.publish().message(0) : undefined, 
         channel.parameters());

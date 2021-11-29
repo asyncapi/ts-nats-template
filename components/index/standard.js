@@ -1,37 +1,18 @@
-import { containsBinaryPayload, containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload, getSchemaFileName} from '../../utils/index';
+import { containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload, getSchemaFileName} from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
 /**
  * Return disconnect function based on the payload
- * 
- * @param {AsyncAPIDocument} asyncapi 
  */
-function getDisconnectFunction(asyncapi) {
-  let disconnectWithBinaryClient = '';
-  if (containsBinaryPayload(asyncapi)) {
-    disconnectWithBinaryClient = 'await this.binaryClient!.drain();';
-  }
-
-  let disconnectWithStringPayload = '';
-  if (containsStringPayload(asyncapi)) {
-    disconnectWithStringPayload =   'await this.stringClient!.drain();';
-  }
-
-  let disconnectWithJsonPayload = '';
-  if (containsJsonPayload(asyncapi)) {
-    disconnectWithJsonPayload =  'await this.jsonClient!.drain();';
-  }
-
+function getDisconnectFunction() {
   return `        
     /**
      * Disconnect all clients from the server
      */
     async disconnect(){
-      if(!this.isClosed()){
-        ${disconnectWithBinaryClient}
-        ${disconnectWithStringPayload}
-        ${disconnectWithJsonPayload}
+      if (!this.isClosed() && this.nc !== undefined) {
+        await this.nc.drain();
       }
     }`;
 }
@@ -42,95 +23,56 @@ function getDisconnectFunction(asyncapi) {
  * @param {AsyncAPIDocument} asyncapi 
  */
 function getConnectFunction(asyncapi) {
-  let connectWithBinaryClient = '';
-  if (containsBinaryPayload(asyncapi)) {
-    connectWithBinaryClient = `
-      if(!this.binaryClient || this.binaryClient!.isClosed()){
-          this.options.payload = Payload.BINARY;
-          this.binaryClient = await connect(this.options);
-          this.chainEvents(this.binaryClient);
-      }`;
-  }
-
-  let connectWithStringPayload = '';
-  if (containsStringPayload(asyncapi)) {
-    connectWithStringPayload =   `
-      if(!this.stringClient || this.stringClient!.isClosed()){
-          this.options.payload = Payload.STRING;
-          this.stringClient = await connect(this.options);
-          this.chainEvents(this.stringClient);
-      }`;
-  }
-
-  let connectWithJsonPayload = '';
+  let codec = '';
   if (containsJsonPayload(asyncapi)) {
-    connectWithJsonPayload =  `
-      if(!this.jsonClient || this.jsonClient!.isClosed()){
-          this.options.payload = Payload.JSON;
-          this.jsonClient = await connect(this.options);
-          this.chainEvents(this.jsonClient);
-      }`;
+    codec = 'this.codec = Nats.JSONCodec();';
+  } else if (containsStringPayload(asyncapi)) {
+    codec = 'this.codec = Nats.StringCodec();';
+  } else {
+    codec = 'reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, \'Unrecognized content type, custom codec expected, please provide one.\'))';
   }
   return `
   /**
   * Try to connect to the NATS server with the different payloads.
   * @param options to use, payload is omitted if sat in the AsyncAPI document.
   */
-  connect(options : NatsConnectionOptions): Promise<void>{
-      return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
-          this.options = options;
-          try {
-              ${connectWithBinaryClient}
-              ${connectWithStringPayload}
-              ${connectWithJsonPayload}
-              resolve();
-          } catch(e) {
-              reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
-          }
-      })
+  connect(options: Nats.ConnectionOptions, codec?: Nats.Codec<any>): Promise<void>{
+    return new Promise(async (resolve: () => void, reject: (error: any) => void) => {
+      if (!this.isClosed()) {
+        return reject('Client is still connected, please close it first.');
+      }
+      this.options = options;
+
+      if (codec) {
+        this.codec = codec;
+      } else { 
+        ${codec}
+      }
+
+      try {
+        this.nc = await Nats.connect(this.options);
+        resolve();
+      } catch(e) {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+      }
+    })
   }`;
 }
 
 /**
  * Return isClosed function based on the payload
- * 
- * @param {AsyncAPIDocument} asyncapi 
  */
-function getIsClosedFunction(asyncapi) {
-  let isClosedWithBinaryClient = '';
-  if (containsBinaryPayload(asyncapi)) {
-    isClosedWithBinaryClient = `
-      if (!this.binaryClient || this.binaryClient!.isClosed()){
-        return true;
-      }`;
-  }
-
-  let isClosedWithStringPayload = '';
-  if (containsStringPayload(asyncapi)) {
-    isClosedWithStringPayload = `
-      if (!this.stringClient || this.stringClient!.isClosed()){
-        return true;
-      }`;
-  }
-
-  let isClosedWithJsonPayload = '';
-  if (containsJsonPayload(asyncapi)) {
-    isClosedWithJsonPayload = `
-      if (!this.jsonClient || this.jsonClient!.isClosed()){
-        return true;
-      }`;
-  }
-
-  return `        
+function getIsClosedFunction() {
+  return `
   /**
    * Returns whether or not any of the clients are closed
    */
-   isClosed(){
-      ${isClosedWithBinaryClient}
-      ${isClosedWithStringPayload}
-      ${isClosedWithJsonPayload}
-      return false;
-   }`;
+  isClosed(){
+    if (!this.nc || this.nc!.isClosed()) {
+      return true;
+    }
+    return false;
+  }`;
 }
 /**
  * Render all the connect function based on the AsyncAPI servers 
@@ -143,7 +85,7 @@ function renderConnectServerFunctions(servers) {
  * Connects the client to the AsyncAPI server called ${serverName}.
  * ${server.description() || ''}
  */
-async connectTo${pascalCase(serverName)}(){ await this.connect({ servers: ["${server.url()}"] }); }`);
+async connectTo${pascalCase(serverName)}(codec?: Nats.Codec<any>){ await this.connect({ servers: ["${server.url()}"] }, codec); }`);
   }
   return serverWrapperFunctions;
 }
@@ -154,61 +96,13 @@ async connectTo${pascalCase(serverName)}(){ await this.connect({ servers: ["${se
  */
 export function getStandardClassCode(asyncapi) {
   return `
-    private jsonClient?: Client;
-    private stringClient?: Client;
-    private binaryClient?: Client;
-    private options?: NatsConnectionOptions;
-    constructor() {
-        super();
-    }
-    ${getConnectFunction(asyncapi)}
-    ${getDisconnectFunction(asyncapi)}
-    ${getIsClosedFunction(asyncapi)}
-
-    private chainEvents(ns: Client){
-      ns.on('permissionError', (e: NatsError) => {
-          this.emit(AvailableEvents.permissionError, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-      });
-      ns.on('close', (e: NatsError) => {
-          this.emit(AvailableEvents.close, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-      });
-      ns.on('connect', (connection: Client, serverURL: string, info: ServerInfo) => {
-          this.emit(AvailableEvents.connect, connection, serverURL, info)
-      });
-      ns.on('connecting', (serverURL: string) => {
-          this.emit(AvailableEvents.connecting, serverURL)
-      });
-      ns.on('disconnect', (serverURL: string) => {
-          this.emit(AvailableEvents.disconnect, serverURL)
-      });
-      ns.on('error', (e: NatsError) => {
-          this.emit(AvailableEvents.error, NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e))
-      });
-      ns.on('pingcount', () => {
-          this.emit(AvailableEvents.pingcount)
-      });
-      ns.on('pingtimer', () => {
-          this.emit(AvailableEvents.pingtimer)
-      });
-      ns.on('reconnect', (connection: Client, serverURL: string, info: ServerInfo) => {
-          this.emit(AvailableEvents.reconnect, connection, serverURL, info)
-      });
-      ns.on('reconnecting', (serverURL: string) => {
-          this.emit(AvailableEvents.reconnecting, serverURL)
-      });
-      ns.on('serversChanged', (e: ServersChangedEvent) => {
-          this.emit(AvailableEvents.serversChanged, e)
-      });
-      ns.on('subscribe', (e: SubEvent) => {
-          this.emit(AvailableEvents.subscribe, e)
-      });
-      ns.on('unsubscribe', (e: SubEvent) => {
-          this.emit(AvailableEvents.unsubscribe, e)
-      });
-      ns.on('yield', () => {
-          this.emit(AvailableEvents.yield)
-      });
-    }
+  private nc?: Nats.NatsConnection;
+  private codec ?: Nats.Codec<any>;
+  private options?: Nats.ConnectionOptions;
+  
+  ${getConnectFunction(asyncapi)}
+  ${getDisconnectFunction()}
+  ${getIsClosedFunction()}
     
   /**
    * Try to connect to the NATS server with user credentials
@@ -216,60 +110,41 @@ export function getStandardClassCode(asyncapi) {
    * @param userCreds to use
    * @param options to connect with
    */
-   async connectWithUserCreds(userCreds: string, options?: NatsConnectionOptions){
-     await this.connect({
-     userCreds: userCreds,
-     ... options
-     });
+   async connectWithUserCreds(userCreds: string, options?: Nats.ConnectionOptions, codec?: Nats.Codec<any>){
+    await this.connect({
+      user: userCreds,
+      ... options
+    }, codec);
    }
  
-    /**
-     * Try to connect to the NATS server with user and password
-     * 
-     * @param user username to use
-     * @param pass password to use
-     * @param options to connect with
-     */
-   async connectWithUserPass(user: string, pass: string, options?: NatsConnectionOptions){
-     await this.connect({
-     user: user,
-     pass: pass,
-     ... options
-     });
-   }
-     
-    /**
-     * Try to connect to the NATS server which has no authentication
-     
-     * @param host to connect to
-     * @param options to connect with
-     */
-   async connectToHost(host: string, options?: NatsConnectionOptions){
-     await this.connect({
-     servers: [host],
-     ... options
-     });
-   }
+  /**
+   * Try to connect to the NATS server with user and password
+   * 
+   * @param user username to use
+   * @param pass password to use
+   * @param options to connect with
+   */
+  async connectWithUserPass(user: string, pass: string, options?: Nats.ConnectionOptions, codec?: Nats.Codec<any>){
+    await this.connect({
+      user: user,
+      pass: pass,
+      ... options
+    }, codec);
+  }
 
-    /**
-    * Try to connect to the NATS server with NKey authentication
-    * 
-    * @param publicNkey User
-    * @param seed private key
+  /**
+   * Try to connect to the NATS server which has no authentication
+   
+    * @param host to connect to
     * @param options to connect with
     */
-    async connectWithNkey(publicNkey: string, seed: string, options?: NatsConnectionOptions){
-      await this.connect({
-        nkey: publicNkey,
-        nonceSigner: (nonce: string): Buffer => {
-            const sk = fromSeed(Buffer.from(seed));
-            return sk.sign(Buffer.from(nonce));
-        },
-        ... options
-      });
-    }
-    
-    ${renderConnectServerFunctions(asyncapi.servers()).join('\n')}`;
+  async connectToHost(host: string, options?: Nats.ConnectionOptions, codec?: Nats.Codec<any>){
+    await this.connect({
+      servers: [host],
+      ... options
+    }, codec);
+  }    
+  ${renderConnectServerFunctions(asyncapi.servers()).join('\n')}`;
 }
 
 /**
@@ -299,42 +174,10 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
     }
   }
   return `
-import {fromSeed} from 'ts-nkeys';
 import {ErrorCode, NatsTypescriptTemplateError} from '${pathToRoot}/NatsTypescriptTemplateError';
-import { 
-  Client, 
-  NatsConnectionOptions, 
-  connect,
-  Payload, 
-  NatsError, 
-  Subscription, 
-  ServersChangedEvent, 
-  SubEvent, 
-  ServerInfo,
-  SubscriptionOptions
-} from 'ts-nats';
+import * as Nats from 'nats';
 
 ${imports.join('\n')}
 
-import * as events from 'events';
-export enum AvailableEvents {
-  permissionError = 'permissionError',
-  close = 'close',
-  connect = 'connect',
-  connecting = 'connecting',
-  disconnect = 'disconnect',
-  error = 'error',
-  pingcount = 'pingcount',
-  pingtimer = 'pingtimer',
-  reconnect = 'reconnect',
-  reconnecting = 'reconnecting',
-  serversChanged = 'serversChanged',
-  subscribe = 'subscribe',
-  unsubscribe = 'unsubscribe',
-  yield = 'yield'
-}
-
-${exports.join('\n')}
-
-  `;
+${exports.join('\n')}`;
 }

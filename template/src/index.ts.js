@@ -1,5 +1,4 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { Events } from '../../components/events';
 import { getStandardClassCode, getStandardHeaderCode } from '../../components/index/standard';
 import { Publish } from '../../components/index/publish';
 import { Subscribe } from '../../components/index/subscribe';
@@ -36,13 +35,11 @@ function getChannelWrappers(asyncapi, params) {
   channelWrappers = channelEntries.map(([channelName, channel]) => {
     const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
     const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
-    const defaultContentType = asyncapi.defaultContentType();
     const channelDescription = channel.description();
     const channelParameters = channel.parameters();
     if (isRequestReply(channel)) {
       if (isRequester(channel)) {
         return Request(
-          defaultContentType, 
           channelName, 
           subscribeMessage,
           publishMessage,
@@ -52,7 +49,6 @@ function getChannelWrappers(asyncapi, params) {
       }
       if (isReplier(channel)) {
         return Reply(
-          defaultContentType, 
           channelName, 
           subscribeMessage,
           publishMessage,
@@ -66,7 +62,6 @@ function getChannelWrappers(asyncapi, params) {
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
         return Publish(
-          defaultContentType, 
           channelName, 
           subscribeMessage, 
           channelDescription, 
@@ -74,7 +69,6 @@ function getChannelWrappers(asyncapi, params) {
       }
       if (channel.hasPublish()) {
         return Subscribe(
-          defaultContentType, 
           channelName, 
           publishMessage, 
           channelDescription, 
@@ -94,24 +88,17 @@ export default function index({ asyncapi, params }) {
   return (
     <File name="index.ts">
       {`
-import {AvailableHooks, ReceivedDataHook, BeforeSendingDataHook, Hooks} from './hooks';
 ${params.generateTestClient && 'import * as TestClient from \'./testclient/\';'}
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
 export {TestClient};
-export {AvailableHooks, ReceivedDataHook, BeforeSendingDataHook, Hooks}
-export {Client, ServerInfo, ServersChangedEvent, SubEvent}
-
-export declare interface NatsAsyncApiClient {
-  ${Events()}
-}
 
 /**
  * @class NatsAsyncApiClient
  * 
  * The generated client based on your AsyncAPI document.
  */
-export class NatsAsyncApiClient extends events.EventEmitter{
+export class NatsAsyncApiClient{
   ${getStandardClassCode(asyncapi)}
   ${getChannelWrappers(asyncapi, params).join('')}
 }

@@ -1,4 +1,3 @@
-import { OnSendingData } from './OnSendingData';
 import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
@@ -6,20 +5,20 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
 /**
  * Component which returns a function which publishes to the given channel
  * 
- * @param {string} defaultContentType 
  * @param {string} channelName to publish to
  * @param {Message} message which is being published
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Publish(defaultContentType, channelName, message, channelParameters) {
+export function Publish(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
+  const nullPayload = messageHasNotNullPayload(message.payload());
   //Determine the publish operation based on whether the message type is null
-  let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, null);`;
-  if (messageHasNotNullPayload(message.payload())) {
+  let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, Nats.Empty);`;
+  if (nullPayload) {
     publishOperation = `
-      ${OnSendingData(message, defaultContentType)}
-      await client.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);
-    `;
+    let dataToSend : any = message.marshal();
+    dataToSend = codec.encode(dataToSend);
+    nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);`;
   }
   return `
   /**
@@ -27,20 +26,23 @@ export function Publish(defaultContentType, channelName, message, channelParamet
    * ${channelName}
    * 
    * @param message to publish
-   * @param client to publish with
+   * @param nc to publish with
+   * @param codec used to convert messages
    ${renderJSDocParameters(channelParameters)}
+   * @param options to publish with
    */
     export function publish(
       message: ${messageType},
-      client: Client
-      ${realizeParametersForChannelWrapper(channelParameters)}
+      nc: Nats.NatsConnection,
+      codec: Nats.Codec<any>
+      ${realizeParametersForChannelWrapper(channelParameters)},
+      options?: Nats.PublishOptions
       ): Promise<void> {
       return new Promise<void>(async (resolve, reject) => {
         try{
-          let dataToSend : any = message.marshal();
           ${publishOperation}
           resolve();
-        }catch(e){
+        }catch(e: any){
           reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
         }
       });

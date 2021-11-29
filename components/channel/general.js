@@ -26,8 +26,7 @@ export function General(channel, publishMessage, subscribeMessage, path) {
 ${publishMessageImport}
 ${subscribeMessageImport}
 
-import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
+import * as Nats from 'nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '${path}/NatsTypescriptTemplateError';
-import { Hooks } from '${path}/hooks';
   `;
 }
