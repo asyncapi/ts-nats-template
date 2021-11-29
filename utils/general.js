@@ -45,49 +45,6 @@ export function getSchemaFileName(schemaName) {
 }
 
 /**
- * Figure out if our message content type or default content type matches a given payload.
- * 
- * @param {string} messageContentType to check against payload
- * @param {string} defaultContentType to check against payload
- * @param {string} payload to check
- */
-function containsPayload(messageContentType, defaultContentType, payload) {
-  if (
-    (messageContentType !== undefined &&
-      messageContentType.toLowerCase() === payload) ||
-    (defaultContentType !== undefined && defaultContentType === payload)
-  ) {
-    return true;
-  }
-  return false;
-}
-export function isBinaryPayload (messageContentType, defaultContentType) {
-  return containsPayload(messageContentType, defaultContentType, contentTypeBinary);
-}
-export function isStringPayload(messageContentType, defaultContentType) {
-  return containsPayload(messageContentType, defaultContentType, contentTypeString);
-}
-export function isJsonPayload(messageContentType, defaultContentType) {
-  return containsPayload(messageContentType, defaultContentType, contentTypeJSON);
-}
-
-/**
- * Based on the payload type of the message choose a client
- * 
- * @param {Message} message 
- * @param {string} defaultContentType 
- */
-export function getClientToUse(message, defaultContentType) {
-  if (isBinaryPayload(message.contentType(), defaultContentType)) {
-    return 'const nc: Client = this.binaryClient!;';
-  } else if (isStringPayload(message.contentType(), defaultContentType)) {
-    return 'const nc: Client = this.stringClient!;';
-  }
-  //Default to JSON client
-  return 'const nc: Client = this.jsonClient!;';
-}
-
-/**
  * Checks if the message payload is of type null
  * 
  * @param {Schema} messagePayload to check
