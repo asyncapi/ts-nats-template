@@ -18,7 +18,7 @@ export function Publish(channelName, message, channelParameters) {
     publishOperation = `
     let dataToSend : any = message.marshal();
     dataToSend = codec.encode(dataToSend);
-    nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend);`;
+    nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend, options);`;
   }
   return `
   /**

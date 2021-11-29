@@ -17,7 +17,7 @@ export function Request(channelName, requestMessage, replyMessage, channelParame
 
   //Determine the request operation based on whether the message type is null
   let requestOperation = `const msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, Nats.Empty, options)`;
-  if (requestHasNullPayload) {
+  if (!requestHasNullPayload) {
     requestOperation = `
     let dataToSend: any = codec.encode(requestMessage.marshal());
     const msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, dataToSend, options)
@@ -26,7 +26,7 @@ export function Request(channelName, requestMessage, replyMessage, channelParame
 
   //Determine the request callback operation based on whether the message type is null
   let requestCallbackOperation = 'resolve(null);';
-  if (replyHasNullPayload) {
+  if (!replyHasNullPayload) {
     requestCallbackOperation =  `
     let receivedData = codec.decode(msg.data);
     resolve(${replyMessageType}.unmarshal(receivedData));
