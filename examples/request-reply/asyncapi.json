@@ -1,5 +1,5 @@
 {
-	"asyncapi": "2.0.0",
+	"asyncapi": "2.2.0",
 	"info": {
 		"title": "Streetlight",
 		"version": "1.0.0"
@@ -16,10 +16,15 @@
 					}
 				}
 			},
+			"subscribe": {
+				"message": {
+					"$ref": "#/components/messages/generalReply"
+				}
+			},
 			"publish": {
 				"operationId": "Listen when to turn on the streetlight",
 				"message": {
-					"name": "TurnonCommand",
+					"name": "turnonCommand",
 					"payload": {
 						"type": "object",
 						"required": ["lumen"],
@@ -30,6 +35,15 @@
 							}
 						}
 					}
+				}
+			}, 
+			"bindings": {
+				"nats": {
+					"is": "requestReply",
+					"requestReply": {
+						"is": "replier"
+					},
+					"bindingVersion": "0.1.0"
 				}
 			}
 		},
@@ -54,6 +68,38 @@
 								"type": "integer",
 								"description": "How bright should the light be."
 							}
+						}
+					}
+				}
+			},
+			"publish": {
+				"message": {
+					"$ref": "#/components/messages/generalReply"
+				}
+			},
+			"bindings": {
+				"nats": {
+					"is": "requestReply",
+					"requestReply": {
+						"is": "requester"
+					},
+					"bindingVersion": "0.1.0"
+				}
+			}
+		}
+	},
+	"components": {
+		"messages": {
+			"generalReply": {
+				"payload": {
+					"type": "object",
+					"$id": "GeneralReply",
+					"properties": {
+						"status_code": {
+							"type": "integer"
+						},
+						"status_message": {
+							"type": "string"
 						}
 					}
 				}

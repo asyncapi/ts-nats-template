@@ -21,8 +21,8 @@
 	"license": "Apache-2.0",
 	"scripts": {
 		"generate:examples": "npm run generate:examples:pubSub && npm run generate:examples:requestReply",
-		"generate:examples:pubSub": "cd \"examples/publish subscribe\" && sh GenerateAndBuild.sh",
-		"generate:examples:requestReply": "cd \"examples/request reply\" && sh GenerateAndBuild.sh",
+		"generate:examples:pubSub": "cd \"examples/publish-subscribe\" && sh GenerateAndBuild.sh",
+		"generate:examples:requestReply": "cd \"examples/request-reply\" && sh GenerateAndBuild.sh",
 		"release": "semantic-release",
 		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
 		"lint:fix": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc . --fix",
