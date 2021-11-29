@@ -19,15 +19,15 @@ export default function packageFile({ asyncapi }) {
       nats: '^2.4.0'
     },
     devDependencies: {
-      'ts-node': '^8.10.2',
-      '@types/mocha': '^8.0.4',
-      '@types/chai': '^4.2.14',
+      'ts-node': '^10.4.0',
+      '@types/mocha': '^9.0.0',
+      '@types/chai': '4.2.22',
       '@types/node': '13.9.5',
-      '@types/klaw-sync': '^6.0.0',
-      chai: '^4.2.0',
-      mocha: '^8.2.1',
+      '@types/klaw-sync': '^6.0.1',
+      chai: '^4.3.4',
+      mocha: '^9.1.3',
       'jsdoc-to-markdown': '^6.0.1',
-      typescript: '3.4.3'
+      typescript: '4.5.2'
     }
   };
   if (asyncapi.info().title()) {

@@ -78,7 +78,7 @@ function getChannelCode(channel, channelName, params) {
  * @param {RenderArgument} param0 render arguments received from the generator.
  */
 export default function channelRender({ channelName, channel, params }) {
-  if (params.generateTestClient !== true) {
+  if (!params.generateTestClient) {
     return;
   }
 

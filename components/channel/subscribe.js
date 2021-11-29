@@ -65,7 +65,7 @@ export function Subscribe(channelName, message, channelParameters, operation) {
           console.log("subscription closed");
         })();
         resolve(subscription);
-      }catch(e){
+      }catch(e: any){
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       }
     })

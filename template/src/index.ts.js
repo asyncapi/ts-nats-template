@@ -91,7 +91,8 @@ export default function index({ asyncapi, params }) {
 ${params.generateTestClient && 'import * as TestClient from \'./testclient/\';'}
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
-export {TestClient};
+
+${params.generateTestClient && 'export {TestClient};'}
 
 /**
  * @class NatsAsyncApiClient

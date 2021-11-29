@@ -58,7 +58,7 @@ export function Reply(channelName, replyMessage, receiveMessage, messageDescript
               await this.nc!.flush();
             }
             resolve(sub);
-          } catch (e) {
+          } catch (e: any) {
             reject(e);
           }
         } else {

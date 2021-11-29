@@ -52,7 +52,7 @@ function getTestCode(channel, channelName) {
 }
 
 export default function channelRender({ channelName, channel, params }) {
-  if (params.generateTestClient !== true) {
+  if (!params.generateTestClient) {
     return;
   }
 

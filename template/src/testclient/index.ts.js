@@ -84,7 +84,7 @@ function getChannelWrappers(asyncapi, params) {
  * @param {RenderArgument} param0 render arguments received from the generator.
  */
 export default function indexFile({ asyncapi, params }) {
-  if (params.generateTestClient !== true) {
+  if (!params.generateTestClient) {
     return;
   }
 

@@ -52,7 +52,7 @@ function getConnectFunction(asyncapi) {
       try {
         this.nc = await Nats.connect(this.options);
         resolve();
-      } catch(e) {
+      } catch(e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       }
     })

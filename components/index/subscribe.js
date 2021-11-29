@@ -46,7 +46,7 @@ export function Subscribe(channelName, message, messageDescription, channelParam
             await this.nc.flush();
           }
           resolve(sub);
-        }catch(e){
+        }catch(e: any){
           reject(e);
         }
       }else{
