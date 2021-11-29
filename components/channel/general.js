@@ -13,14 +13,12 @@ import { Message, Channel} from '@asyncapi/parser';
  */
 export function General(channel, publishMessage, subscribeMessage, path) {
   let publishMessageImport = '';
-  const publishHasNullPayload = messageHasNullPayload(publishMessage.payload());
-  if (channel.hasPublish() && !publishHasNullPayload) {
+  if (channel.hasPublish() && !messageHasNullPayload(publishMessage.payload())) {
     const publishMessageUid = getSchemaFileName(publishMessage.payload().uid());
     publishMessageImport = `import {${publishMessageUid}} from '${path}/models/${publishMessageUid}';`;
   }
   let subscribeMessageImport = '';
-  const subscribeHasNullPayload = messageHasNullPayload(publishMessage.payload());
-  if (channel.hasSubscribe() && !subscribeHasNullPayload) {
+  if (channel.hasSubscribe() && !messageHasNullPayload(subscribeMessage.payload())) {
     const subscribeMessageUid = getSchemaFileName(subscribeMessage.payload().uid());
     subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/models/${subscribeMessageUid}';`;
   }
