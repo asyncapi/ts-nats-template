@@ -51,7 +51,7 @@ export function getSchemaFileName(schemaName) {
  * @returns {boolean} does the payload contain null type 
  */
 export function messageHasNullPayload(messagePayload) {
-  return `${messagePayload.type()}` !== 'null';
+  return `${messagePayload.type()}` === 'null';
 }
 
 /**
