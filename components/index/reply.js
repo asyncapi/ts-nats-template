@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWithoutType, realizeParametersForChannelWrapper, getClientToUse, renderJSDocParameters} from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWithoutType, realizeParametersForChannelWrapper, renderJSDocParameters} from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -12,7 +12,6 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
 /**
  * Component which returns a reply to function for the client
  * 
- * @param {string} defaultContentType 
  * @param {string} channelName to setup reply to
  * @param {Message} replyMessage used to reply to request
  * @param {Message} receiveMessage which is received by the request 
@@ -20,7 +19,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  * @param {TemplateParameters} params passed template parameters 
  */
-export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) {
+export function Reply(channelName, replyMessage, receiveMessage, messageDescription, channelParameters, params) {
   return `
   /**
    * Reply to the \`${channelName}\` channel 
@@ -42,27 +41,24 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         onReplyError : (err: NatsTypescriptTemplateError) => void 
         ${realizeParametersForChannelWrapper(channelParameters)}, 
         flush?: boolean,
-        options?: SubscriptionOptions
-      ): Promise<Subscription> {
+        options?: Nats.SubscriptionOptions
+      ): Promise<Nats.Subscription> {
       return new Promise(async (resolve, reject) => {
-        ${getClientToUse(receiveMessage, defaultContentType)}
-        if (nc) {
+        if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
           try {
             const sub = await ${ camelCase(channelName) }Channel.reply(
               onRequest, 
               onReplyError, 
-              nc
+              this.nc,
+              this.codec
               ${Object.keys(channelParameters).length ? `,${realizeParametersForChannelWithoutType(channelParameters)}` : ''},
               options
             );
             if(flush){
-              this.jsonClient!.flush(() => {
-                resolve(sub);
-              });
-            }else{
-              resolve(sub);
+              await this.nc!.flush();
             }
-          } catch (e) {
+            resolve(sub);
+          } catch (e: any) {
             reject(e);
           }
         } else {

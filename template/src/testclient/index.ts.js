@@ -1,5 +1,4 @@
 import { File } from '@asyncapi/generator-react-sdk';
-import { Events } from '../../../components/events';
 import { getStandardClassCode, getStandardHeaderCode } from '../../../components/index/standard';
 import { Publish } from '../../../components/index/publish';
 import { Subscribe } from '../../../components/index/subscribe';
@@ -35,12 +34,11 @@ function getChannelWrappers(asyncapi, params) {
   channelWrappers = Object.keys(channelWrappers).length ? Object.entries(channelWrappers).map(([channelName, channel]) => {
     const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
     const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
-    const defaultContentType = asyncapi.defaultContentType();
     const channelDescription = channel.description();
     const channelParameters = channel.parameters();
     if (isRequestReply(channel)) {
       if (isRequester(channel)) {
-        return Reply(defaultContentType, 
+        return Reply(
           channelName, 
           publishMessage,
           subscribeMessage,
@@ -51,7 +49,6 @@ function getChannelWrappers(asyncapi, params) {
       }
       if (isReplier(channel)) {
         return Request(
-          defaultContentType, 
           channelName, 
           publishMessage,
           subscribeMessage,
@@ -64,7 +61,6 @@ function getChannelWrappers(asyncapi, params) {
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
         return Subscribe(
-          defaultContentType, 
           channelName, 
           subscribeMessage, 
           channelDescription, 
@@ -72,7 +68,6 @@ function getChannelWrappers(asyncapi, params) {
       }
       if (channel.hasPublish()) {
         return Publish(
-          defaultContentType, 
           channelName, 
           publishMessage, 
           channelDescription, 
@@ -89,20 +84,21 @@ function getChannelWrappers(asyncapi, params) {
  * @param {RenderArgument} param0 render arguments received from the generator.
  */
 export default function indexFile({ asyncapi, params }) {
+  if (!params.generateTestClient) {
+    return;
+  }
+
   return (
     <File name="index.ts">
       {`
-${getStandardHeaderCode(asyncapi, '../', './testchannels')}
+${getStandardHeaderCode(asyncapi, '..', './testchannels')}
 
-export declare interface NatsAsyncApiTestClient {
-  ${Events()}
-}
 /**
  * @class NatsAsyncApiTestClient
  * 
  * The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
  */
-export class NatsAsyncApiTestClient extends events.EventEmitter{
+export class NatsAsyncApiTestClient {
   ${getStandardClassCode(asyncapi)}
   ${getChannelWrappers(asyncapi, params).join('')}
 }

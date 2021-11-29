@@ -1,7 +1,5 @@
-import { OnSendingData } from './OnSendingData';
-import { OnReceivingData } from './OnReceivingData';
 import { unwrap } from './ChannelParameterUnwrap';
-import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks, renderJSDocParameters } from '../../utils/index';
+import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks, renderJSDocParameters } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -15,14 +13,13 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
 /**
  * Component which returns a function which sets up a reply for a given channel
  * 
- * @param {string} defaultContentType 
  * @param {string} channelName to reply to
  * @param {Message} replyMessage used to reply to request
  * @param {Message} receiveMessage which is received by the request 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  * @param {TemplateParameters} params template parameters
  */
-export function Reply(defaultContentType, channelName, replyMessage, receiveMessage, channelParameters, params, operation) {
+export function Reply(channelName, replyMessage, receiveMessage, channelParameters, params, operation) {
   const replyMessageType = getMessageType(replyMessage);
   const receiveMessageType = getMessageType(receiveMessage);
   //Create an array of all the parameter names
@@ -30,34 +27,24 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
     return `${camelCase(parameterName)}Param`;
   });
-
+  const requestHasNullPayload = messageHasNullPayload(receiveMessage.payload());
+  const replyHasNullPayload = messageHasNullPayload(replyMessage.payload());
   //Determine the receiving process based on whether the payload type is null
   let receivingOperation = `let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
-  if (messageHasNotNullPayload(receiveMessage.payload())) {
+  if (!requestHasNullPayload) {
     receivingOperation =  `
-    let receivedData : any = msg.data;
-    try{
-      ${OnReceivingData(receiveMessage, defaultContentType)}
-    }catch(e){
-      onReplyError(e)
-      return;
-    }
-    let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, ${receiveMessageType}.unmarshal(receivedData) ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
+    let receivedData : any = codec.decode(msg.data);
+    let replyMessage = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, ${receiveMessageType}.unmarshal(receivedData) ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
     `;
   }
 
   //Determine the reply process based on whether the payload type is null
-  let replyOperation = 'await client.publish(msg.reply, null);';
-  if (messageHasNotNullPayload(replyMessage.payload())) {
+  let replyOperation = 'msg.respond(Nats.Empty);';
+  if (!replyHasNullPayload) {
     replyOperation = `
-    let dataToSend : any = message.marshal();
-    try{
-      ${OnSendingData(replyMessage, defaultContentType)}
-    }catch(e){
-      onReplyError(e)
-      return;
-    }
-    await client.publish(msg.reply, dataToSend);
+    let dataToSend : any = replyMessage.marshal();
+    dataToSend = codec.encode(dataToSend);
+    msg.respond(dataToSend);
     `;
   }
   
@@ -68,6 +55,7 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
    * @param onRequest called when request is received
    * @param onReplyError called when it was not possible to send the reply
    * @param client to setup reply with
+   * @param codec used to convert messages
    ${renderJSDocParameters(channelParameters)}
    * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
    */
@@ -78,23 +66,25 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
         ${realizeParametersForChannelWrapper(channelParameters, false)}
       ) => ${shouldPromisifyCallbacks(params) ? 'Promise<' : ''}${replyMessageType}${ shouldPromisifyCallbacks(params) ? '>' : ''}, 
       onReplyError: (err: NatsTypescriptTemplateError) => void,
-      client: Client
+      nc: Nats.NatsConnection,
+      codec: Nats.Codec<any>
       ${realizeParametersForChannelWrapper(channelParameters)}, 
-      options?: SubscriptionOptions
-    ): Promise<Subscription> {
+      options?: Nats.SubscriptionOptions
+    ): Promise<Nats.Subscription> {
     return new Promise(async (resolve, reject) => {
       try {
-        let subscribeOptions: SubscriptionOptions = {... options};
+        let subscribeOptions: Nats.SubscriptionOptions = {... options};
         
         ${includeQueueForSubscription(operation)}
         ${includeUnsubAfterForSubscription(operation)}
   
-        let subscription = await client.subscribe(${realizeChannelName(channelParameters, channelName)}, ${shouldPromisifyCallbacks(params) ? 'async' : ''} (err: any, msg) => {
-          if (err) {
-            onRequest(err);
-          } else {
-            ${unwrap(channelName, channelParameters)}
+        let subscription = nc.subscribe(${realizeChannelName(channelParameters, channelName)}, subscribeOptions);
+
+        (async () => {
+          for await (const msg of subscription) {
             
+            ${unwrap(channelName, channelParameters)}
+
             ${receivingOperation}
 
             if (msg.reply) {
@@ -105,9 +95,9 @@ export function Reply(defaultContentType, channelName, replyMessage, receiveMess
               return;
             }
           }
-        }, subscribeOptions);
+        })();
         resolve(subscription);
-      } catch (e) {
+      } catch (e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
       }
     })
