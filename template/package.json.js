@@ -12,9 +12,9 @@ export default function packageFile({ asyncapi }) {
     scripts: {
       watch: 'tsc --watch',
       build: 'tsc && npm run docs',
-      'test:integration': './node_modules/.bin/mocha -r ts-node/register tests/integration/**/*.spec.ts --exit --timeout 10000',
+      'test:integration': 'mocha -r ts-node/register tests/integration/**/*.spec.ts --exit --timeout 10000',
       docs: 'npm run docs:markdown',
-      'docs:markdown': './node_modules/.bin/jsdoc2md lib/index.js -f lib/**/*.js > API.md'
+      'docs:markdown': 'jsdoc2md lib/index.js -f lib/**/*.js > API.md'
     },
     dependencies: {
       '@types/klaw-sync': '^6.0.0',
