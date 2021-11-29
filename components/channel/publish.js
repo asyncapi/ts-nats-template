@@ -1,4 +1,4 @@
-import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
+import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNullPayload, renderJSDocParameters } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -11,10 +11,10 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  */
 export function Publish(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
-  const nullPayload = messageHasNotNullPayload(message.payload());
+  const hasNullPayload = messageHasNullPayload(message.payload());
   //Determine the publish operation based on whether the message type is null
   let publishOperation = `await nc.publish(${realizeChannelName(channelParameters, channelName)}, Nats.Empty);`;
-  if (nullPayload) {
+  if (!hasNullPayload) {
     publishOperation = `
     let dataToSend : any = message.marshal();
     dataToSend = codec.encode(dataToSend);

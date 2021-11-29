@@ -50,7 +50,7 @@ export function getSchemaFileName(schemaName) {
  * @param {Schema} messagePayload to check
  * @returns {boolean} does the payload contain null type 
  */
-export function messageHasNotNullPayload(messagePayload) {
+export function messageHasNullPayload(messagePayload) {
   return `${messagePayload.type()}` !== 'null';
 }
 

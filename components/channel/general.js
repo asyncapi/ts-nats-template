@@ -1,5 +1,5 @@
 
-import { messageHasNotNullPayload, getSchemaFileName } from '../../utils/index';
+import { messageHasNullPayload, getSchemaFileName } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, Channel} from '@asyncapi/parser';
 
@@ -13,12 +13,14 @@ import { Message, Channel} from '@asyncapi/parser';
  */
 export function General(channel, publishMessage, subscribeMessage, path) {
   let publishMessageImport = '';
-  if (channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())) {
+  const publishHasNullPayload = messageHasNullPayload(publishMessage.payload());
+  if (channel.hasPublish() && !publishHasNullPayload) {
     const publishMessageUid = getSchemaFileName(publishMessage.payload().uid());
     publishMessageImport = `import {${publishMessageUid}} from '${path}/models/${publishMessageUid}';`;
   }
   let subscribeMessageImport = '';
-  if (channel.hasSubscribe() && messageHasNotNullPayload(subscribeMessage.payload())) {
+  const subscribeHasNullPayload = messageHasNullPayload(publishMessage.payload());
+  if (channel.hasSubscribe() && !subscribeHasNullPayload) {
     const subscribeMessageUid = getSchemaFileName(subscribeMessage.payload().uid());
     subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/models/${subscribeMessageUid}';`;
   }

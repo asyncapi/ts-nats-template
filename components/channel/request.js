@@ -1,4 +1,4 @@
-import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNotNullPayload, renderJSDocParameters } from '../../utils/index';
+import { realizeChannelName, getMessageType, realizeParametersForChannelWrapper, messageHasNullPayload, renderJSDocParameters } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -12,10 +12,12 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  */
 export function Request(channelName, requestMessage, replyMessage, channelParameters) {
   const replyMessageType = getMessageType(replyMessage);
+  const requestHasNullPayload = messageHasNullPayload(requestMessage.payload());
+  const replyHasNullPayload = messageHasNullPayload(replyMessage.payload());
 
   //Determine the request operation based on whether the message type is null
   let requestOperation = `const msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, Nats.Empty, options)`;
-  if (messageHasNotNullPayload(requestMessage.payload())) {
+  if (requestHasNullPayload) {
     requestOperation = `
     let dataToSend: any = codec.encode(requestMessage.marshal());
     const msg = await nc.request(${realizeChannelName(channelParameters, channelName)}, dataToSend, options)
@@ -24,7 +26,7 @@ export function Request(channelName, requestMessage, replyMessage, channelParame
 
   //Determine the request callback operation based on whether the message type is null
   let requestCallbackOperation = 'resolve(null);';
-  if (messageHasNotNullPayload(replyMessage.payload())) {
+  if (replyHasNullPayload) {
     requestCallbackOperation =  `
     let receivedData = codec.decode(msg.data);
     resolve(${replyMessageType}.unmarshal(receivedData));

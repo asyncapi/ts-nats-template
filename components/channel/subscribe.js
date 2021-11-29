@@ -1,4 +1,4 @@
-import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNotNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
+import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
@@ -17,11 +17,12 @@ export function Subscribe(channelName, message, channelParameters, operation) {
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
     return `${camelCase(parameterName)}Param`;
   });
+  const hasNullPayload = messageHasNullPayload(message.payload());
 
   //Determine the callback process when receiving messages.
   //If the message payload is null no hooks are called to process the received data.
   let whenReceivingMessage = `onDataCallback(undefined, null ${parameters.length > 0 && `, ${parameters.join(',')}`});`;
-  if (messageHasNotNullPayload(message.payload())) {
+  if (!hasNullPayload) {
     whenReceivingMessage =  `
     let receivedData: any = codec.decode(msg.data);
     onDataCallback(undefined, ${messageType}.unmarshal(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`});

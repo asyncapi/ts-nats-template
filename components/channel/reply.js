@@ -1,5 +1,5 @@
 import { unwrap } from './ChannelParameterUnwrap';
-import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNotNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks, renderJSDocParameters } from '../../utils/index';
+import { realizeChannelName, camelCase, includeUnsubAfterForSubscription, messageHasNullPayload, getMessageType, realizeParametersForChannelWrapper, includeQueueForSubscription, shouldPromisifyCallbacks, renderJSDocParameters } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -27,10 +27,11 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
   parameters = Object.entries(channelParameters).map(([parameterName, _]) => {
     return `${camelCase(parameterName)}Param`;
   });
-
+  const requestHasNullPayload = messageHasNullPayload(receiveMessage.payload());
+  const replyHasNullPayload = messageHasNullPayload(replyMessage.payload());
   //Determine the receiving process based on whether the payload type is null
   let receivingOperation = `let message = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, null ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});`;
-  if (messageHasNotNullPayload(receiveMessage.payload())) {
+  if (!requestHasNullPayload) {
     receivingOperation =  `
     let receivedData : any = codec.decode(msg.data);
     let replyMessage = ${shouldPromisifyCallbacks(params) ? 'await' : ''} onRequest(undefined, ${receiveMessageType}.unmarshal(receivedData) ${parameters.length > 0 ? `, ${parameters.join(',')}` : ''});
@@ -39,7 +40,7 @@ export function Reply(channelName, replyMessage, receiveMessage, channelParamete
 
   //Determine the reply process based on whether the payload type is null
   let replyOperation = 'msg.respond(Nats.Empty);';
-  if (messageHasNotNullPayload(replyMessage.payload())) {
+  if (!replyHasNullPayload) {
     replyOperation = `
     let dataToSend : any = replyMessage.marshal();
     dataToSend = codec.encode(dataToSend);

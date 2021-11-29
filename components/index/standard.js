@@ -1,4 +1,4 @@
-import { containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNotNullPayload, getSchemaFileName} from '../../utils/index';
+import { containsStringPayload, containsJsonPayload, camelCase, pascalCase, messageHasNullPayload, getSchemaFileName} from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
@@ -167,7 +167,8 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
 
   //Import the messages and re-export them
   for (const [, message] of asyncapi.allMessages()) {
-    if (messageHasNotNullPayload(message.payload())) {
+    const hasNullPayload = messageHasNullPayload(message.payload());
+    if (!hasNullPayload) {
       const schemaName = getSchemaFileName(message.payload().uid());
       imports.push(`import {${schemaName}} from "${pathToRoot}/models/${schemaName}";`);
       exports.push(`export {${schemaName}};`);
