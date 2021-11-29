@@ -1,5 +1,5 @@
 
-import { messageHasNotNullPayload, getSchemaFileName } from '../../utils/index';
+import { messageHasNullPayload, getSchemaFileName } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, Channel} from '@asyncapi/parser';
 
@@ -13,12 +13,12 @@ import { Message, Channel} from '@asyncapi/parser';
  */
 export function General(channel, publishMessage, subscribeMessage, path) {
   let publishMessageImport = '';
-  if (channel.hasPublish() && messageHasNotNullPayload(publishMessage.payload())) {
+  if (channel.hasPublish() && !messageHasNullPayload(publishMessage.payload())) {
     const publishMessageUid = getSchemaFileName(publishMessage.payload().uid());
     publishMessageImport = `import {${publishMessageUid}} from '${path}/models/${publishMessageUid}';`;
   }
   let subscribeMessageImport = '';
-  if (channel.hasSubscribe() && messageHasNotNullPayload(subscribeMessage.payload())) {
+  if (channel.hasSubscribe() && !messageHasNullPayload(subscribeMessage.payload())) {
     const subscribeMessageUid = getSchemaFileName(subscribeMessage.payload().uid());
     subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/models/${subscribeMessageUid}';`;
   }
@@ -26,8 +26,7 @@ export function General(channel, publishMessage, subscribeMessage, path) {
 ${publishMessageImport}
 ${subscribeMessageImport}
 
-import { Client, NatsError, Subscription, SubscriptionOptions, Payload } from 'ts-nats';
+import * as Nats from 'nats';
 import {ErrorCode, NatsTypescriptTemplateError} from '${path}/NatsTypescriptTemplateError';
-import { Hooks } from '${path}/hooks';
   `;
 }

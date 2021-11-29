@@ -51,7 +51,11 @@ function getTestCode(channel, channelName) {
   return testMethod;
 }
 
-export default function channelRender({ channelName, channel }) {
+export default function channelRender({ channelName, channel, params }) {
+  if (!params.generateTestClient) {
+    return;
+  }
+
   return <File name={`${pascalCase(channelName)}.spec.ts`}>
     {`
 import {describe, it, before} from 'mocha';
@@ -61,26 +65,26 @@ import * as TestClient from '../../src/testclient'
 import { NatsTypescriptTemplateError } from '../../src/NatsTypescriptTemplateError';
 
 describe('${channelName} can talk to itself', () => {
-    var client: Client.NatsAsyncApiClient;
-    var testClient: TestClient.NatsAsyncApiTestClient;
-    before(async () => {
-        client = new Client.NatsAsyncApiClient();
-        testClient = new TestClient.NatsAsyncApiTestClient();
-        const natsHost = process.env.NATS_HOST || "0.0.0.0"
-        const natsPort = process.env.NATS_PORT || "4222"
-        const natsUrl = \`\${natsHost}:\${natsPort}\`
-        await client.connectToHost(natsUrl);
-        await testClient.connectToHost(natsUrl);
-    });
+  var client: Client.NatsAsyncApiClient;
+  var testClient: TestClient.NatsAsyncApiTestClient;
+  before(async () => {
+    client = new Client.NatsAsyncApiClient();
+    testClient = new TestClient.NatsAsyncApiTestClient();
+    const natsHost = process.env.NATS_HOST || "0.0.0.0"
+    const natsPort = process.env.NATS_PORT || "4222"
+    const natsUrl = \`\${natsHost}:\${natsPort}\`
+    await client.connectToHost(natsUrl);
+    await testClient.connectToHost(natsUrl);
+  });
 
-    it('can send message', async () => {
-      ${getTestCode(channel, channelName)}
-    });
+  it('can send message', async () => {
+    ${getTestCode(channel, channelName)}
+  });
 
-    after( async () => {
-        await client.disconnect();
-        await testClient.disconnect();
-    });
+  after( async () => {
+    await client.disconnect();
+    await testClient.disconnect();
+  });
 });
   `}
   </File>;

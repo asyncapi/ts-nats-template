@@ -1,4 +1,4 @@
-import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, realizeParametersForChannelWithoutType, getClientToUse, renderJSDocParameters } from '../../utils/index';
+import { pascalCase, camelCase, getMessageType, realizeParametersForChannelWrapper, realizeParametersForChannelWithoutType, renderJSDocParameters } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
 
@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} messageDescription 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Publish(defaultContentType, channelName, message, messageDescription, channelParameters) {
+export function Publish(channelName, message, messageDescription, channelParameters) {
   return `
   /**
    * Publish to the \`${channelName}\` channel 
@@ -23,15 +23,16 @@ export function Publish(defaultContentType, channelName, message, messageDescrip
    */
     public publishTo${pascalCase(channelName)}(
       message: ${getMessageType(message)} 
-      ${realizeParametersForChannelWrapper(channelParameters)}
+      ${realizeParametersForChannelWrapper(channelParameters)},
+      options?: Nats.PublishOptions
     ): Promise<void> {
-      ${getClientToUse(message, defaultContentType)}
-
-      if(nc) {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {
         return ${camelCase(channelName)}Channel.publish(
           message, 
-          nc
-          ${Object.keys(channelParameters).length ? `,${realizeParametersForChannelWithoutType(channelParameters)}` : ''}
+          this.nc,
+          this.codec
+          ${Object.keys(channelParameters).length ? `,${realizeParametersForChannelWithoutType(channelParameters)}` : ''},
+          options
         );
       }else{
         return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));

@@ -17,7 +17,6 @@ import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 /**
  * @typedef RenderArgument
  * @type {object}
- * @property {AsyncAPIDocument} asyncapi received from the generator.
  * @property {Channel} channel 
  * @property {string} channelName 
  * @property {TemplateParameters} params received from the generator.
@@ -31,7 +30,7 @@ import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
  * @param {string} channelName 
  * @param {TemplateParameters} params
  */
-function getChannelCode(asyncapi, channel, channelName, params) {
+function getChannelCode(channel, channelName, params) {
   const publishOperation = channel.publish() ? channel.publish() : undefined;
   const publishMessage = publishOperation ? publishOperation.message(0) : undefined;
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
@@ -39,7 +38,6 @@ function getChannelCode(asyncapi, channel, channelName, params) {
   if (isRequestReply(channel)) {
     if (isRequester(channel)) {
       channelcode = Request(
-        asyncapi.defaultContentType(), 
         channelName, 
         subscribeMessage,
         publishMessage,
@@ -48,7 +46,6 @@ function getChannelCode(asyncapi, channel, channelName, params) {
     }
     if (isReplier(channel)) {
       channelcode = Reply(
-        asyncapi.defaultContentType(), 
         channelName, 
         subscribeMessage,
         publishMessage,
@@ -62,14 +59,12 @@ function getChannelCode(asyncapi, channel, channelName, params) {
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
       channelcode = Publish(
-        asyncapi.defaultContentType(), 
         channelName, 
         subscribeMessage, 
         channel.parameters());
     }
     if (channel.hasPublish()) {
       channelcode = Subscribe(
-        asyncapi.defaultContentType(), 
         channelName, 
         publishMessage, 
         channel.parameters(),
@@ -84,7 +79,7 @@ function getChannelCode(asyncapi, channel, channelName, params) {
  * 
  * @param {RenderArgument} param0 render arguments received from the generator.
  */
-export default function channelRender({ asyncapi, channelName, channel, params }) {
+export default function channelRender({ channelName, channel, params }) {
   const publishMessage = channel.publish() ? channel.publish().message(0) : undefined;
   const subscribeMessage = channel.subscribe() ? channel.subscribe().message(0) : undefined;
 
@@ -97,7 +92,7 @@ ${General(channel, publishMessage, subscribeMessage, '..')}
  * @module ${camelCase(channelName)}
  */
 
-${getChannelCode(asyncapi, channel, channelName, params)}
+${getChannelCode(channel, channelName, params)}
     `}
   </File>;
 }
