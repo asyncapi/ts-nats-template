@@ -69,15 +69,15 @@ const subscription = await ${subscribeClient}.subscribeTo${pascalCase(channelNam
 const tryAndWaitForResponse = new Promise((resolve, reject) => {
     let isReturned = false;
     setTimeout(() => {
-        if(!isReturned){
-            reject(new Error("Timeout"));
-        }
+      if(!isReturned){
+        reject(new Error("Timeout"));
+      }
     }, 3000)
     setInterval(async () => {
-        if(subscription.getReceived() === 1){
-            resolve(undefined);
-            isReturned = true
-        }
+      if(subscription.getReceived() === 1){
+        resolve(undefined);
+        isReturned = true
+      }
     }, 100);
 });
 await ${publishClient}.publishTo${pascalCase(channelName)}(publishMessage ${functionParameters});

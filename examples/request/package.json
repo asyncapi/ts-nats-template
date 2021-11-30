@@ -1,0 +1,17 @@
+{
+    "config": {
+        "example_name": "request"
+    },
+    "scripts": {
+        "install": "cd ./asyncapi-nats-client && npm i",
+        "generate:client": "../../node_modules/@asyncapi/generator/cli.js --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",
+        "generate:client:windows": "..\\..\\node_modules\\@asyncapi\\generator\\cli.js --output \".\\asyncapi-nats-client\" \".\\asyncapi.json\" \"..\\..\\\" --force-write --param \"promisifyReplyCallback=true\" && cd .\\asyncapi-nats-client && npm i && npm run build && cd ..",
+        "start": "../../node_modules/.bin/ts-node --cwd ../../ ./examples/$npm_package_config_example_name/index.ts",
+        "start:windows": "..\\..\\node_modules\\.bin\\ts-node --cwd ..\\..\\ .\\examples\\%npm_package_config_example_name%\\index.ts",
+        "test": "../../node_modules/.bin/jest --config=../../jest.config.js ./examples/$npm_package_config_example_name/index.spec.ts",
+        "test:windows": "..\\..\\node_modules\\.bin\\jest --config=..\\..\\jest.config.js examples/%npm_package_config_example_name%/index.spec.ts"
+    },
+    "dependencies": {
+        "asyncapi-nats-client": "file:./asyncapi-nats-client"
+    }
+}

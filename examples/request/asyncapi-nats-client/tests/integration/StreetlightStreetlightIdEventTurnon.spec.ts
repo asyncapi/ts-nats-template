@@ -25,38 +25,34 @@ describe('streetlight/{streetlight_id}/event/turnon can talk to itself', () => {
   });
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
-    var receivedMsg: TestClient.AnonymousSchema_3 | undefined = undefined;
+    var receivedMsg: Client.AnonymousSchema_3 | undefined = undefined;
     var receivedStreetlightId: string | undefined = undefined
-    var publishMessage: Client.AnonymousSchema_3 = Client.AnonymousSchema_3.unmarshal({
+    var replyMessage: TestClient.GeneralReply = TestClient.GeneralReply.unmarshal({
+      "status_code": 0,
+      "status_message": "string"
+    });
+    var receiveMessage: Client.AnonymousSchema_3 = Client.AnonymousSchema_3.unmarshal({
       "lumen": 0
     });
     var StreetlightIdToSend: string = "string"
-    const subscription = await testClient.subscribeToStreetlightStreetlightIdEventTurnon((err, msg, streetlight_id) => {
-        receivedError = err;
-        receivedMsg = msg;
-        receivedStreetlightId = streetlight_id
+    const replySubscription = await testClient.replyToStreetlightStreetlightIdEventTurnon((err, msg, streetlight_id) => {
+        return new Promise((resolve, reject) => {
+          receivedError = err;
+          receivedMsg = msg;
+          receivedStreetlightId = streetlight_id
+          resolve(replyMessage);
+        })
+      },
+      (err) => {
+        console.log(err)
       }, StreetlightIdToSend,
       true
     );
-    const tryAndWaitForResponse = new Promise((resolve, reject) => {
-      let isReturned = false;
-      setTimeout(() => {
-        if (!isReturned) {
-          reject(new Error("Timeout"));
-        }
-      }, 3000)
-      setInterval(async () => {
-        if (subscription.getReceived() === 1) {
-          resolve();
-          isReturned = true
-        }
-      }, 100);
-    });
-    await client.publishToStreetlightStreetlightIdEventTurnon(publishMessage, StreetlightIdToSend);
-    await tryAndWaitForResponse;
+    var reply = await client.requestStreetlightStreetlightIdEventTurnon(receiveMessage, StreetlightIdToSend);
+    expect(reply).to.be.deep.equal(replyMessage)
     expect(receivedError).to.be.undefined;
     expect(receivedMsg).to.not.be.undefined;
-    expect(receivedMsg!.marshal()).to.equal(publishMessage.marshal());
+    expect(receivedMsg!.marshal()).to.equal(receiveMessage.marshal());
     expect(receivedStreetlightId).to.be.equal(StreetlightIdToSend);
   });
   after(async () => {

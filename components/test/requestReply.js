@@ -64,16 +64,16 @@ var replyMessage: ${replierClientMessageType} = ${replierClientMessageType}.unma
 var receiveMessage: ${requesterClientMessageType} = ${requesterClientMessageType}.unmarshal(${receiveMessageExample});
 ${exampleParameters}
 const replySubscription = await ${replierClient}.replyTo${pascalCase(channelName)}((err, msg 
-      ${replyCallbackParameters}) => {
-    return new Promise((resolve, reject) => {
-        receivedError = err;
-        receivedMsg = msg;
-        ${setReceivedVariable}
-        resolve(replyMessage);
-    })},
-    (err) => {console.log(err)}
-    ${functionParameters},
-    true
+  ${replyCallbackParameters}) => {
+  return new Promise((resolve, reject) => {
+    receivedError = err;
+    receivedMsg = msg;
+    ${setReceivedVariable}
+    resolve(replyMessage);
+  })},
+  (err) => {console.log(err)}
+  ${functionParameters},
+  true
 );
 var reply = await ${requesterClient}.request${pascalCase(channelName)}(receiveMessage ${functionParameters});
 expect(reply).to.be.deep.equal(replyMessage)
