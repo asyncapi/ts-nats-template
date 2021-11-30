@@ -24,7 +24,8 @@
 		"release": "semantic-release",
 		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
 		"lint:fix": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc . --fix",
-		"test": "cross-env CI=true jest --coverage --testPathIgnorePatterns ./examples/TEMPLATE",
+		"test": "echo \"No unit tests specified yet\"",
+		"test:examples": "cross-env CI=true jest --coverage --testPathIgnorePatterns ./examples/TEMPLATE",
 		"generate:assets": "npm run generate:examples",
 		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
