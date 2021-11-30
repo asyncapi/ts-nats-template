@@ -46,46 +46,6 @@
 					"bindingVersion": "0.1.0"
 				}
 			}
-		},
-		"streetlight/{streetlight_id}/event/turnon": {
-			"description": "Channel for when the streetlight is turned on",
-			"parameters": {
-				"streetlight_id": {
-					"description": "The ID of the streetlight",
-					"schema": {
-						"type": "string"
-					}
-				}
-			},
-			"subscribe": {
-				"operationId": "Publish when the streetlight gets turned on",
-				"message": {
-					"payload": {
-						"type": "object",
-						"required": ["lumen"],
-						"properties": {
-							"lumen": {
-								"type": "integer",
-								"description": "How bright should the light be."
-							}
-						}
-					}
-				}
-			},
-			"publish": {
-				"message": {
-					"$ref": "#/components/messages/generalReply"
-				}
-			},
-			"bindings": {
-				"nats": {
-					"is": "requestReply",
-					"requestReply": {
-						"is": "requester"
-					},
-					"bindingVersion": "0.1.0"
-				}
-			}
 		}
 	},
 	"components": {
