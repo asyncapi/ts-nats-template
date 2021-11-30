@@ -2,6 +2,7 @@
     "config": {
         "example_name": "request"
     },
+
     "scripts": {
         "install": "cd ./asyncapi-nats-client && npm i",
         "generate:client": "../../node_modules/@asyncapi/generator/cli.js --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",

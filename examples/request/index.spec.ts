@@ -1,5 +1,8 @@
+jest.spyOn(global.console, 'log').mockImplementation(() => { return; });
+const errorSpy = jest.spyOn(global.console, 'error').mockImplementation(() => { return; });
 import { GeneralReply, TestClient } from './asyncapi-nats-client';
 import {sendRequest} from './index';
+
 describe('Should be able to receive request from example', () => {
   let testClient;
   beforeAll(async () => {
@@ -8,14 +11,14 @@ describe('Should be able to receive request from example', () => {
   })
   afterAll(async () => {
     await testClient.disconnect();
+    jest.restoreAllMocks();
   });
   test('and receive correct data', async () => {
     await testClient.replyToStreetlightStreetlightIdEventTurnon(
-      async (err, msg, streetlight_id) => {
+      async (err) => {
         if(err) {
           console.error(err);
         }
-        console.log(`Received request ${msg.marshal()} for streetlight ${streetlight_id}`);
         const replyMessage = new GeneralReply({});
         replyMessage.statusCode = 200;
         replyMessage.statusMessage = 'All OK';
@@ -27,5 +30,6 @@ describe('Should be able to receive request from example', () => {
       '*'
     );
     await sendRequest();
+    expect(errorSpy).not.toHaveBeenCalled();
   });
 });
