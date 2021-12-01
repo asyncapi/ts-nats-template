@@ -1,4 +1,4 @@
-import { NatsAsyncApiClient, AnonymousSchema_3 } from 'asyncapi-nats-client';
+import { NatsAsyncApiClient, TurnOnRequest } from 'asyncapi-nats-client';
 
 /**
  * Send a request to turn on the specific streetlight.
@@ -7,7 +7,7 @@ export async function sendRequest() {
   const client = new NatsAsyncApiClient();
   try{
     await client.connectToLocal();
-    const requestMessage = new AnonymousSchema_3({
+    const requestMessage = new TurnOnRequest({
       lumen: 20
     });
     const streetlight_id = 'test_streetlight_1';

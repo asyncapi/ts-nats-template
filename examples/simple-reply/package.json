@@ -1,10 +1,10 @@
 {
     "config": {
-        "example_name": "request-reply"
+        "example_name": "simple-reply"
     },
     "scripts": {
-        "install": "cd ./library/asyncapi-client && npm i",
-        "generate:library": "../../node_modules/@asyncapi/generator/cli.js --output \"./library/asyncapi-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"generateTestClient=true\" --param \"promisifyReplyCallback=true\" && cd ./library/asyncapi-client && npm i && npm run build && cd ..",
+        "generate:client": "rm -rf ./asyncapi-nats-client && ../../node_modules/@asyncapi/generator/cli.js --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",
+        "generate:client:windows": "rm -rf .\\asyncapi-nats-client && ..\\..\\node_modules\\@asyncapi\\generator\\cli.js --output \".\\asyncapi-nats-client\" \".\\asyncapi.json\" \"..\\..\\\" --force-write --param \"promisifyReplyCallback=true\" && cd .\\asyncapi-nats-client && npm i && npm run build && cd ..",
         "start": "../../node_modules/.bin/ts-node --cwd ../../ ./examples/$npm_package_config_example_name/index.ts",
         "start:windows": "..\\..\\node_modules\\.bin\\ts-node --cwd ..\\..\\ .\\examples\\%npm_package_config_example_name%\\index.ts",
         "test": "../../node_modules/.bin/jest --config=../../jest.config.js ./examples/$npm_package_config_example_name/index.spec.ts",

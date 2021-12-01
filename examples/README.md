@@ -4,6 +4,6 @@ This directory contains a series of self-contained examples that you can use as 
 
 The examples is as follows:
 
-- [reply](./reply) - A basic example of how to setup a reply.
-- [request](./request) - A basic example of how to setup a request.
+- [simple-reply](./simple-reply) - A basic example of how to setup a reply in AsyncAPI and how to use the generated code.
+- [simple-request](./simple-request) - A basic example of how to setup a request in AsyncAPI and how to use the generated code.
 

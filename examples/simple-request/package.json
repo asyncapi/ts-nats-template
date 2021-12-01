@@ -1,9 +1,8 @@
 {
     "config": {
-        "example_name": "request"
+        "example_name": "simple-request"
     },
     "scripts": {
-        "install": "cd ./asyncapi-nats-client && npm i",
         "generate:client": "rm -rf ./asyncapi-nats-client && ../../node_modules/@asyncapi/generator/cli.js --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",
         "generate:client:windows": "rm -rf .\\asyncapi-nats-client && ..\\..\\node_modules\\@asyncapi\\generator\\cli.js --output \".\\asyncapi-nats-client\" \".\\asyncapi.json\" \"..\\..\\\" --force-write --param \"promisifyReplyCallback=true\" && cd .\\asyncapi-nats-client && npm i && npm run build && cd ..",
         "start": "../../node_modules/.bin/ts-node --cwd ../../ ./examples/$npm_package_config_example_name/index.ts",

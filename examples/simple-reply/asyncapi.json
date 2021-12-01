@@ -16,37 +16,18 @@
 					}
 				}
 			},
-			"publish": {
-				"operationId": "Listen when to turn on the streetlight",
+			"subscribe": {
 				"message": {
-					"name": "TurnonCommand",
 					"payload": {
-						"type": "object",
-						"required": ["lumen"],
-						"properties": {
-							"lumen": {
-								"type": "integer",
-								"description": "How bright should the light be."
-							}
-						}
-					}
-				}
-			}
-		},
-		"streetlight/{streetlight_id}/event/turnon": {
-			"description": "Channel for when the streetlight is turned on",
-			"parameters": {
-				"streetlight_id": {
-					"description": "The ID of the streetlight",
-					"schema": {
-						"type": "string"
+						"$ref": "#/components/schemas/GeneralReply"
 					}
 				}
 			},
-			"subscribe": {
-				"operationId": "Publish when the streetlight gets turned on",
+			"publish": {
 				"message": {
+					"name": "turnonCommand",
 					"payload": {
+						"x-parser-schema-id": "TurnOnRequest",
 						"type": "object",
 						"required": ["lumen"],
 						"properties": {
@@ -55,6 +36,31 @@
 								"description": "How bright should the light be."
 							}
 						}
+					}
+				}
+			}, 
+			"bindings": {
+				"nats": {
+					"is": "requestReply",
+					"requestReply": {
+						"is": "replier"
+					},
+					"bindingVersion": "0.1.0"
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"GeneralReply": {
+				"type": "object",
+				"x-parser-schema-id": "GeneralReply",
+				"properties": {
+					"status_code": {
+						"type": "integer"
+					},
+					"status_message": {
+						"type": "string"
 					}
 				}
 			}

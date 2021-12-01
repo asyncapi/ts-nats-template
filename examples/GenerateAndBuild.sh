@@ -6,8 +6,11 @@
 
 set -x
 
-cd ./request
-npm run generate:client
-npm i
+# Loop through all examples and generate and build the libraries
+for d in */ ; do
+    cd "$d"
+    npm run generate:client
+    npm i
+    cd ../
+done
 
-cd ../../
