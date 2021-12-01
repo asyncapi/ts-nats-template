@@ -1,6 +1,6 @@
 import {
-  AnonymousSchema_1
-} from '../../models/AnonymousSchema_1';
+  TurnOnRequest
+} from '../../models/TurnOnRequest';
 import {
   GeneralReply
 } from '../../models/GeneralReply';
@@ -23,7 +23,7 @@ import {
  * @param options to use for the request
  */
 export function request(
-  requestMessage: AnonymousSchema_1,
+  requestMessage: TurnOnRequest,
   nc: Nats.NatsConnection,
   codec: Nats.Codec < any > , streetlight_id: string,
   options ? : Nats.RequestOptions

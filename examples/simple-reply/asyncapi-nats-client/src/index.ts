@@ -6,8 +6,8 @@ import {
 import * as Nats from 'nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
 import {
-  AnonymousSchema_1
-} from "./models/AnonymousSchema_1";
+  TurnOnRequest
+} from "./models/TurnOnRequest";
 import {
   GeneralReply
 } from "./models/GeneralReply";
@@ -15,7 +15,7 @@ export {
   streetlightStreetlightIdCommandTurnonChannel
 };
 export {
-  AnonymousSchema_1
+  TurnOnRequest
 };
 export {
   GeneralReply
@@ -128,7 +128,7 @@ export class NatsAsyncApiClient {
   public replyToStreetlightStreetlightIdCommandTurnon(
     onRequest: (
       err ? : NatsTypescriptTemplateError,
-      msg ? : AnonymousSchema_1, streetlight_id ? : string
+      msg ? : TurnOnRequest, streetlight_id ? : string
     ) => Promise < GeneralReply > ,
     onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string,
     flush ? : boolean,

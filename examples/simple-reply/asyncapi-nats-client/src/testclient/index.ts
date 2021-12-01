@@ -5,8 +5,8 @@ import {
 import * as Nats from 'nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./testchannels/StreetlightStreetlightIdCommandTurnon";
 import {
-  AnonymousSchema_1
-} from "../models/AnonymousSchema_1";
+  TurnOnRequest
+} from "../models/TurnOnRequest";
 import {
   GeneralReply
 } from "../models/GeneralReply";
@@ -14,7 +14,7 @@ export {
   streetlightStreetlightIdCommandTurnonChannel
 };
 export {
-  AnonymousSchema_1
+  TurnOnRequest
 };
 export {
   GeneralReply
@@ -115,7 +115,7 @@ export class NatsAsyncApiTestClient {
    * @param streetlight_id parameter to use in topic
    */
   public requestStreetlightStreetlightIdCommandTurnon(
-    requestMessage: AnonymousSchema_1, streetlight_id: string,
+    requestMessage: TurnOnRequest, streetlight_id: string,
     options ? : Nats.RequestOptions
   ): Promise < GeneralReply > {
     if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {

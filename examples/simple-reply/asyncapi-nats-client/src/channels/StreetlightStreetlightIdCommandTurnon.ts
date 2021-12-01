@@ -1,6 +1,6 @@
 import {
-  AnonymousSchema_1
-} from '../models/AnonymousSchema_1';
+  TurnOnRequest
+} from '../models/TurnOnRequest';
 import {
   GeneralReply
 } from '../models/GeneralReply';
@@ -26,7 +26,7 @@ import {
 export function reply(
   onRequest: (
     err ? : NatsTypescriptTemplateError,
-    msg ? : AnonymousSchema_1, streetlight_id ? : string
+    msg ? : TurnOnRequest, streetlight_id ? : string
   ) => Promise < GeneralReply > ,
   onReplyError: (err: NatsTypescriptTemplateError) => void,
   nc: Nats.NatsConnection,
@@ -52,7 +52,7 @@ export function reply(
           const streetlightIdEnd = channel.indexOf(splits[1]);
           const streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
           let receivedData: any = codec.decode(msg.data);
-          let replyMessage = await onRequest(undefined, AnonymousSchema_1.unmarshal(receivedData), streetlightIdParam);
+          let replyMessage = await onRequest(undefined, TurnOnRequest.unmarshal(receivedData), streetlightIdParam);
           if (msg.reply) {
             let dataToSend: any = replyMessage.marshal();
             dataToSend = codec.encode(dataToSend);

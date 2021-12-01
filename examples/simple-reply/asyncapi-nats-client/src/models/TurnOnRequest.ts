@@ -1,6 +1,6 @@
 
 
-export class AnonymousSchema_1 {
+export class TurnOnRequest {
   private _lumen: number;
   private _additionalProperties?: Map<String, object | string | number | Array<unknown> | boolean | null>;
 
@@ -34,9 +34,9 @@ export class AnonymousSchema_1 {
     return `${json.charAt(json.length-1) === ',' ? json.slice(0, json.length-1) : json}}`;
   }
 
-  public static unmarshal(json: string | object): AnonymousSchema_1 {
+  public static unmarshal(json: string | object): TurnOnRequest {
     const obj = typeof json === "object" ? json : JSON.parse(json);
-    const instance = new AnonymousSchema_1({} as any);
+    const instance = new TurnOnRequest({} as any);
 
     if (obj["lumen"] !== undefined) {
       instance.lumen = obj["lumen"];
