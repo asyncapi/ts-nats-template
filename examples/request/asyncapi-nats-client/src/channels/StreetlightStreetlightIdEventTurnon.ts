@@ -2,8 +2,8 @@ import {
   GeneralReply
 } from '../models/GeneralReply';
 import {
-  AnonymousSchema_3
-} from '../models/AnonymousSchema_3';
+  TurnOnRequest
+} from '../models/TurnOnRequest';
 import * as Nats from 'nats';
 import {
   ErrorCode,
@@ -23,7 +23,7 @@ import {
  * @param options to use for the request
  */
 export function request(
-  requestMessage: AnonymousSchema_3,
+  requestMessage: TurnOnRequest,
   nc: Nats.NatsConnection,
   codec: Nats.Codec < any > , streetlight_id: string,
   options ? : Nats.RequestOptions

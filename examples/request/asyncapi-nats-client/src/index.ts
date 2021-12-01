@@ -9,8 +9,8 @@ import {
   GeneralReply
 } from "./models/GeneralReply";
 import {
-  AnonymousSchema_3
-} from "./models/AnonymousSchema_3";
+  TurnOnRequest
+} from "./models/TurnOnRequest";
 export {
   streetlightStreetlightIdEventTurnonChannel
 };
@@ -18,7 +18,7 @@ export {
   GeneralReply
 };
 export {
-  AnonymousSchema_3
+  TurnOnRequest
 };
 export {
   ErrorCode,
@@ -132,7 +132,7 @@ export class NatsAsyncApiClient {
    * @param streetlight_id parameter to use in topic
    */
   public requestStreetlightStreetlightIdEventTurnon(
-    requestMessage: AnonymousSchema_3, streetlight_id: string,
+    requestMessage: TurnOnRequest, streetlight_id: string,
     options ? : Nats.RequestOptions
   ): Promise < GeneralReply > {
     if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined) {

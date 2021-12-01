@@ -8,8 +8,8 @@ import {
   GeneralReply
 } from "../models/GeneralReply";
 import {
-  AnonymousSchema_3
-} from "../models/AnonymousSchema_3";
+  TurnOnRequest
+} from "../models/TurnOnRequest";
 export {
   streetlightStreetlightIdEventTurnonChannel
 };
@@ -17,7 +17,7 @@ export {
   GeneralReply
 };
 export {
-  AnonymousSchema_3
+  TurnOnRequest
 };
 /**
  * @class NatsAsyncApiTestClient
@@ -129,7 +129,7 @@ export class NatsAsyncApiTestClient {
   public replyToStreetlightStreetlightIdEventTurnon(
     onRequest: (
       err ? : NatsTypescriptTemplateError,
-      msg ? : AnonymousSchema_3, streetlight_id ? : string
+      msg ? : TurnOnRequest, streetlight_id ? : string
     ) => Promise < GeneralReply > ,
     onReplyError: (err: NatsTypescriptTemplateError) => void, streetlight_id: string,
     flush ? : boolean,

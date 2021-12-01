@@ -24,9 +24,9 @@
 				}
 			},
 			"subscribe": {
-				"operationId": "Publish when the streetlight gets turned on",
 				"message": {
 					"payload": {
+						"x-parser-schema-id": "TurnOnRequest",
 						"type": "object",
 						"required": ["lumen"],
 						"properties": {
@@ -40,7 +40,9 @@
 			},
 			"publish": {
 				"message": {
-					"$ref": "#/components/messages/generalReply"
+					"payload": {
+						"$ref": "#/components/schemas/GeneralReply"
+					}
 				}
 			},
 			"bindings": {
@@ -55,18 +57,16 @@
 		}
 	},
 	"components": {
-		"messages": {
-			"generalReply": {
-				"payload": {
-					"type": "object",
-					"$id": "GeneralReply",
-					"properties": {
-						"status_code": {
-							"type": "integer"
-						},
-						"status_message": {
-							"type": "string"
-						}
+		"schemas": {
+			"GeneralReply": {
+				"type": "object",
+				"x-parser-schema-id": "GeneralReply",
+				"properties": {
+					"status_code": {
+						"type": "integer"
+					},
+					"status_message": {
+						"type": "string"
 					}
 				}
 			}
