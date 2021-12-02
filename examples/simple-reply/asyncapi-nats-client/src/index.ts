@@ -115,6 +115,15 @@ export class NatsAsyncApiClient {
     }, codec);
   }
   /**
+   * Connects the client to the AsyncAPI server called local.
+   * Local server used during development and testing
+   */
+  async connectToLocal(codec ? : Nats.Codec < any > ) {
+    await this.connect({
+      servers: ["localhost:4222"]
+    }, codec);
+  }
+  /**
    * Reply to the `streetlight/{streetlight_id}/command/turnon` channel 
    * 
    * Channel for the turn on command which should turn on the streetlight

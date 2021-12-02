@@ -1,8 +1,15 @@
 {
 	"asyncapi": "2.2.0",
 	"info": {
-		"title": "Streetlight",
+		"title": "Reply example with streetlight",
 		"version": "1.0.0"
+	},
+	"servers": {
+		"local": {
+			"url": "localhost:4222",
+			"protocol": "tcp",
+			"description": "Local server used during development and testing"
+		}
 	},
 	"defaultContentType": "json",
 	"channels": {

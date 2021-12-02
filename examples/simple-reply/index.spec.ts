@@ -1,13 +1,31 @@
-const spy = jest.spyOn(global.console, 'log').mockImplementation(() => { return; });
-import {generate} from './index';
-describe('Should be able to process a pure AsyncAPI object', () => {
-  afterAll(() => {
+jest.spyOn(global.console, 'log').mockImplementation(() => { return; });
+const errorSpy = jest.spyOn(global.console, 'error').mockImplementation(() => { return; });
+import { TurnOnRequest, TestClient } from './asyncapi-nats-client';
+import { setupReply } from './index';
+describe('Should be able to setup reply', () => {
+  let testClient;
+  beforeAll(async () => {
+    testClient = new TestClient.NatsAsyncApiTestClient();
+    await testClient.connectToLocal();
+  })
+  afterAll(async () => {
+    await testClient.disconnect();
     jest.restoreAllMocks();
   });
-  test('and should log expected output to console', async () => {
-    await generate();
-    //Generate is called 2x, so even though we expect 1 model, we double it
-    expect(spy.mock.calls.length).toEqual(2);
-    expect(spy.mock.calls[1]).toMatchSnapshot();
+  test('and receive correct data', async () => {
+    await setupReply();
+    const requestMessage = new TurnOnRequest({
+      lumen: 20
+    });
+    const streetlight_id = 'test_streetlight_1';
+    try {
+      const reply1 = await testClient.requestStreetlightStreetlightIdCommandTurnon(requestMessage, streetlight_id);
+      const reply2 = await testClient.requestStreetlightStreetlightIdCommandTurnon(requestMessage, streetlight_id);
+      expect(reply1).not.toBeUndefined();
+      expect(reply2).not.toBeUndefined();
+    } catch (error) {
+      console.error(error);
+    }
+    expect(errorSpy).not.toHaveBeenCalled();
   });
 });

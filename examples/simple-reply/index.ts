@@ -1,18 +1,14 @@
-import { NatsAsyncApiClient, AnonymousSchema_1, NatsTypescriptTemplateError, GeneralReply, AnonymousSchema_5 } from 'asyncapi-nats-client';
+import { NatsAsyncApiClient, TurnOnRequest, NatsTypescriptTemplateError, GeneralReply } from 'asyncapi-nats-client';
 
 const streetlightToListenFor = '*';
-const client = new NatsAsyncApiClient();
-
-export async function closeClient(){
-  await client.disconnect();
-}
 
 /**
  * Setup a reply handler to process requests
  */
-async function setup() {
+export async function setupReply() {
+  const client = new NatsAsyncApiClient();
   await client.connectToLocal();
-  const onRequest = async (err?: NatsTypescriptTemplateError, msg?: AnonymousSchema_1, streetlight_id?: string): Promise<GeneralReply> => {
+  const onRequest = async (err?: NatsTypescriptTemplateError, msg?: TurnOnRequest, streetlight_id?: string): Promise<GeneralReply> => {
     if(err) {
         console.log(err);
     }
@@ -20,8 +16,11 @@ async function setup() {
     const replyMessage = new GeneralReply({});
     replyMessage.statusCode = 200;
     replyMessage.statusMessage = 'All OK';
+    setTimeout(async () => {
+      await client.disconnect();
+    }, 100);
     return replyMessage;
   }
-  await client.replyToStreetlightStreetlightIdCommandTurnon(onRequest, (error) => {console.error(error);}, streetlightToListenFor);
+  await client.replyToStreetlightStreetlightIdCommandTurnon(onRequest, (error) => {console.error(error);}, streetlightToListenFor, undefined, {max: 1});
 }
-setup();
+setupReply();

@@ -56,6 +56,7 @@ The generated client based on your AsyncAPI document.
     * [.connectWithUserCreds(userCreds, options)](#NatsAsyncApiClient+connectWithUserCreds)
     * [.connectWithUserPass(user, pass, options)](#NatsAsyncApiClient+connectWithUserPass)
     * [.connectToHost(host, options)](#NatsAsyncApiClient+connectToHost)
+    * [.connectToLocal()](#NatsAsyncApiClient+connectToLocal)
     * [.replyToStreetlightStreetlightIdCommandTurnon(onRequest, onReplyError, streetlight_id, flush, options)](#NatsAsyncApiClient+replyToStreetlightStreetlightIdCommandTurnon)
 
 <a name="NatsAsyncApiClient+connect"></a>
@@ -118,6 +119,13 @@ Try to connect to the NATS server which has no authentication
 | host | to connect to |
 | options | to connect with |
 
+<a name="NatsAsyncApiClient+connectToLocal"></a>
+
+### natsAsyncApiClient.connectToLocal()
+Connects the client to the AsyncAPI server called local.
+Local server used during development and testing
+
+**Kind**: instance method of [<code>NatsAsyncApiClient</code>](#NatsAsyncApiClient)  
 <a name="NatsAsyncApiClient+replyToStreetlightStreetlightIdCommandTurnon"></a>
 
 ### natsAsyncApiClient.replyToStreetlightStreetlightIdCommandTurnon(onRequest, onReplyError, streetlight_id, flush, options)
@@ -151,6 +159,7 @@ The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
     * [.connectWithUserCreds(userCreds, options)](#NatsAsyncApiTestClient+connectWithUserCreds)
     * [.connectWithUserPass(user, pass, options)](#NatsAsyncApiTestClient+connectWithUserPass)
     * [.connectToHost(host, options)](#NatsAsyncApiTestClient+connectToHost)
+    * [.connectToLocal()](#NatsAsyncApiTestClient+connectToLocal)
     * [.requestStreetlightStreetlightIdCommandTurnon(requestMessage, streetlight_id)](#NatsAsyncApiTestClient+requestStreetlightStreetlightIdCommandTurnon)
 
 <a name="NatsAsyncApiTestClient+connect"></a>
@@ -213,6 +222,13 @@ Try to connect to the NATS server which has no authentication
 | host | to connect to |
 | options | to connect with |
 
+<a name="NatsAsyncApiTestClient+connectToLocal"></a>
+
+### natsAsyncApiTestClient.connectToLocal()
+Connects the client to the AsyncAPI server called local.
+Local server used during development and testing
+
+**Kind**: instance method of [<code>NatsAsyncApiTestClient</code>](#NatsAsyncApiTestClient)  
 <a name="NatsAsyncApiTestClient+requestStreetlightStreetlightIdCommandTurnon"></a>
 
 ### natsAsyncApiTestClient.requestStreetlightStreetlightIdCommandTurnon(requestMessage, streetlight_id)

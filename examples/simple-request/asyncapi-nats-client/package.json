@@ -1,5 +1,5 @@
 {
-  "name": "streetlight",
+  "name": "request-example-with-streetlight",
   "description": "",
   "version": "1.0.0",
   "main": "lib/index.js",
