@@ -22,14 +22,12 @@ jobs:
         run: cd examples && docker-compose up -d
       - name: Check running containers
         run: docker ps -a
-      - name: Build pubsub example and test clients can talk to each other
-        run: |
-          npm run generate:examples:pubSub
-          npm run test:examples:integration:pubSub
-      - name: Build request/reply example and test clients can talk to each other
-        run: |
-          npm run generate:examples:requestReply
-          npm run test:examples:integration:requestReply
+      - if: steps.packagejson.outputs.exists == 'true'
+        name: Generate new examples
+        run: npm run generate:examples
+      - if: steps.packagejson.outputs.exists == 'true'
+        name: Test examples
+        run: npm run test:examples
       - name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v1
