@@ -1,5 +1,5 @@
 jest.spyOn(global.console, 'log').mockImplementation(() => { return; });
-const errorSpy = jest.spyOn(global.console, 'error').mockImplementation(() => { return; });
+const errorSpy = jest.spyOn(global.console, 'error');
 import { TurnOnRequest, TestClient } from './asyncapi-nats-client';
 import { setupReply } from './index';
 describe('Should be able to setup reply', () => {
@@ -20,9 +20,7 @@ describe('Should be able to setup reply', () => {
     const streetlight_id = 'test_streetlight_1';
     try {
       const reply1 = await testClient.requestStreetlightStreetlightIdCommandTurnon(requestMessage, streetlight_id);
-      const reply2 = await testClient.requestStreetlightStreetlightIdCommandTurnon(requestMessage, streetlight_id);
       expect(reply1).not.toBeUndefined();
-      expect(reply2).not.toBeUndefined();
     } catch (error) {
       console.error(error);
     }
