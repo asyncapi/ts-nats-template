@@ -26,5 +26,5 @@ fs.readdirSync(examplePath)
     if (platform === 'win32') {
       command += ':windows';
     }
-    execSync(`npm run ${command} --prefix ${exampleDir}`, {stdio: 'inherit'});
+    execSync(`npm run ${command} --prefix ${exampleDir}`, {stdio: 'inherit', timeout: 1000*60*5});
   });
