@@ -4,9 +4,7 @@
  * This script is necessary to provide cross platform support with windows.
  */
 
-const fs = require('fs');
 const path = require('path');
-const examplePath = path.resolve(__dirname, '..', 'examples');
 // eslint-disable-next-line security/detect-child-process
 const {execSync} = require('child_process');
 
@@ -15,16 +13,10 @@ const {execSync} = require('child_process');
 // 'darwin' on OSX
 const os = require('os');
 const platform = os.platform();
+let command = 'generate:client';
+if (platform === 'win32') {
+  command += ':windows';
+}
 
-// eslint-disable-next-line security/detect-non-literal-fs-filename
-fs.readdirSync(examplePath)
-  .map((file) => {return path.resolve(examplePath, file);})
-  // eslint-disable-next-line security/detect-non-literal-fs-filename
-  .filter((exampleDir) => {return fs.lstatSync(exampleDir).isDirectory();})
-  .forEach((exampleDir) => {
-    let command = 'generate:client';
-    if (platform === 'win32') {
-      command += ':windows';
-    }
-    execSync(`npm run ${command} --prefix ${exampleDir} && npm i --prefix ${exampleDir}`);
-  });
+const examplePath = path.resolve(__dirname, '..', 'examples');
+execSync(`find ${examplePath} -not -iwholename '${examplePath}' -maxdepth 1 -type d -exec npm run ${command} --prefix {} \\; -exec npm i --prefix {} \\;`, {stdio: 'inherit'});
