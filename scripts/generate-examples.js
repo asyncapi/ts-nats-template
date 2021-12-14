@@ -7,13 +7,13 @@
 const fs = require('fs');
 const path = require('path');
 const examplePath = path.resolve(__dirname, '..', 'examples');
-const os = require('os');
 // eslint-disable-next-line security/detect-child-process
 const {execSync} = require('child_process');
 
 // 'linux' on Linux
 // 'win32' on Windows (32-bit / 64-bit)
 // 'darwin' on OSX
+const os = require('os');
 const platform = os.platform();
 
 // eslint-disable-next-line security/detect-non-literal-fs-filename
