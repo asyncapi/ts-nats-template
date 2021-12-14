@@ -45,7 +45,7 @@ jobs:
           npm install --loglevel verbose
       - if: steps.packagejson.outputs.exists == 'true'
         name: Generate new examples
-        run: npm generate:examples
+        run: npm run generate:examples
       - if: steps.packagejson.outputs.exists == 'true'
         name: Test examples
-        run: npm test:examples
+        run: npm run test:examples
