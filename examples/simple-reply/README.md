@@ -1,11 +1,11 @@
 # Request example
 
-A basic example showing how to define an AsyncAPI channel as a request operation, and how to use the generated library.
+A basic example showing how to define an AsyncAPI channel as a reply operation, and how to use the generated library.
 
-It contains the following files:
-- `asyncapi.json` is the AsyncAPI document for the application.
-- `index.ts` contains a usage example of the generated library that sends a request.
-- `index.spec.ts` test that the usage example actually sends the request by setting up a reply handler, by using the mirror client.
+This example contains the following files:
+- `asyncapi.json` is the AsyncAPI document for the application that defines it as reply operation.
+- `index.ts` contains a usage example of the generated library that setup a reply handler.
+- `index.spec.ts` test that the usage example (`index.ts`) have setup a correct reply handler by sending a request over NATS.
 - `asyncapi-nats-client` contains the generated client.
 
 ## How to generate the client
@@ -38,8 +38,6 @@ npm i && npm run test:windows
 
 ## How to run this example
 
-Before running this example make sure you setup a reply handler so when the example is making the request it will receive a reply.
-
 To run this example using:
 
 ```sh
@@ -51,3 +49,5 @@ If you are on Windows, use the `start:windows` script instead:
 ```sh
 npm i && npm run start:windows
 ```
+
+Afterwards, manually send a request over NATS through external tooling.
