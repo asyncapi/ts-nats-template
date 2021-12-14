@@ -28,5 +28,3 @@ fs.readdirSync(examplePath)
     }
     execSync(`npm run ${command} --prefix ${exampleDir}`, {stdio: 'inherit'});
   });
-
-execSync(`npm run ${command} --prefix ${exampleDir}`);
