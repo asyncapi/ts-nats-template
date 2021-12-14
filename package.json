@@ -20,12 +20,12 @@
 	"author": "Jonas Lagoni (jonas-lt@live.dk)",
 	"license": "Apache-2.0",
 	"scripts": {
-		"generate:examples": "find ./examples/ -not -iwholename './examples/' -maxdepth 1 -type d -exec npm run generate:client --prefix {} \\; -exec npm i --prefix {} \\;",
+		"generate:examples": "cd scripts && node generate-examples.js",
 		"release": "semantic-release",
 		"lint": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc .",
 		"lint:fix": "./node_modules/.bin/eslint --max-warnings 0 --config .eslintrc . --fix",
 		"test": "echo \"No unit tests specified yet\"",
-		"test:examples": "find ./examples/ -not -iwholename './examples/' -maxdepth 1 -type d -exec npm run test --prefix {} \\;",
+		"test:examples": "cd scripts && node test-examples.js",
 		"generate:assets": "npm run generate:examples",
 		"bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
 	},
