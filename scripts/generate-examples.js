@@ -6,7 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const examplePath = path.resolve(__dirname, '../examples/');
+const examplePath = path.resolve(__dirname, '..', 'examples');
 // eslint-disable-next-line security/detect-child-process
 const {execSync} = require('child_process');
 // eslint-disable-next-line security/detect-non-literal-fs-filename
