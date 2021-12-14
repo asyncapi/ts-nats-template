@@ -6,14 +6,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const examplePath = path.join(__dirname, '..', 'examples');
+const examplePath = path.resolve(__dirname, '..', 'examples');
 // eslint-disable-next-line security/detect-child-process
 const {execSync} = require('child_process');
 // eslint-disable-next-line security/detect-non-literal-fs-filename
 fs.readdirSync(examplePath)
-  .map((file) => {return path.join(examplePath, file);})
+  .map((file) => {return path.resolve(examplePath, file);})
   // eslint-disable-next-line security/detect-non-literal-fs-filename
-  .filter((exampleDir) => {return fs.lstatSync(exampleDir).isDirectory();})
+  .filter((exampleDir) => {console.log(exampleDir); return fs.lstatSync(exampleDir).isDirectory();})
   .forEach((exampleDir) => {
-    execSync(`npm run generate:client --prefix ${exampleDir} && npm i --prefix ${exampleDir}`);
+    execSync(`npm run generate:client --prefix ${path.normalize(exampleDir)} && npm i --prefix ${path.normalize(exampleDir)}`);
   });
