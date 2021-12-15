@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 /**
  * Small script that generate code for the examples.
  * 
@@ -16,15 +17,20 @@ const {execSync} = require('child_process');
 const os = require('os');
 const platform = os.platform();
 
-// eslint-disable-next-line security/detect-non-literal-fs-filename
 fs.readdirSync(examplePath)
   .map((file) => {return path.resolve(examplePath, file);})
-  // eslint-disable-next-line security/detect-non-literal-fs-filename
   .filter((exampleDir) => {return fs.lstatSync(exampleDir).isDirectory();})
   .forEach((exampleDir) => {
     let command = 'generate:client';
     if (platform === 'win32') {
       command += ':windows';
+    }
+    const generatedLibraryPath = path.resolve(exampleDir, 'asyncapi-nats-client');
+    if (fs.existsSync(generatedLibraryPath)) {
+      fs.rmSync(generatedLibraryPath, {
+        recursive: true,
+        force: true
+      });
     }
     execSync(`npm run ${command} --prefix ${exampleDir} && npm i --prefix ${exampleDir}`, {stdio: 'inherit', timeout: 1000*60*5});
   });
