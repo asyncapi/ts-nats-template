@@ -10,7 +10,7 @@
 
 This template is for generating a TypeScript/Node.js wrapper for the NATS client based on your AsyncAPI document. The template is based on the [nats.js](https://github.com/nats-io/nats.js) library and can be used as both a TypeScript and Node.js library. 
 
-Have you found a bug or have an idea for improvement? Feel free to contribute! See [the contribution guidelines](#Contributing) how to do so.
+Have you found a bug or have an idea for improvement? Feel free to contribute! See [the contribution guidelines](#Contributing) for how to do so.
 
 # How to use
 Example use-cases can be found under [examples](./examples).
