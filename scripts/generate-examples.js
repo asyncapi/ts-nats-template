@@ -32,5 +32,5 @@ fs.readdirSync(examplePath)
         force: true
       });
     }
-    execSync(`npm run ${command} --prefix ${exampleDir} && npm i --prefix ${exampleDir}`, {stdio: 'inherit', timeout: 1000*60*5});
+    execSync(`cd ${exampleDir} && npm run ${command} && npm i`, {stdio: 'inherit', timeout: 1000*60*5});
   });
