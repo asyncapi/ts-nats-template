@@ -11,6 +11,6 @@
     "test:windows": "..\\..\\node_modules\\.bin\\jest --config=..\\..\\jest.config.js examples\\%npm_package_config_example_name%\\index.spec.ts"
   },
   "dependencies": {
-    "asyncapi-nats-client": "reply-example-with-streetlight"
+    "reply-example-with-streetlight": "file:asyncapi-nats-client"
   }
 }
