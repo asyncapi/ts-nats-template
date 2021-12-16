@@ -3,14 +3,14 @@
     "example_name": "simple-reply"
   },
   "scripts": {
-    "generate:client": "../../node_modules/.bin/ag --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && npm link && cd .. && npm link reply-example-with-streetlight",
-    "generate:client:windows": "cd ..\\.. && .\\node_modules\\.bin\\ag --output \".\\examples\\%npm_package_config_example_name%\\asyncapi-nats-client\" \".\\examples\\%npm_package_config_example_name%\\asyncapi.json\" \".\" --force-write --param \"promisifyReplyCallback=true\" && cd .\\examples\\%npm_package_config_example_name%\\asyncapi-nats-client && npm i && tsc && npm link && cd .. && npm link reply-example-with-streetlight",
+    "generate:client": "../../node_modules/.bin/ag --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",
+    "generate:client:windows": "cd ..\\.. && .\\node_modules\\.bin\\ag --output \".\\examples\\%npm_package_config_example_name%\\asyncapi-nats-client\" \".\\examples\\%npm_package_config_example_name%\\asyncapi.json\" \".\" --force-write --param \"promisifyReplyCallback=true\" && cd .\\examples\\%npm_package_config_example_name%\\asyncapi-nats-client && npm i && npm run build && cd ..",
     "start": "../../node_modules/.bin/ts-node --cwd ../../ ./examples/$npm_package_config_example_name/index.ts",
     "start:windows": "..\\..\\node_modules\\.bin\\ts-node --cwd ..\\..\\ .\\examples\\%npm_package_config_example_name%\\index.ts",
     "test": "../../node_modules/.bin/jest --config=../../jest.config.js ./examples/$npm_package_config_example_name/index.spec.ts",
     "test:windows": "..\\..\\node_modules\\.bin\\jest --config=..\\..\\jest.config.js examples\\%npm_package_config_example_name%\\index.spec.ts"
   },
   "dependencies": {
-    "reply-example-with-streetlight": "file:asyncapi-nats-client"
+    "asyncapi-nats-client": "file:./asyncapi-nats-client"
   }
 }

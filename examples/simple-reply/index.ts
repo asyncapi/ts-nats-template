@@ -1,4 +1,4 @@
-import { NatsAsyncApiClient, TurnOnRequest, NatsTypescriptTemplateError, GeneralReply } from 'reply-example-with-streetlight';
+import { NatsAsyncApiClient, TurnOnRequest, NatsTypescriptTemplateError, GeneralReply } from 'asyncapi-nats-client';
 
 const streetlightToListenFor = '*';
 
