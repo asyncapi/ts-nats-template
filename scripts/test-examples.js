@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 /**
  * Small script that tests the examples.
  * 
@@ -16,15 +17,13 @@ const { execSync } = require('child_process');
 const os = require('os');
 const platform = os.platform();
 
-// eslint-disable-next-line security/detect-non-literal-fs-filename
 fs.readdirSync(examplePath)
   .map((file) => {return path.resolve(examplePath, file);})
-  // eslint-disable-next-line security/detect-non-literal-fs-filename
   .filter((exampleDir) => {return fs.lstatSync(exampleDir).isDirectory();})
   .forEach((exampleDir) => {
     let command = 'test';
     if (platform === 'win32') {
       command += ':windows';
     }
-    execSync(`npm run ${command} --prefix ${exampleDir}`, {stdio: 'inherit', timeout: 1000*60*5});
+    execSync(`cd ${exampleDir} && npm run ${command}`, {stdio: 'inherit', timeout: 1000*60*5});
   });
