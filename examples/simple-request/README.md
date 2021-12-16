@@ -5,12 +5,12 @@ A basic example showing how to define an AsyncAPI channel as a request operation
 It contains the following files:
 - `asyncapi.json` is the AsyncAPI document for the application.
 - `index.ts` contains a usage example of the generated library that sends a request.
-- `index.spec.ts` test that the usage example actually sends the request by setting up a reply handler, by using the mirror client.
+- `index.spec.ts` tests that the usage example actually sends the request by setting up a reply handler, by using the mirror client.
 - `asyncapi-nats-client` contains the generated client.
 
 ## How to generate the client
 
-To generate the client run the command:
+To generate the client, run this command:
 
 ```sh
 npm run generate:client
@@ -24,7 +24,7 @@ npm run generate:client:windows
 
 ## How to test this example
 
-To test this example use:
+To test this example, run:
 
 ```sh
 npm i && npm run test
@@ -38,9 +38,9 @@ npm i && npm run test:windows
 
 ## How to run this example
 
-Before running this example make sure you setup a reply handler so when the example is making the request it will receive a reply.
+Before running this example, make sure you set up a reply handler so that when the example is making the request, it will receive a reply.
 
-To run this example using:
+To run this example, use:
 
 ```sh
 npm i && npm run start
