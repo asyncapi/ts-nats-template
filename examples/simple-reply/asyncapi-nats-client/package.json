@@ -1,0 +1,27 @@
+{
+  "name": "reply-example-with-streetlight",
+  "description": "",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc && npm run docs",
+    "test:integration": "mocha -r ts-node/register tests/integration/**/*.spec.ts --exit --timeout 10000",
+    "docs": "npm run docs:markdown",
+    "docs:markdown": "jsdoc2md lib/index.js -f lib/**/*.js > API.md"
+  },
+  "dependencies": {
+    "nats": "^2.4.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.4.0",
+    "@types/mocha": "^9.0.0",
+    "@types/chai": "4.2.22",
+    "@types/node": "13.9.5",
+    "@types/klaw-sync": "^6.0.1",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "jsdoc-to-markdown": "^6.0.1",
+    "typescript": "4.5.2"
+  }
+}

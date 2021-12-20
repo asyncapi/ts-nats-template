@@ -8,57 +8,19 @@
   <em>This is a TypeScript/Node.js NATS template for the AsyncAPI generator.</em>
 </p>
 
-This template is for generating a TypeScript/Node.js wrapper for the NATS client based on your AsyncAPI document. The template is based on the [nats-ts](https://github.com/nats-io/nats.ts) library and can be used as both a TypeScript and Node.js library. 
+This template is for generating a TypeScript/Node.js wrapper for the NATS client based on your AsyncAPI document. The template is based on the [nats.js](https://github.com/nats-io/nats.js) library and can be used as both a TypeScript and Node.js library. 
 
-Have you found a bug or have an idea for improvement? Feel free to contribute! See [the contribution guidelines](#Contributing) how to do so.
+Have you found a bug or have an idea for improvement? Feel free to contribute! See [the contribution guidelines](#Contributing) for how to do so.
 
 # How to use
-Example generations can be found under [examples](./examples) which includes [publish and subscribe](./examples/publish%20subscribe) example as well as [request and reply](./examples/request%20reply).
+Example use-cases can be found under [examples](./examples).
 
 Information about the generated files and a description can be found under [the documentation folder](./docs/general.md).
+
 ## Requirements
 * @asyncapi/generator < v2.0.0 >v1.1.1
 
 Install the generator through [npm or run it from docker official installer](https://github.com/asyncapi/generator#install).
-
-## Example usage
-The leading examples are both in TypeScript and in Node.js since this template can be used for both. The example code will be used later in the documentation to explain the different features.
-
-Given any AsyncAPI file (`AsyncAPI.yml`) first generate the client with the [AsyncAPI generator](https://github.com/asyncapi/generator) such as 
-```bash
-ag --install --output ./nats-client ./AsyncAPI.yml @asyncapi/ts-nats-template --param "generateTestClient=true"  --param "promisifyReplyCallback=true"
-```
-
-Afterward, go into the generated folder `nats-client` and run the commands `npm i` and `npm run build`. The generated NATS client is now ready to be used in either TypeScript or Node.js.
-
-### TypeScript 
-
-```js
-import * as GeneratedClient from "./nats-client";
-const natsClient = new GeneratedClient.NatsAsyncApiClient();
-async function connect(){
-  try{
-    await natsClient.connect({url: "nats://demo.nats.io:4222", reconnectTimeWait: 1000, reconnect: true, maxReconnectAttempts: -1});
-  }catch(e){
-    console.log(e);
-  }
-}
-connect();
-```
-
-### Node.js
-```js
-const GeneratedClient = require("./nats-client");
-const natsClient = new GeneratedClient.NatsAsyncApiClient();
-async function connect(){
-  try{
-    await natsClient.connect({url: "nats://demo.nats.io:4222", reconnectTimeWait: 1000, reconnect: true, maxReconnectAttempts: -1});
-  }catch(e){
-    console.log(e);
-  }
-}
-connect();
-```
 
 ## Template Parameters
 These are the available template parameters:
@@ -78,7 +40,7 @@ These are the available template parameters:
 
 # Contributing
 
-Before contributing please read the [CONTRIBUTING](CONTRIBUTING.md) document.
+Before contributing, please read the [CONTRIBUTING](CONTRIBUTING.md) document.
 
 # Contributors ✨
 
@@ -102,15 +64,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
