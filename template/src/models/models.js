@@ -24,15 +24,11 @@ export default async function schemaRender({ asyncapi }) {
       }
     ]
   });
-  const generatedModels = await typescriptGenerator.generate(asyncapi);
+  const generatedModels = await typescriptGenerator.generateCompleteModels(asyncapi);
   const files = [];
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;
-    const fileContent = `
-${generatedModel.dependencies.join('\n')}
-${generatedModel.result}
-    `;
-    files.push(<File name={modelFileName}>{fileContent}</File>);
+    files.push(<File name={modelFileName}>{generatedModel.result}</File>);
   }
   return files;
 }
