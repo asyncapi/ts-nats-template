@@ -1,9 +1,5 @@
-import {
-  TurnOnRequest
-} from '../models/TurnOnRequest';
-import {
-  GeneralReply
-} from '../models/GeneralReply';
+import TurnOnRequest from '../models/TurnOnRequest';
+import GeneralReply from '../models/GeneralReply';
 import * as Nats from 'nats';
 import {
   ErrorCode,

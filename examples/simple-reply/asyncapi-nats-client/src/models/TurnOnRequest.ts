@@ -1,6 +1,6 @@
 
 
-export class TurnOnRequest {
+class TurnOnRequest {
   private _lumen: number;
   private _additionalProperties?: Map<String, object | string | number | Array<unknown> | boolean | null>;
 
@@ -52,4 +52,4 @@ export class TurnOnRequest {
     return instance;
   }
 }
-    
+export default TurnOnRequest;
