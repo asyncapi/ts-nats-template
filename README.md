@@ -1,7 +1,7 @@
 <h1 align="center">TypeScript/Node.js NATS template</h1>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p align="center">
@@ -57,6 +57,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://www.fmvilas.com"><img src="https://avatars.githubusercontent.com/u/242119?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Fran Méndez</b></sub></a><br /><a href="https://github.com/asyncapi/ts-nats-template/pulls?q=is%3Apr+reviewed-by%3Afmvilas" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="https://nats.io"><img src="https://avatars.githubusercontent.com/u/11180189?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Colin Sullivan</b></sub></a><br /><a href="https://github.com/asyncapi/ts-nats-template/pulls?q=is%3Apr+reviewed-by%3AColinSullivan1" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="https://github.com/aricart"><img src="https://avatars.githubusercontent.com/u/1032976?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alberto Ricart</b></sub></a><br /><a href="https://github.com/asyncapi/ts-nats-template/pulls?q=is%3Apr+reviewed-by%3Aaricart" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="http://www.alejandraquetzalli.com"><img src="https://avatars.githubusercontent.com/u/19964402?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alejandra Quetzalli </b></sub></a><br /><a href="https://github.com/asyncapi/ts-nats-template/pulls?q=is%3Apr+reviewed-by%3Aalequetzalli" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
 
