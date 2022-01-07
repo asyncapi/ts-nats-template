@@ -1,6 +1,6 @@
 
 
-export class GeneralReply {
+class GeneralReply {
   private _statusCode?: number;
   private _statusMessage?: string;
   private _additionalProperties?: Map<String, object | string | number | Array<unknown> | boolean | null>;
@@ -64,4 +64,4 @@ export class GeneralReply {
     return instance;
   }
 }
-    
+export default GeneralReply;

@@ -5,12 +5,8 @@ import {
 } from './NatsTypescriptTemplateError';
 import * as Nats from 'nats';
 import * as streetlightStreetlightIdCommandTurnonChannel from "./channels/StreetlightStreetlightIdCommandTurnon";
-import {
-  TurnOnRequest
-} from "./models/TurnOnRequest";
-import {
-  GeneralReply
-} from "./models/GeneralReply";
+import TurnOnRequest from "./models/TurnOnRequest";
+import GeneralReply from "./models/GeneralReply";
 export {
   streetlightStreetlightIdCommandTurnonChannel
 };
