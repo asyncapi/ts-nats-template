@@ -15,12 +15,12 @@ export function General(channel, publishMessage, subscribeMessage, path) {
   let publishMessageImport = '';
   if (channel.hasPublish() && !messageHasNullPayload(publishMessage.payload())) {
     const publishMessageUid = getSchemaFileName(publishMessage.payload().uid());
-    publishMessageImport = `import {${publishMessageUid}} from '${path}/models/${publishMessageUid}';`;
+    publishMessageImport = `import ${publishMessageUid} from '${path}/models/${publishMessageUid}';`;
   }
   let subscribeMessageImport = '';
   if (channel.hasSubscribe() && !messageHasNullPayload(subscribeMessage.payload())) {
     const subscribeMessageUid = getSchemaFileName(subscribeMessage.payload().uid());
-    subscribeMessageImport = `import {${subscribeMessageUid}} from '${path}/models/${subscribeMessageUid}';`;
+    subscribeMessageImport = `import ${subscribeMessageUid} from '${path}/models/${subscribeMessageUid}';`;
   }
   return `
 ${publishMessageImport}
