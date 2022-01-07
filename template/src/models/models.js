@@ -24,7 +24,7 @@ export default async function schemaRender({ asyncapi }) {
       }
     ]
   });
-  const generatedModels = await typescriptGenerator.generateCompleteModels(asyncapi);
+  const generatedModels = await typescriptGenerator.generateCompleteModels(asyncapi, {moduleSystem: 'ESM'});
   const files = [];
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;
