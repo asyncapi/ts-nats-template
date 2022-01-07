@@ -170,7 +170,7 @@ export function getStandardHeaderCode(asyncapi, pathToRoot, channelPath) {
     const hasNullPayload = messageHasNullPayload(message.payload());
     if (!hasNullPayload) {
       const schemaName = getSchemaFileName(message.payload().uid());
-      imports.push(`import {${schemaName}} from "${pathToRoot}/models/${schemaName}";`);
+      imports.push(`import ${schemaName} from "${pathToRoot}/models/${schemaName}";`);
       exports.push(`export {${schemaName}};`);
     }
   }
