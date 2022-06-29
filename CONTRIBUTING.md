@@ -3,7 +3,7 @@ To contribute to this project, follow the rules from the general [CONTRIBUTING.m
 
 ## Getting started
 Extending the contribution guidelines above here is how to quick start your contribution process.
-* The template is rendered using the AsyncAPI generator React renderer, [the authoring docs](https://github.com/asyncapi/generator/blob/master/docs/authoring.md#react-1) is great way to quick start your template journey to understand the setup.
+* The template is rendered using the AsyncAPI generator React renderer, [the authoring docs](https://github.com/asyncapi/generator/blob/master/docs/patch/generator-docs-refactor) is great way to quick start your template journey to understand the setup.
 * The template support two examples generations which is used to inspect your changes. These can be generated using the scripts `npm run generate:examples`.
 * In most cases committing changes to the examples is a good thing, but try not to clutter up the PR and in the end before merging the those changes MUST be removed. Once your PR is merged the examples will be auto-generated and committed automatically by the CI. This is to ease the PR review process.
 * If you are using VSCode two launch actions are provided to easily debug the generation of the examples. You can find these under the left side menu in VSCode - `Run and Debug`.
