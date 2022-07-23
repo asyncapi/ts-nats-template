@@ -4,6 +4,7 @@ This directory contains a series of self-contained examples that you can use as 
 
 The examples are as follows:
 
+- [simple-publish](./simple-publish) - A basic example of how to set up a publish operation in AsyncAPI and use the generated code.
 - [simple-reply](./simple-reply) - A basic example of how to set up a reply in AsyncAPI and use the generated code.
 - [simple-request](./simple-request) - A basic example of how to send a request in AsyncAPI and use the generated code.
 
