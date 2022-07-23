@@ -16,8 +16,9 @@ const exec = util.promisify(require('child_process').exec);
 // 'win32' on Windows (32-bit / 64-bit)
 // 'darwin' on OSX
 const os = require('os');
+const { exit } = require('process');
 const platform = os.platform();
-
+ 
 const promises = fs.readdirSync(examplePath)
   .map((file) => { return path.resolve(examplePath, file); })
   .filter((exampleDir) => { return fs.lstatSync(exampleDir).isDirectory(); })
@@ -33,6 +34,9 @@ const promises = fs.readdirSync(examplePath)
         force: true
       });
     }
-    return exec(`cd ${exampleDir} && npm run ${command} && npm i`, { stdio: 'inherit', timeout: 1000 * 60 * 5 });
+    return exec(`cd ${exampleDir} && npm run ${command} && npm i`);
   });
-Promise.all(promises);
+Promise.all(promises).catch((err) => {
+  console.error(err);
+  exit(1);
+});
