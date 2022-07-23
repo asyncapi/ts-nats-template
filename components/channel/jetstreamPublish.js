@@ -18,22 +18,22 @@ export function JetStreamPublish(channelName, message, channelParameters) {
     publishOperation = `
     let dataToSend : any = message.marshal();
     dataToSend = codec.encode(dataToSend);
-    nc.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend, options);`;
+    js.publish(${realizeChannelName(channelParameters, channelName)}, dataToSend, options);`;
   }
   return `
   /**
-   * Internal functionality to publish message to channel 
+   * Internal functionality to publish message to jetstream channel 
    * ${channelName}
    * 
    * @param message to publish
-   * @param nc to publish with
+   * @param js to publish with
    * @param codec used to convert messages
    ${renderJSDocParameters(channelParameters)}
    * @param options to publish with
    */
-    export function publish(
+    export function jetStreamPublish(
       message: ${messageType},
-      nc: Nats.NatsConnection,
+      js: Nats.JetStreamClient,
       codec: Nats.Codec<any>
       ${realizeParametersForChannelWrapper(channelParameters)},
       options?: Nats.PublishOptions
