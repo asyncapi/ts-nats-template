@@ -11,7 +11,7 @@ const examplePath = path.resolve(__dirname, '..', 'examples');
 const util = require('util');
 // eslint-disable-next-line security/detect-child-process
 const exec = util.promisify(require('child_process').exec);
- 
+
 // 'linux' on Linux
 // 'win32' on Windows (32-bit / 64-bit)
 // 'darwin' on OSX
