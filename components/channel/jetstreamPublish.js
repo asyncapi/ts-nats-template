@@ -9,7 +9,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Message} message which is being published
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function JetStreamPublish(channelName, message, channelParameters) {
+export function JetstreamPublish(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
   const hasNullPayload = messageHasNullPayload(message.payload());
   //Determine the publish operation based on whether the message type is null

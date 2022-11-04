@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} messageDescription 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Publish(channelName, message, messageDescription, channelParameters) {
+export function JetstreamPublish(channelName, message, messageDescription, channelParameters) {
   return `
   /**
    * Publish to the \`${channelName}\` jetstream channel 
@@ -29,7 +29,7 @@ export function Publish(channelName, message, messageDescription, channelParamet
     if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
       return ${camelCase(channelName)}Channel.jetStreamPublish(
         message, 
-        this.nc,
+        this.js,
         this.codec
         ${Object.keys(channelParameters).length ? `,${realizeParametersForChannelWithoutType(channelParameters)}` : ''},
         options
