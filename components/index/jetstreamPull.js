@@ -1,6 +1,6 @@
 import { camelCase, getMessageType, realizeParametersForChannelWrapper, renderJSDocParameters, realizeParametersForChannelWithoutType, pascalCase} from '../../utils/index';
 
-export function Pull(channelName, message, messageDescription, channelParameters) {
+export function JetstreamPull(channelName, message, messageDescription, channelParameters) {
   return `
   /**
     * JetStream pull function.
@@ -17,12 +17,12 @@ export function Pull(channelName, message, messageDescription, channelParameters
       onDataCallback: (
         err ? : NatsTypescriptTemplateError,
         msg?: ${getMessageType(message)}
-        ${realizeParametersForChannelWrapper(channelParameters, false)}
-        jetstreamMsg?: Nats.JsMsg) => void,
-      ${realizeParametersForChannelWrapper(channelParameters)},
+        ${realizeParametersForChannelWrapper(channelParameters, false)},
+        jetstreamMsg?: Nats.JsMsg) => void
+      ${realizeParametersForChannelWrapper(channelParameters)}
     ): void {
       if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
-        ${camelCase(channelName)}Channel.jetsStreamPull(
+        ${camelCase(channelName)}Channel.jetStreamPull(
           onDataCallback,
           this.js,
           this.codec 

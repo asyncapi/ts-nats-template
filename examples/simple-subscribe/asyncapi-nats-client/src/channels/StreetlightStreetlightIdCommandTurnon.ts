@@ -54,3 +54,36 @@ export function subscribe(
     }
   })
 }
+/**
+ * Internal functionality to setup jetstrema pull on the `streetlight/{streetlight_id}/command/turnon` channel 
+ * 
+ * @param onDataCallback to call when messages are received
+ * @param js client to pull with
+ * @param codec used to convert messages
+ * @param streetlight_id parameter to use in topic
+ */
+export function jetStreamPull(
+  onDataCallback: (
+    err ? : NatsTypescriptTemplateError,
+    msg ? : TurnOn, streetlight_id ? : string,
+    jetstreamMsg ? : Nats.JsMsg) => void,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , streetlight_id: string,
+) {
+  const stream = `streetlight.${streetlight_id}.command.turnon`;
+  (async () => {
+    const msg = await js.pull(stream, 'durableName');
+    const unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
+    let channel = msg.subject;
+    const streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
+    const splits = [
+      streetlightIdSplit[0],
+      streetlightIdSplit[1]
+    ];
+    channel = channel.substring(splits[0].length);
+    const streetlightIdEnd = channel.indexOf(splits[1]);
+    const streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
+    let receivedData: any = codec.decode(msg.data);
+    onDataCallback(undefined, TurnOn.unmarshal(receivedData), streetlightIdParam, msg);
+  })();
+}

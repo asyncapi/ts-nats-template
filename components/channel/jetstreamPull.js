@@ -9,10 +9,9 @@ import { unwrap } from './ChannelParameterUnwrap';
  * @param {string} defaultContentType 
  * @param {string} channelName to publish to
  * @param {Message} message which is being received
- * @param {string} messageDescription 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Pull(channelName, message, messageDescription, channelParameters) {
+export function JetstreamPull(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
@@ -26,7 +25,7 @@ export function Pull(channelName, message, messageDescription, channelParameters
   if (!hasNullPayload) {
     whenReceivingMessage =  `
     let receivedData: any = codec.decode(msg.data);
-    onDataCallback(undefined, ${messageType}.unmarshal(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`}, jsMsg);
+    onDataCallback(undefined, ${messageType}.unmarshal(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`}, msg);
     `;
   }
   return  `
@@ -38,14 +37,14 @@ export function Pull(channelName, message, messageDescription, channelParameters
      * @param codec used to convert messages
      ${renderJSDocParameters(channelParameters)}
       */
-    export function jetsStreamPull(
+    export function jetStreamPull(
       onDataCallback: (
         err ? : NatsTypescriptTemplateError,
         msg ? : ${messageType}
         ${realizeParametersForChannelWrapper(channelParameters, false)},
         jetstreamMsg?: Nats.JsMsg) => void,
       js: Nats.JetStreamClient,
-      codec: Nats.Codec < any >,
+      codec: Nats.Codec < any >
       ${realizeParametersForChannelWrapper(channelParameters)},
     ) {
       const stream = ${realizeChannelName(channelParameters, channelName)};
