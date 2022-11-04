@@ -1,4 +1,4 @@
-import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
+import { realizeChannelName, camelCase, getMessageType, messageHasNullPayload, realizeParametersForChannelWrapper, renderJSDocParameters} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Message} message which is being received
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function PushSubscription(channelName, message, channelParameters, operation) {
+export function JetstreamPushSubscription(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
@@ -44,18 +44,18 @@ export function PushSubscription(channelName, message, channelParameters, operat
     onDataCallback: (
       err ? : NatsTypescriptTemplateError,
       msg?: ${messageType}
-      ${realizeParametersForChannelWrapper(channelParameters, false)}) => void,
+      ${realizeParametersForChannelWrapper(channelParameters, false)},
       jetstreamMsg?: Nats.JsMsg) => void,
     js: Nats.JetStreamClient,
     codec: Nats.Codec < any >
     ${realizeParametersForChannelWrapper(channelParameters)},
-    options: Nats.ConsumerOptsBuilder
+    options: Nats.ConsumerOptsBuilder | Partial<Nats.ConsumerOpts>
   ): Promise < Nats.JetStreamSubscription > {
     return new Promise(async (resolve, reject) => {
       try {
-        let subscription = nc.subscribe(${realizeChannelName(channelParameters, channelName)}, options); 
+        let subscription = js.subscribe(${realizeChannelName(channelParameters, channelName)}, options); 
         (async () => {
-          for await (const msg of subscription) {
+          for await (const msg of await subscription) {
             ${unwrap(channelName, channelParameters)}
 
             ${whenReceivingMessage}

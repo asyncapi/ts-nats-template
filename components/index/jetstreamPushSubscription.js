@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {string} messageDescription 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Subscribe(channelName, message, messageDescription, channelParameters) {
+export function JetstreamPushSubscription(channelName, message, messageDescription, channelParameters) {
   return  `
   /**
     * Push subscription to the \`${channelName}\`
@@ -28,25 +28,19 @@ export function Subscribe(channelName, message, messageDescription, channelParam
         err?: NatsTypescriptTemplateError,
         msg?: ${getMessageType(message)}
         ${realizeParametersForChannelWrapper(channelParameters, false)},
-        jetstreamMsg?: Nats.JsMsg) => void,
-      server_id: string,
-      options?: Nats.SubscriptionOptions
+        jetstreamMsg?: Nats.JsMsg) => void
+      ${realizeParametersForChannelWrapper(channelParameters)},
+      options: Nats.ConsumerOptsBuilder | Partial<Nats.ConsumerOpts>
     ): Promise<Nats.JetStreamSubscription> {
       return new Promise(async (resolve, reject) => {
         if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
           try {
-
-            const opts = consumerOpts();
-            opts.durable("me");
-            opts.manualAck();
-            opts.ackExplicit();
-            opts.deliverTo(createInbox());
             const sub = await ${camelCase(channelName)}Channel.jetStreamPushSubscribe(
               onDataCallback,
               this.js,
               this.codec,
-              ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)},` : ''}
-              opts
+              ${Object.keys(channelParameters).length ? `${realizeParametersForChannelWithoutType(channelParameters)},` : ''}
+              options
             );
             resolve(sub);
           } catch (e: any) {

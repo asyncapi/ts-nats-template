@@ -54,3 +54,47 @@ export function subscribe(
     }
   })
 }
+/**
+ * Internal functionality to setup jetstream push subscription on the `streetlight/{streetlight_id}/command/turnon` channel 
+ * 
+ * @param onDataCallback to call when messages are received
+ * @param nc to subscribe with
+ * @param codec used to convert messages
+ * @param streetlight_id parameter to use in topic
+ * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+ */
+export function jetStreamPushSubscribe(
+  onDataCallback: (
+    err ? : NatsTypescriptTemplateError,
+    msg ? : TurnOn, streetlight_id ? : string,
+    jetstreamMsg ? : Nats.JsMsg) => void,
+  js: Nats.JetStreamClient,
+  codec: Nats.Codec < any > , streetlight_id: string,
+  options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+): Promise < Nats.JetStreamSubscription > {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let subscription = js.subscribe(`streetlight.${streetlight_id}.command.turnon`, options);
+      (async () => {
+        for await (const msg of await subscription) {
+          const unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
+          let channel = msg.subject;
+          const streetlightIdSplit = unmodifiedChannel.split("{streetlight_id}");
+          const splits = [
+            streetlightIdSplit[0],
+            streetlightIdSplit[1]
+          ];
+          channel = channel.substring(splits[0].length);
+          const streetlightIdEnd = channel.indexOf(splits[1]);
+          const streetlightIdParam = "" + channel.substring(0, streetlightIdEnd);
+          let receivedData: any = codec.decode(msg.data);
+          onDataCallback(undefined, TurnOn.unmarshal(receivedData), streetlightIdParam);
+        }
+        console.log("subscription closed");
+      })();
+      resolve(subscription);
+    } catch (e: any) {
+      reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
+    }
+  })
+}
