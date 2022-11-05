@@ -1,0 +1,50 @@
+{
+	"asyncapi": "2.2.0",
+	"info": {
+		"title": "Subscribe example with streetlight",
+		"version": "1.0.0"
+	},
+	"servers": {
+		"local": {
+			"url": "localhost:4222",
+			"protocol": "tcp",
+			"description": "Local server used during development and testing"
+		}
+	},
+	"defaultContentType": "application/json",
+	"channels": {
+		"streetlight/{streetlight_id}/command/turnon": {
+			"description": "Channel for the turn on command which should turn on the streetlight",
+			"parameters": {
+				"streetlight_id": {
+					"description": "The ID of the streetlight",
+					"schema": {
+						"type": "string"
+					}
+				}
+			},
+			"publish": {
+				"message": {
+					"payload": {
+						"$ref": "#/components/schemas/TurnOn"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"TurnOn": {
+				"x-parser-schema-id": "TurnOn",
+				"type": "object",
+				"required": ["lumen"],
+				"properties": {
+					"lumen": {
+						"type": "integer",
+						"description": "How bright should the light be."
+					}
+				}
+			}
+		}
+	}
+}
