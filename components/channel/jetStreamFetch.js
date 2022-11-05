@@ -9,10 +9,9 @@ import { unwrap } from './ChannelParameterUnwrap';
  * @param {string} defaultContentType 
  * @param {string} channelName to publish to
  * @param {Message} message which is being received
- * @param {string} messageDescription 
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function Fetch(channelName, message, messageDescription, channelParameters) {
+export function JetstreamFetch(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
@@ -26,7 +25,7 @@ export function Fetch(channelName, message, messageDescription, channelParameter
   if (!hasNullPayload) {
     whenReceivingMessage =  `
     let receivedData: any = codec.decode(msg.data);
-    onDataCallback(undefined, ${messageType}.unmarshal(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`}, jsMsg);
+    onDataCallback(undefined, ${messageType}.unmarshal(receivedData) ${parameters.length > 0 && `, ${parameters.join(',')}`}, msg);
     `;
   }
   return  `
@@ -34,7 +33,7 @@ export function Fetch(channelName, message, messageDescription, channelParameter
      * Internal functionality to setup jetstrema fetch on the \`${channelName}\` channel 
      * 
      * @param onDataCallback to call when messages are received
-     * @param js client to pull with
+     * @param js client to fetch with
      * @param codec used to convert messages
      ${renderJSDocParameters(channelParameters)}
       */
@@ -45,8 +44,8 @@ export function Fetch(channelName, message, messageDescription, channelParameter
           ${realizeParametersForChannelWrapper(channelParameters, false)},
           jetstreamMsg?: Nats.JsMsg) => void,
         js: Nats.JetStreamClient,
-        codec: Nats.Codec < any > , 
-        server_id: string
+        codec: Nats.Codec < any > 
+        ${realizeParametersForChannelWrapper(channelParameters)}
       ) {
         const stream = ${realizeChannelName(channelParameters, channelName)};
         (async () => {

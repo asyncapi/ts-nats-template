@@ -1,6 +1,6 @@
 import { camelCase, getMessageType, realizeParametersForChannelWrapper, renderJSDocParameters, realizeParametersForChannelWithoutType, pascalCase} from '../../utils/index';
 
-export function Fetch(channelName, message, messageDescription, channelParameters) {
+export function JetstreamFetch(channelName, message, messageDescription, channelParameters) {
   return `
   /**
     * JetStream fetch function.
@@ -17,16 +17,16 @@ export function Fetch(channelName, message, messageDescription, channelParameter
       onDataCallback: (
         err ? : NatsTypescriptTemplateError,
         msg?: ${getMessageType(message)}
-        ${realizeParametersForChannelWrapper(channelParameters, false)}
-        jetstreamMsg?: Nats.JsMsg) => void,
-      server_id: string
+        ${realizeParametersForChannelWrapper(channelParameters, false)},
+        jetstreamMsg?: Nats.JsMsg) => void
+      ${realizeParametersForChannelWrapper(channelParameters)},
     ): void {
       if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
           ${camelCase(channelName)}Channel.jetsStreamFetch(
           onDataCallback,
           this.js,
           this.codec
-          ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)},` : ''}
+          ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)}` : ''}
         );
       } else {
         throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
