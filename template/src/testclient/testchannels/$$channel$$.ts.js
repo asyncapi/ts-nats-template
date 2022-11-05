@@ -57,10 +57,16 @@ function getChannelCode(channel, channelName, params) {
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
-      channelcode = Subscribe(
+      const normalSubscribeCode = Subscribe(
+        channelName, 
+        channel.subscribe() ? channel.subscribe().message(0) : undefined,
+        channel.parameters(),
+        channel.subscribe());
+      const jetstreamPushSubscriptionCode = JetstreamPullSubscription(
         channelName, 
         channel.subscribe() ? channel.subscribe().message(0) : undefined,
         channel.parameters());
+      channelcode = `${normalSubscribeCode}\n${jetstreamPushSubscriptionCode}`;
     }
     if (channel.hasPublish()) {
       channelcode = Publish(

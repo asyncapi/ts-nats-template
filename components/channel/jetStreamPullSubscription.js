@@ -1,4 +1,4 @@
-import { realizeChannelName, camelCase, getMessageType, includeUnsubAfterForSubscription, messageHasNullPayload, realizeParametersForChannelWrapper, includeQueueForSubscription, renderJSDocParameters} from '../../utils/index';
+import { realizeChannelName, camelCase, getMessageType, messageHasNullPayload, realizeParametersForChannelWrapper, renderJSDocParameters} from '../../utils/index';
 import { unwrap } from './ChannelParameterUnwrap';
 // eslint-disable-next-line no-unused-vars
 import { Message, ChannelParameter } from '@asyncapi/parser';
@@ -11,7 +11,7 @@ import { Message, ChannelParameter } from '@asyncapi/parser';
  * @param {Message} message which is being received
  * @param {Object.<string, ChannelParameter>} channelParameters parameters to the channel
  */
-export function PullSubscription(channelName, message, channelParameters, operation) {
+export function JetstreamPullSubscription(channelName, message, channelParameters) {
   const messageType = getMessageType(message);
   let parameters = [];
   parameters = Object.entries(channelParameters).map(([parameterName]) => {
@@ -30,7 +30,6 @@ export function PullSubscription(channelName, message, channelParameters, operat
   }
   
   return `
-  
   /**
    * Internal functionality to setup jetstream pull subscription on the \`${channelName}\` channel 
    * 
@@ -43,24 +42,16 @@ export function PullSubscription(channelName, message, channelParameters, operat
     onDataCallback: (
       err ? : NatsTypescriptTemplateError,
       msg?: ${messageType}
-      ${realizeParametersForChannelWrapper(channelParameters, false)}) => void,
+      ${realizeParametersForChannelWrapper(channelParameters, false)},
       jetstreamMsg?: Nats.JsMsg) => void,
     js: Nats.JetStreamClient,
     codec: Nats.Codec < any > 
-    ${realizeParametersForChannelWrapper(channelParameters)}
+    ${realizeParametersForChannelWrapper(channelParameters)},
+    options: Nats.ConsumerOptsBuilder | Partial<Nats.ConsumerOpts>
   ): Promise < Nats.JetStreamPullSubscription > {
     return new Promise(async (resolve, reject) => {
       try {
-        const subscription = await js.pullSubscribe(${realizeChannelName(channelParameters, channelName)}, {
-          mack: true,
-          // artificially low ack_wait, to show some messages
-          // not getting acked being redelivered
-          config: {
-            durable_name: 'durable',
-            ack_policy: AckPolicy.Explicit,
-            ack_wait: nanos(4000),
-          },
-        });
+        const subscription = await js.pullSubscribe(${realizeChannelName(channelParameters, channelName)}, options);
   
         (async () => {
           for await (const msg of subscription) {

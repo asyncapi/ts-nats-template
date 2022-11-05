@@ -7,6 +7,7 @@ import { Request } from '../../../components/index/request';
 import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
+import { JetstreamPullSubscribe } from '../../../components/index/jetStreamPullSubscription';
 
 /**
  * @typedef TemplateParameters
@@ -60,11 +61,17 @@ function getChannelWrappers(asyncapi, params) {
 
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
-        return Subscribe(
+        const normalSubscribeCode = Subscribe(
           channelName, 
           subscribeMessage, 
           channelDescription, 
           channelParameters);
+        const jetstreamPullSubscribe = JetstreamPullSubscribe(
+          channelName, 
+          subscribeMessage, 
+          channelDescription, 
+          channelParameters);
+        return `${normalSubscribeCode}\n${jetstreamPullSubscribe}`;
       }
       if (channel.hasPublish()) {
         return Publish(
