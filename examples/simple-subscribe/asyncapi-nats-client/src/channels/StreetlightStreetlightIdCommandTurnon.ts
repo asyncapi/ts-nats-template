@@ -68,14 +68,12 @@ export function jetsStreamFetch(
     msg ? : TurnOn, streetlight_id ? : string,
     jetstreamMsg ? : Nats.JsMsg) => void,
   js: Nats.JetStreamClient,
-  codec: Nats.Codec < any > , streetlight_id: string
+  codec: Nats.Codec < any > , streetlight_id: string,
+  durable: string, options ? : Partial < Nats.PullOptions >
 ) {
   const stream = `streetlight.${streetlight_id}.command.turnon`;
   (async () => {
-    let msgs = await js.fetch(stream, 'durableName', {
-      batch: 10,
-      expires: 5000
-    });
+    let msgs = await js.fetch(stream, durable, options);
     for await (const msg of msgs) {
       const unmodifiedChannel = `streetlight.{streetlight_id}.command.turnon`;
       let channel = msg.subject;

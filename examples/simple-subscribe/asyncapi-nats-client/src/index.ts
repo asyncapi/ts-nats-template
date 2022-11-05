@@ -169,12 +169,15 @@ export class NatsAsyncApiClient {
       err ? : NatsTypescriptTemplateError,
       msg ? : TurnOn, streetlight_id ? : string,
       jetstreamMsg ? : Nats.JsMsg) => void, streetlight_id: string,
+    durable: string, options ? : Partial < Nats.PullOptions >
   ): void {
     if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
       streetlightStreetlightIdCommandTurnonChannel.jetsStreamFetch(
         onDataCallback,
         this.js,
-        this.codec, streetlight_id
+        this.codec, streetlight_id,
+        durable,
+        options
       );
     } else {
       throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);

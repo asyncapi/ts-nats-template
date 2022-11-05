@@ -20,13 +20,16 @@ export function JetstreamFetch(channelName, message, messageDescription, channel
         ${realizeParametersForChannelWrapper(channelParameters, false)},
         jetstreamMsg?: Nats.JsMsg) => void
       ${realizeParametersForChannelWrapper(channelParameters)},
+      durable: string, options?: Partial<Nats.PullOptions>
     ): void {
       if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
           ${camelCase(channelName)}Channel.jetsStreamFetch(
           onDataCallback,
           this.js,
           this.codec
-          ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)}` : ''}
+          ${Object.keys(channelParameters).length ? ` ,${realizeParametersForChannelWithoutType(channelParameters)}` : ''},
+          durable,
+          options
         );
       } else {
         throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);

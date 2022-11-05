@@ -45,11 +45,12 @@ export function JetstreamFetch(channelName, message, channelParameters) {
           jetstreamMsg?: Nats.JsMsg) => void,
         js: Nats.JetStreamClient,
         codec: Nats.Codec < any > 
-        ${realizeParametersForChannelWrapper(channelParameters)}
+        ${realizeParametersForChannelWrapper(channelParameters)},
+        durable: string, options?: Partial<Nats.PullOptions>
       ) {
         const stream = ${realizeChannelName(channelParameters, channelName)};
         (async () => {
-          let msgs = await js.fetch(stream, 'durableName', { batch: 10, expires: 5000 });
+          let msgs = await js.fetch(stream, durable, options);
           for await (const msg of msgs) {
             ${unwrap(channelName, channelParameters)}
 
