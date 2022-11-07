@@ -157,6 +157,9 @@ export class NatsAsyncApiClient {
   }
   /**
    * Push subscription to the `streetlight/{streetlight_id}/command/turnon`
+   * JetStream pull function.
+   * 
+   * Pull message from `streetlight/{streetlight_id}/command/turnon`
    * 
    * Channel for the turn on command which should turn on the streetlight
    * 
@@ -190,5 +193,22 @@ export class NatsAsyncApiClient {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
       }
     });
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullStreetlightStreetlightIdCommandTurnon(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : TurnOn, streetlight_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, streetlight_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      streetlightStreetlightIdCommandTurnonChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, streetlight_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
   }
 }

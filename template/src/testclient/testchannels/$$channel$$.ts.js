@@ -8,6 +8,7 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../../../components/channel/jetstreamPushSubscription';
+import { JetstreamPull } from '../../../../components/channel/jetstreamPull';
 import { JetstreamPublish } from '../../../../components/channel/jetstreamPublish';
 
 /**
@@ -67,7 +68,11 @@ function getChannelCode(channel, channelName, params) {
         channelName, 
         channel.subscribe() ? channel.subscribe().message(0) : undefined,
         channel.parameters());
-      channelcode = `${normalSubscribeCode}\n${jetstreamPushSubscriptionCode}`;
+      const jetstreamPullCode = JetstreamPull(
+        channelName, 
+        channel.subscribe() ? channel.subscribe().message(0) : undefined,
+        channel.parameters());
+      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}`;
     }
     if (channel.hasPublish()) {
       const publishCode = Publish(
