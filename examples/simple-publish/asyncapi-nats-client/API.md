@@ -4,9 +4,6 @@
 <dt><a href="#module_streetlightStreetlightIdCommandTurnon">streetlightStreetlightIdCommandTurnon</a></dt>
 <dd><p>Module which wraps functionality for the <code>streetlight/{streetlight_id}/command/turnon</code> channel</p>
 </dd>
-<dt><a href="#module_streetlightStreetlightIdEventTurnon">streetlightStreetlightIdEventTurnon</a></dt>
-<dd><p>Module which wraps functionality for the <code>streetlight/{streetlight_id}/event/turnon</code> channel</p>
-</dd>
 </dl>
 
 ## Classes
@@ -27,6 +24,11 @@
 ## streetlightStreetlightIdCommandTurnon
 Module which wraps functionality for the `streetlight/{streetlight_id}/command/turnon` channel
 
+
+* [streetlightStreetlightIdCommandTurnon](#module_streetlightStreetlightIdCommandTurnon)
+    * [~publish(message, nc, codec, streetlight_id, options)](#module_streetlightStreetlightIdCommandTurnon..publish)
+    * [~jetStreamPublish(message, js, codec, streetlight_id, options)](#module_streetlightStreetlightIdCommandTurnon..jetStreamPublish)
+
 <a name="module_streetlightStreetlightIdCommandTurnon..publish"></a>
 
 ### streetlightStreetlightIdCommandTurnon~publish(message, nc, codec, streetlight_id, options)
@@ -43,23 +45,18 @@ streetlight/{streetlight_id}/command/turnon
 | streetlight_id | parameter to use in topic |
 | options | to publish with |
 
-<a name="module_streetlightStreetlightIdEventTurnon"></a>
+<a name="module_streetlightStreetlightIdCommandTurnon..jetStreamPublish"></a>
 
-## streetlightStreetlightIdEventTurnon
-Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
+### streetlightStreetlightIdCommandTurnon~jetStreamPublish(message, js, codec, streetlight_id, options)
+Internal functionality to publish message to jetstream channel
+streetlight/{streetlight_id}/command/turnon
 
-<a name="module_streetlightStreetlightIdEventTurnon..publish"></a>
-
-### streetlightStreetlightIdEventTurnon~publish(message, nc, codec, streetlight_id, options)
-Internal functionality to publish message to channel
-streetlight/{streetlight_id}/event/turnon
-
-**Kind**: inner method of [<code>streetlightStreetlightIdEventTurnon</code>](#module_streetlightStreetlightIdEventTurnon)  
+**Kind**: inner method of [<code>streetlightStreetlightIdCommandTurnon</code>](#module_streetlightStreetlightIdCommandTurnon)  
 
 | Param | Description |
 | --- | --- |
 | message | to publish |
-| nc | to publish with |
+| js | to publish with |
 | codec | used to convert messages |
 | streetlight_id | parameter to use in topic |
 | options | to publish with |
@@ -82,6 +79,7 @@ The generated client based on your AsyncAPI document.
     * [.connectToHost(host, options)](#NatsAsyncApiClient+connectToHost)
     * [.connectToLocal()](#NatsAsyncApiClient+connectToLocal)
     * [.publishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)](#NatsAsyncApiClient+publishToStreetlightStreetlightIdCommandTurnon)
+    * [.jetStreamPublishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)](#NatsAsyncApiClient+jetStreamPublishToStreetlightStreetlightIdCommandTurnon)
 
 <a name="NatsAsyncApiClient+connect"></a>
 
@@ -154,6 +152,20 @@ Local server used during development and testing
 
 ### natsAsyncApiClient.publishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)
 Publish to the `streetlight/{streetlight_id}/command/turnon` channel
+
+Channel for the turn on command which should turn on the streetlight
+
+**Kind**: instance method of [<code>NatsAsyncApiClient</code>](#NatsAsyncApiClient)  
+
+| Param | Description |
+| --- | --- |
+| message | to publish |
+| streetlight_id | parameter to use in topic |
+
+<a name="NatsAsyncApiClient+jetStreamPublishToStreetlightStreetlightIdCommandTurnon"></a>
+
+### natsAsyncApiClient.jetStreamPublishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)
+Publish to the `streetlight/{streetlight_id}/command/turnon` jetstream channel
 
 Channel for the turn on command which should turn on the streetlight
 
