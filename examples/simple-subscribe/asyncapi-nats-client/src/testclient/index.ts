@@ -18,6 +18,7 @@ export {
  */
 export class NatsAsyncApiTestClient {
   private nc ? : Nats.NatsConnection;
+  private js ? : Nats.JetStreamClient;
   private codec ? : Nats.Codec < any > ;
   private options ? : Nats.ConnectionOptions;
   /**
@@ -37,6 +38,7 @@ export class NatsAsyncApiTestClient {
       }
       try {
         this.nc = await Nats.connect(this.options);
+        this.js = this.nc.jetstream();
         resolve();
       } catch (e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
@@ -123,6 +125,29 @@ export class NatsAsyncApiTestClient {
       return streetlightStreetlightIdCommandTurnonChannel.publish(
         message,
         this.nc,
+        this.codec, streetlight_id,
+        options
+      );
+    } else {
+      return Promise.reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+    }
+  }
+  /**
+   * Publish to the `streetlight/{streetlight_id}/command/turnon` jetstream channel 
+   * 
+   * Channel for the turn on command which should turn on the streetlight
+   * 
+   * @param message to publish
+   * @param streetlight_id parameter to use in topic
+   */
+  public jetStreamPublishToStreetlightStreetlightIdCommandTurnon(
+    message: TurnOn, streetlight_id: string,
+    options ? : Nats.PublishOptions
+  ): Promise < void > {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      return streetlightStreetlightIdCommandTurnonChannel.jetStreamPublish(
+        message,
+        this.js,
         this.codec, streetlight_id,
         options
       );
