@@ -26,6 +26,7 @@ export {
  */
 export class NatsAsyncApiClient {
   private nc ? : Nats.NatsConnection;
+  private js ? : Nats.JetStreamClient;
   private codec ? : Nats.Codec < any > ;
   private options ? : Nats.ConnectionOptions;
   /**
@@ -45,6 +46,7 @@ export class NatsAsyncApiClient {
       }
       try {
         this.nc = await Nats.connect(this.options);
+        this.js = this.nc.jetstream();
         resolve();
       } catch (e: any) {
         reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.INTERNAL_NATS_TS_ERROR, e));
