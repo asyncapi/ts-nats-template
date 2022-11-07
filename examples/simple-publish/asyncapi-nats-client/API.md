@@ -194,6 +194,7 @@ The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
     * [.connectToHost(host, options)](#NatsAsyncApiTestClient+connectToHost)
     * [.connectToLocal()](#NatsAsyncApiTestClient+connectToLocal)
     * [.subscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)](#NatsAsyncApiTestClient+subscribeToStreetlightStreetlightIdCommandTurnon)
+    * [.jetStreamPullStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, options)](#NatsAsyncApiTestClient+jetStreamPullStreetlightStreetlightIdCommandTurnon)
 
 <a name="NatsAsyncApiTestClient+connect"></a>
 
@@ -277,4 +278,21 @@ Channel for the turn on command which should turn on the streetlight
 | streetlight_id | parameter to use in topic |
 | flush | ensure client is force flushed after subscribing |
 | options | to subscribe with, bindings from the AsyncAPI document overwrite these if specified |
+
+<a name="NatsAsyncApiTestClient+jetStreamPullStreetlightStreetlightIdCommandTurnon"></a>
+
+### natsAsyncApiTestClient.jetStreamPullStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, options)
+JetStream pull function.
+
+Pull message from `streetlight/{streetlight_id}/command/turnon`
+
+Channel for the turn on command which should turn on the streetlight
+
+**Kind**: instance method of [<code>NatsAsyncApiTestClient</code>](#NatsAsyncApiTestClient)  
+
+| Param | Description |
+| --- | --- |
+| onDataCallback | to call when messages are received |
+| streetlight_id | parameter to use in topic |
+| options | to pull message with, bindings from the AsyncAPI document overwrite these if specified |
 
