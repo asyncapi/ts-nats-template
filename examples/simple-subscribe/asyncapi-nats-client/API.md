@@ -159,6 +159,7 @@ The test/mirror client which is the reverse to the normal NatsAsyncApiClient.
     * [.connectToHost(host, options)](#NatsAsyncApiTestClient+connectToHost)
     * [.connectToLocal()](#NatsAsyncApiTestClient+connectToLocal)
     * [.publishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)](#NatsAsyncApiTestClient+publishToStreetlightStreetlightIdCommandTurnon)
+    * [.jetStreamPublishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)](#NatsAsyncApiTestClient+jetStreamPublishToStreetlightStreetlightIdCommandTurnon)
 
 <a name="NatsAsyncApiTestClient+connect"></a>
 
@@ -231,6 +232,20 @@ Local server used during development and testing
 
 ### natsAsyncApiTestClient.publishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)
 Publish to the `streetlight/{streetlight_id}/command/turnon` channel
+
+Channel for the turn on command which should turn on the streetlight
+
+**Kind**: instance method of [<code>NatsAsyncApiTestClient</code>](#NatsAsyncApiTestClient)  
+
+| Param | Description |
+| --- | --- |
+| message | to publish |
+| streetlight_id | parameter to use in topic |
+
+<a name="NatsAsyncApiTestClient+jetStreamPublishToStreetlightStreetlightIdCommandTurnon"></a>
+
+### natsAsyncApiTestClient.jetStreamPublishToStreetlightStreetlightIdCommandTurnon(message, streetlight_id)
+Publish to the `streetlight/{streetlight_id}/command/turnon` jetstream channel
 
 Channel for the turn on command which should turn on the streetlight
 
