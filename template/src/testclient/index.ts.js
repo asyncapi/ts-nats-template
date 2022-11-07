@@ -70,12 +70,12 @@ function getChannelWrappers(asyncapi, params) {
       if (channel.hasPublish()) {
         const normalPublish = Publish(
           channelName, 
-          subscribeMessage, 
+          publishMessage, 
           channelDescription, 
           channelParameters);
         const jetStreamPublish = JetstreamPublish(
           channelName, 
-          subscribeMessage, 
+          publishMessage, 
           channelDescription, 
           channelParameters);
         return `${normalPublish} \n ${jetStreamPublish}`;
