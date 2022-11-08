@@ -156,6 +156,104 @@ export class NatsAsyncApiClient {
     });
   }
   /**
+   * JetStream pull function.
+   * 
+   * Pull message from `streetlight/{streetlight_id}/command/turnon`
+   * 
+   * Channel for the turn on command which should turn on the streetlight
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param streetlight_id parameter to use in topic
+   * @param options to pull message with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullStreetlightStreetlightIdCommandTurnon(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : TurnOn, streetlight_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, streetlight_id: string
+  ): void {
+    if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+      streetlightStreetlightIdCommandTurnonChannel.jetStreamPull(
+        onDataCallback,
+        this.js,
+        this.codec, streetlight_id,
+      );
+    } else {
+      throw NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED);
+    }
+  }
+  /**
+   * Push subscription to the `streetlight/{streetlight_id}/command/turnon`
+   * 
+   * Channel for the turn on command which should turn on the streetlight
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param streetlight_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPushSubscribeToStreetlightStreetlightIdCommandTurnon(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : TurnOn, streetlight_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, streetlight_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = await streetlightStreetlightIdCommandTurnonChannel.jetStreamPushSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec,
+            streetlight_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
+   * Push subscription to the `streetlight/{streetlight_id}/command/turnon`
+   * 
+   * Channel for the turn on command which should turn on the streetlight
+   * 
+   * @param onDataCallback to call when messages are received
+   * @param streetlight_id parameter to use in topic
+   * @param flush ensure client is force flushed after subscribing
+   * @param options to subscribe with, bindings from the AsyncAPI document overwrite these if specified
+   */
+  public jetStreamPullSubscribeToStreetlightStreetlightIdCommandTurnon(
+    onDataCallback: (
+      err ? : NatsTypescriptTemplateError,
+      msg ? : TurnOn, streetlight_id ? : string,
+      jetstreamMsg ? : Nats.JsMsg) => void, streetlight_id: string,
+    options: Nats.ConsumerOptsBuilder | Partial < Nats.ConsumerOpts >
+  ): Promise < Nats.JetStreamPullSubscription > {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isClosed() && this.nc !== undefined && this.codec !== undefined && this.js !== undefined) {
+        try {
+          const sub = streetlightStreetlightIdCommandTurnonChannel.jetStreamPullSubscribe(
+            onDataCallback,
+            this.js,
+            this.codec, streetlight_id,
+            options
+          );
+          resolve(sub);
+        } catch (e: any) {
+          reject(e);
+        }
+      } else {
+        reject(NatsTypescriptTemplateError.errorForCode(ErrorCode.NOT_CONNECTED));
+      }
+    });
+  }
+  /**
    * JetStream fetch function.
    * 
    * Pull message from `streetlight/{streetlight_id}/command/turnon`
