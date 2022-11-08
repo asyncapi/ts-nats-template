@@ -61,7 +61,7 @@ function getChannelCode(channel, channelName, params) {
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
-      const message = channel.subscribe() ? channel.subscribe().message(0) : undefined
+      const message = channel.subscribe() ? channel.subscribe().message(0) : undefined;
       const normalSubscribeCode = Subscribe(
         channelName, 
         message,
