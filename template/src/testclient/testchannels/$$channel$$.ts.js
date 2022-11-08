@@ -9,6 +9,7 @@ import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase
 import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../../../components/channel/jetstreamPushSubscription';
 import { JetstreamPull } from '../../../../components/channel/jetstreamPull';
+import { JetstreamFetch } from '../../../../components/channel/jetStreamFetch';
 import { JetstreamPublish } from '../../../../components/channel/jetstreamPublish';
 import { JetstreamPullSubscription } from '../../../../components/channel/jetStreamPullSubscription';
 
@@ -78,7 +79,11 @@ function getChannelCode(channel, channelName, params) {
         channelName, 
         message,
         channel.parameters());
-      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscriptionCode}`;
+      const jetstreamFetchCode = JetstreamFetch(
+        channelName, 
+        message,
+        channel.parameters());
+      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscriptionCode}\n${jetstreamFetchCode}`;
     }
     if (channel.hasPublish()) {
       const publishCode = Publish(

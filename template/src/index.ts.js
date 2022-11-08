@@ -10,6 +10,7 @@ import { AsyncAPIDocument } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../components/index/jetstreamPushSubscription';
 import { JetstreamPull } from '../../components/index/jetstreamPull';
 import { JetstreamPullSubscribe } from '../../components/index/jetStreamPullSubscription';
+import { JetstreamFetch } from '../../components/index/jetStreamFetch';
 import { JetstreamPublish } from '../../components/index/jetstreamPublish';
 
 /**
@@ -83,6 +84,11 @@ function getChannelWrappers(asyncapi, params) {
           publishMessage, 
           channelDescription, 
           channelParameters);
+        const jetstreamFetchCode = JetstreamFetch(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
         const jetstreamPullSubscribe = JetstreamPullSubscribe(
           channelName, 
           publishMessage, 
@@ -98,7 +104,7 @@ function getChannelWrappers(asyncapi, params) {
           publishMessage, 
           channelDescription, 
           channelParameters);
-        return `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscribe}`;
+        return `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscribe}\n${jetstreamFetchCode}`;
       }
     }
   });
