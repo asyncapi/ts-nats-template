@@ -29,6 +29,7 @@ Module which wraps functionality for the `streetlight/{streetlight_id}/command/t
     * [~subscribe(onDataCallback, nc, codec, streetlight_id, options)](#module_streetlightStreetlightIdCommandTurnon..subscribe)
     * [~jetStreamPull(onDataCallback, js, codec, streetlight_id)](#module_streetlightStreetlightIdCommandTurnon..jetStreamPull)
     * [~jetStreamPushSubscribe(onDataCallback, nc, codec, streetlight_id, options)](#module_streetlightStreetlightIdCommandTurnon..jetStreamPushSubscribe)
+    * [~jetStreamPullSubscribe(onDataCallback, nc, codec, streetlight_id)](#module_streetlightStreetlightIdCommandTurnon..jetStreamPullSubscribe)
 
 <a name="module_streetlightStreetlightIdCommandTurnon..subscribe"></a>
 
@@ -74,6 +75,20 @@ Internal functionality to setup jetstream push subscription on the `streetlight/
 | streetlight_id | parameter to use in topic |
 | options | to subscribe with, bindings from the AsyncAPI document overwrite these if specified |
 
+<a name="module_streetlightStreetlightIdCommandTurnon..jetStreamPullSubscribe"></a>
+
+### streetlightStreetlightIdCommandTurnon~jetStreamPullSubscribe(onDataCallback, nc, codec, streetlight_id)
+Internal functionality to setup jetstream pull subscription on the `streetlight/{streetlight_id}/command/turnon` channel
+
+**Kind**: inner method of [<code>streetlightStreetlightIdCommandTurnon</code>](#module_streetlightStreetlightIdCommandTurnon)  
+
+| Param | Description |
+| --- | --- |
+| onDataCallback | to call when messages are received |
+| nc | to subscribe with |
+| codec | used to convert messages |
+| streetlight_id | parameter to use in topic |
+
 <a name="NatsAsyncApiClient"></a>
 
 ## NatsAsyncApiClient
@@ -94,6 +109,7 @@ The generated client based on your AsyncAPI document.
     * [.subscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)](#NatsAsyncApiClient+subscribeToStreetlightStreetlightIdCommandTurnon)
     * [.jetStreamPullStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, options)](#NatsAsyncApiClient+jetStreamPullStreetlightStreetlightIdCommandTurnon)
     * [.jetStreamPushSubscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)](#NatsAsyncApiClient+jetStreamPushSubscribeToStreetlightStreetlightIdCommandTurnon)
+    * [.jetStreamPullSubscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)](#NatsAsyncApiClient+jetStreamPullSubscribeToStreetlightStreetlightIdCommandTurnon)
 
 <a name="NatsAsyncApiClient+connect"></a>
 
@@ -198,6 +214,22 @@ Channel for the turn on command which should turn on the streetlight
 <a name="NatsAsyncApiClient+jetStreamPushSubscribeToStreetlightStreetlightIdCommandTurnon"></a>
 
 ### natsAsyncApiClient.jetStreamPushSubscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)
+Push subscription to the `streetlight/{streetlight_id}/command/turnon`
+
+Channel for the turn on command which should turn on the streetlight
+
+**Kind**: instance method of [<code>NatsAsyncApiClient</code>](#NatsAsyncApiClient)  
+
+| Param | Description |
+| --- | --- |
+| onDataCallback | to call when messages are received |
+| streetlight_id | parameter to use in topic |
+| flush | ensure client is force flushed after subscribing |
+| options | to subscribe with, bindings from the AsyncAPI document overwrite these if specified |
+
+<a name="NatsAsyncApiClient+jetStreamPullSubscribeToStreetlightStreetlightIdCommandTurnon"></a>
+
+### natsAsyncApiClient.jetStreamPullSubscribeToStreetlightStreetlightIdCommandTurnon(onDataCallback, streetlight_id, flush, options)
 Push subscription to the `streetlight/{streetlight_id}/command/turnon`
 
 Channel for the turn on command which should turn on the streetlight

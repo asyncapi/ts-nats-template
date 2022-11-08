@@ -78,20 +78,19 @@ function getChannelCode(channel, channelName, params) {
         publishMessage, 
         channel.parameters(),
         publishOperation);
-      const jetstreamPushSubscriptionCode = JetstreamPullSubscription(
+      const jetstreamPullSubscriptionCode = JetstreamPullSubscription(
         channelName, 
         publishMessage, 
         channel.parameters());
       const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
         channelName, 
         publishMessage, 
-        channel.parameters(),
-        publishOperation);
+        channel.parameters());
       const jetstreamPullCode = JetstreamPull(
         channelName, 
         publishMessage,
         channel.parameters());
-      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPushSubscriptionCode}`;
+      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscriptionCode}`;
     }
   }
   return channelcode;
