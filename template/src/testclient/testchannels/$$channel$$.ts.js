@@ -10,6 +10,7 @@ import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../../../components/channel/jetstreamPushSubscription';
 import { JetstreamPull } from '../../../../components/channel/jetstreamPull';
 import { JetstreamPublish } from '../../../../components/channel/jetstreamPublish';
+import { JetstreamPullSubscription } from '../../../../components/channel/jetStreamPullSubscription';
 
 /**
  * @typedef TemplateParameters
@@ -60,19 +61,24 @@ function getChannelCode(channel, channelName, params) {
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
+      const message = channel.subscribe() ? channel.subscribe().message(0) : undefined;
       const normalSubscribeCode = Subscribe(
         channelName, 
-        channel.subscribe() ? channel.subscribe().message(0) : undefined,
+        message,
         channel.parameters());
       const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
         channelName, 
-        channel.subscribe() ? channel.subscribe().message(0) : undefined,
+        message,
+        channel.parameters());
+      const jetstreamPullSubscriptionCode = JetstreamPullSubscription(
+        channelName, 
+        message, 
         channel.parameters());
       const jetstreamPullCode = JetstreamPull(
         channelName, 
-        channel.subscribe() ? channel.subscribe().message(0) : undefined,
+        message,
         channel.parameters());
-      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}`;
+      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscriptionCode}`;
     }
     if (channel.hasPublish()) {
       const publishCode = Publish(

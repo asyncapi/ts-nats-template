@@ -9,6 +9,7 @@ import { isRequestReply, isReplier, isRequester, isPubsub} from '../../utils/ind
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../components/index/jetstreamPushSubscription';
 import { JetstreamPull } from '../../components/index/jetstreamPull';
+import { JetstreamPullSubscribe } from '../../components/index/jetStreamPullSubscription';
 import { JetstreamPublish } from '../../components/index/jetstreamPublish';
 
 /**
@@ -82,6 +83,11 @@ function getChannelWrappers(asyncapi, params) {
           publishMessage, 
           channelDescription, 
           channelParameters);
+        const jetstreamPullSubscribe = JetstreamPullSubscribe(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
         const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
           channelName, 
           publishMessage, 
@@ -92,7 +98,7 @@ function getChannelWrappers(asyncapi, params) {
           publishMessage, 
           channelDescription, 
           channelParameters);
-        return `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}`;
+        return `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscribe}`;
       }
     }
   });
