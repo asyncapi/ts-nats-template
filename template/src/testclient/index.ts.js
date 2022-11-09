@@ -7,6 +7,11 @@ import { Request } from '../../../components/index/request';
 import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
+import { JetstreamPullSubscribe } from '../../../components/index/jetStreamPullSubscription';
+import { JetstreamPushSubscription } from '../../../components/index/jetstreamPushSubscription';
+import { JetstreamPull } from '../../../components/index/jetstreamPull';
+import { JetstreamFetch } from '../../../components/index/jetStreamFetch';
+import { JetstreamPublish } from '../../../components/index/jetstreamPublish';
 
 /**
  * @typedef TemplateParameters
@@ -60,18 +65,45 @@ function getChannelWrappers(asyncapi, params) {
 
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
-        return Subscribe(
+        const normalSubscribeCode = Subscribe(
           channelName, 
           subscribeMessage, 
           channelDescription, 
           channelParameters);
+        const jetstreamFetchCode = JetstreamFetch(
+          channelName, 
+          subscribeMessage, 
+          channelDescription, 
+          channelParameters);
+        const jetstreamPullSubscribe = JetstreamPullSubscribe(
+          channelName, 
+          subscribeMessage, 
+          channelDescription, 
+          channelParameters);
+        const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
+          channelName, 
+          subscribeMessage, 
+          channelDescription, 
+          channelParameters);
+        const jetstreamPullCode = JetstreamPull(
+          channelName, 
+          subscribeMessage, 
+          channelDescription, 
+          channelParameters);
+        return `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscribe}\n${jetstreamFetchCode}`;
       }
       if (channel.hasPublish()) {
-        return Publish(
+        const normalPublish = Publish(
           channelName, 
           publishMessage, 
           channelDescription, 
           channelParameters);
+        const jetStreamPublish = JetstreamPublish(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
+        return `${normalPublish} \n ${jetStreamPublish}`;
       }
     }
   }) : '';

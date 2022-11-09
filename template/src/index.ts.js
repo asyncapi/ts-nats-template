@@ -7,6 +7,11 @@ import { Request } from '../../components/index/request';
 import { isRequestReply, isReplier, isRequester, isPubsub} from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument } from '@asyncapi/parser';
+import { JetstreamPushSubscription } from '../../components/index/jetstreamPushSubscription';
+import { JetstreamPull } from '../../components/index/jetstreamPull';
+import { JetstreamPullSubscribe } from '../../components/index/jetStreamPullSubscription';
+import { JetstreamFetch } from '../../components/index/jetStreamFetch';
+import { JetstreamPublish } from '../../components/index/jetstreamPublish';
 
 /**
  * @typedef TemplateParameters
@@ -61,18 +66,45 @@ function getChannelWrappers(asyncapi, params) {
 
     if (isPubsub(channel)) {
       if (channel.hasSubscribe()) {
-        return Publish(
+        const normalPublish = Publish(
           channelName, 
           subscribeMessage, 
           channelDescription, 
           channelParameters);
+        const jetStreamPublish = JetstreamPublish(
+          channelName, 
+          subscribeMessage, 
+          channelDescription, 
+          channelParameters);
+        return `${normalPublish} \n ${jetStreamPublish}`;
       }
       if (channel.hasPublish()) {
-        return Subscribe(
+        const normalSubscribeCode = Subscribe(
           channelName, 
           publishMessage, 
           channelDescription, 
           channelParameters);
+        const jetstreamFetchCode = JetstreamFetch(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
+        const jetstreamPullSubscribe = JetstreamPullSubscribe(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
+        const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
+        const jetstreamPullCode = JetstreamPull(
+          channelName, 
+          publishMessage, 
+          channelDescription, 
+          channelParameters);
+        return `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscribe}\n${jetstreamFetchCode}`;
       }
     }
   });

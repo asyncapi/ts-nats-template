@@ -7,6 +7,11 @@ import { General } from '../../../../components/channel/general';
 import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase} from '../../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
+import { JetstreamPushSubscription } from '../../../../components/channel/jetstreamPushSubscription';
+import { JetstreamPull } from '../../../../components/channel/jetstreamPull';
+import { JetstreamFetch } from '../../../../components/channel/jetStreamFetch';
+import { JetstreamPublish } from '../../../../components/channel/jetstreamPublish';
+import { JetstreamPullSubscription } from '../../../../components/channel/jetStreamPullSubscription';
 
 /**
  * @typedef TemplateParameters
@@ -57,16 +62,39 @@ function getChannelCode(channel, channelName, params) {
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
-      channelcode = Subscribe(
+      const message = channel.subscribe() ? channel.subscribe().message(0) : undefined;
+      const normalSubscribeCode = Subscribe(
         channelName, 
-        channel.subscribe() ? channel.subscribe().message(0) : undefined,
+        message,
         channel.parameters());
+      const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
+        channelName, 
+        message,
+        channel.parameters());
+      const jetstreamPullSubscriptionCode = JetstreamPullSubscription(
+        channelName, 
+        message, 
+        channel.parameters());
+      const jetstreamPullCode = JetstreamPull(
+        channelName, 
+        message,
+        channel.parameters());
+      const jetstreamFetchCode = JetstreamFetch(
+        channelName, 
+        message,
+        channel.parameters());
+      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscriptionCode}\n${jetstreamFetchCode}`;
     }
     if (channel.hasPublish()) {
-      channelcode = Publish(
+      const publishCode = Publish(
         channelName, 
         channel.publish() ? channel.publish().message(0) : undefined, 
         channel.parameters());
+      const jetstreamPublishCode = JetstreamPublish(
+        channelName, 
+        channel.publish() ? channel.publish().message(0) : undefined, 
+        channel.parameters());
+      channelcode = `${publishCode} \n${jetstreamPublishCode}`;
     }
   }
   return channelcode;

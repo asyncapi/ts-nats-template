@@ -7,6 +7,11 @@ import { General } from '../../../components/channel/general';
 import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase} from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
+import { JetstreamFetch } from '../../../components/channel/jetStreamFetch';
+import { JetstreamPushSubscription } from '../../../components/channel/jetstreamPushSubscription';
+import { JetstreamPull } from '../../../components/channel/jetstreamPull';
+import { JetstreamPullSubscription } from '../../../components/channel/jetStreamPullSubscription';
+import { JetstreamPublish } from '../../../components/channel/jetstreamPublish';
 
 /**
  * @typedef TemplateParameters
@@ -58,17 +63,40 @@ function getChannelCode(channel, channelName, params) {
 
   if (isPubsub(channel)) {
     if (channel.hasSubscribe()) {
-      channelcode = Publish(
+      const publishCode = Publish(
         channelName, 
         subscribeMessage, 
         channel.parameters());
+      const jetstreamPublishCode = JetstreamPublish(
+        channelName, 
+        subscribeMessage, 
+        channel.parameters());
+      channelcode = `${publishCode} \n${jetstreamPublishCode}`;
     }
     if (channel.hasPublish()) {
-      channelcode = Subscribe(
+      const normalSubscribeCode = Subscribe(
         channelName, 
         publishMessage, 
         channel.parameters(),
         publishOperation);
+      const jetstreamPullSubscriptionCode = JetstreamPullSubscription(
+        channelName, 
+        publishMessage, 
+        channel.parameters());
+      const jetstreamPushSubscriptionCode = JetstreamPushSubscription(
+        channelName, 
+        publishMessage, 
+        channel.parameters());
+      const jetstreamPullCode = JetstreamPull(
+        channelName, 
+        publishMessage,
+        channel.parameters());
+      const jetstreamFetchCode = JetstreamFetch(
+        channelName, 
+        publishMessage, 
+        channel.parameters(),
+        publishOperation);
+      channelcode = `${normalSubscribeCode}\n${jetstreamPullCode}\n${jetstreamPushSubscriptionCode}\n${jetstreamPullSubscriptionCode}\n${jetstreamFetchCode}`;
     }
   }
   return channelcode;
