@@ -4,9 +4,6 @@
 <dt><a href="#module_streetlightStreetlightIdCommandTurnon">streetlightStreetlightIdCommandTurnon</a></dt>
 <dd><p>Module which wraps functionality for the <code>streetlight/{streetlight_id}/command/turnon</code> channel</p>
 </dd>
-<dt><a href="#module_streetlightStreetlightIdEventTurnon">streetlightStreetlightIdEventTurnon</a></dt>
-<dd><p>Module which wraps functionality for the <code>streetlight/{streetlight_id}/event/turnon</code> channel</p>
-</dd>
 </dl>
 
 ## Classes
@@ -34,27 +31,6 @@ Internal functionality to publish message to channel
 streetlight/{streetlight_id}/command/turnon
 
 **Kind**: inner method of [<code>streetlightStreetlightIdCommandTurnon</code>](#module_streetlightStreetlightIdCommandTurnon)  
-
-| Param | Description |
-| --- | --- |
-| message | to publish |
-| nc | to publish with |
-| codec | used to convert messages |
-| streetlight_id | parameter to use in topic |
-| options | to publish with |
-
-<a name="module_streetlightStreetlightIdEventTurnon"></a>
-
-## streetlightStreetlightIdEventTurnon
-Module which wraps functionality for the `streetlight/{streetlight_id}/event/turnon` channel
-
-<a name="module_streetlightStreetlightIdEventTurnon..publish"></a>
-
-### streetlightStreetlightIdEventTurnon~publish(message, nc, codec, streetlight_id, options)
-Internal functionality to publish message to channel
-streetlight/{streetlight_id}/event/turnon
-
-**Kind**: inner method of [<code>streetlightStreetlightIdEventTurnon</code>](#module_streetlightStreetlightIdEventTurnon)  
 
 | Param | Description |
 | --- | --- |

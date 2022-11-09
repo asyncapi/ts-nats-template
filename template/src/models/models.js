@@ -4,7 +4,7 @@ import { TypeScriptGenerator, FormatHelpers, TS_COMMON_PRESET } from '@asyncapi/
 /**
  * @typedef RenderArgument
  * @type {object}
- * @property {AsyncAPIDocument} asyncapi received from the generator.
+ * @property {any} originalAsyncAPI received from the generator.
  */
 
 /**
@@ -12,7 +12,7 @@ import { TypeScriptGenerator, FormatHelpers, TS_COMMON_PRESET } from '@asyncapi/
  * @param {RenderArgument} param0 
  * @returns 
  */
-export default async function schemaRender({ asyncapi }) {
+export default async function schemaRender({ originalAsyncAPI }) {
   const typescriptGenerator = new TypeScriptGenerator({
     modelType: 'class',
     presets: [
@@ -24,7 +24,7 @@ export default async function schemaRender({ asyncapi }) {
       }
     ]
   });
-  const generatedModels = await typescriptGenerator.generateCompleteModels(asyncapi, {moduleSystem: 'ESM'});
+  const generatedModels = await typescriptGenerator.generateCompleteModels(JSON.parse(originalAsyncAPI), {moduleSystem: 'ESM'});
   const files = [];
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;

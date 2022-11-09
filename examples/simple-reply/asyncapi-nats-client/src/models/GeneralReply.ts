@@ -1,16 +1,17 @@
 
-
 class GeneralReply {
   private _statusCode?: number;
   private _statusMessage?: string;
-  private _additionalProperties?: Map<String, object | string | number | Array<unknown> | boolean | null>;
+  private _additionalProperties?: Map<string, any>;
 
   constructor(input: {
     statusCode?: number,
     statusMessage?: string,
+    additionalProperties?: Map<string, any>,
   }) {
     this._statusCode = input.statusCode;
     this._statusMessage = input.statusMessage;
+    this._additionalProperties = input.additionalProperties;
   }
 
   get statusCode(): number | undefined { return this._statusCode; }
@@ -19,8 +20,8 @@ class GeneralReply {
   get statusMessage(): string | undefined { return this._statusMessage; }
   set statusMessage(statusMessage: string | undefined) { this._statusMessage = statusMessage; }
 
-  get additionalProperties(): Map<String, object | string | number | Array<unknown> | boolean | null> | undefined { return this._additionalProperties; }
-  set additionalProperties(additionalProperties: Map<String, object | string | number | Array<unknown> | boolean | null> | undefined) { this._additionalProperties = additionalProperties; }
+  get additionalProperties(): Map<string, any> | undefined { return this._additionalProperties; }
+  set additionalProperties(additionalProperties: Map<string, any> | undefined) { this._additionalProperties = additionalProperties; }
 
   public marshal() : string {
     let json = '{'
@@ -30,11 +31,10 @@ class GeneralReply {
     if(this.statusMessage !== undefined) {
       json += `"status_message": ${typeof this.statusMessage === 'number' || typeof this.statusMessage === 'boolean' ? this.statusMessage : JSON.stringify(this.statusMessage)},`; 
     }
-  
     if(this.additionalProperties !== undefined) { 
-      for (const [key, value] of this.additionalProperties.entries()) {
-        //Only render additionalProperties which are not already a property
-        if(Object.keys(this).includes(String(key))) continue;
+    for (const [key, value] of this.additionalProperties.entries()) {
+      //Only unwrap those who are not already a property in the JSON object
+      if(Object.keys(this).includes(String(key))) continue;
         json += `"${key}": ${typeof value === 'number' || typeof value === 'boolean' ? value : JSON.stringify(value)},`;
       }
     }
@@ -54,13 +54,11 @@ class GeneralReply {
       instance.statusMessage = obj["status_message"];
     }
 
-    //Not part of core properties
-  
     if (instance.additionalProperties === undefined) {instance.additionalProperties = new Map();}
-    for (const [key, value] of Object.entries(obj).filter((([key,]) => {return !["status_code","status_message"].includes(key);}))) {
-    
-      instance.additionalProperties.set(key, value as any);
-    }
+      for (const [key, value] of Object.entries(obj).filter((([key,]) => {return !["statusCode","statusMessage","additionalProperties"].includes(key);}))) {
+        instance.additionalProperties.set(key, value as any);
+      }
+
     return instance;
   }
 }
