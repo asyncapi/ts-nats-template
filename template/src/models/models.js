@@ -1,6 +1,8 @@
 import { File } from '@asyncapi/generator-react-sdk';
 import { TypeScriptGenerator, FormatHelpers, TS_COMMON_PRESET } from '@asyncapi/modelina';
 
+import { Parser } from '@asyncapi/parserV2';
+const parser = new Parser();
 /**
  * @typedef RenderArgument
  * @type {object}
@@ -24,7 +26,8 @@ export default async function schemaRender({ originalAsyncAPI }) {
       }
     ]
   });
-  const generatedModels = await typescriptGenerator.generateCompleteModels(JSON.parse(originalAsyncAPI), {moduleSystem: 'ESM'});
+  const { document } = await parser.parse(originalAsyncAPI);
+  const generatedModels = await typescriptGenerator.generateCompleteModels(document, {moduleSystem: 'ESM'});
   const files = [];
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;
