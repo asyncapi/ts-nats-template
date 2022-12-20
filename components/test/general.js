@@ -10,8 +10,8 @@ import { ChannelParameter } from '@asyncapi/parser';
  */
 export function getReceivedVariableDeclaration(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, param]) => {
-    return `var received${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined`;
-  }).join('');
+    return `var received${pascalCase(paramName)} : ${toTsType(param.schema().type())} | undefined = undefined;`;
+  }).join('\n');
 }
 
 /**
@@ -21,8 +21,8 @@ export function getReceivedVariableDeclaration(channelParameters) {
  */
 export function getExampleParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, param]) => {
-    return `var ${pascalCase(paramName)}ToSend: ${toTsType(param.schema().type())} = ${generateExample(param.schema().json())}`;
-  }).join('');
+    return `var ${pascalCase(paramName)}ToSend: ${toTsType(param.schema().type())} = ${generateExample(param.schema().json())};`;
+  }).join('\n');
 }
 
 /**
@@ -42,8 +42,8 @@ export function getFunctionParameters(channelParameters) {
  */
 export function getSetReceivedParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, _]) => {
-    return `received${pascalCase(paramName)} = ${paramName}`;
-  }).join('');
+    return `received${pascalCase(paramName)} = ${paramName};`;
+  }).join('\n');
 }
 
 /**
@@ -53,7 +53,7 @@ export function getSetReceivedParameters(channelParameters) {
 export function getVerifyExpectedParameters(channelParameters) {
   return Object.entries(channelParameters).map(([paramName, _]) => {
     return `expect(received${pascalCase(paramName)}).to.be.equal(${pascalCase(paramName)}ToSend);`;
-  }).join('');
+  }).join('\n');
 }
 
 /**
