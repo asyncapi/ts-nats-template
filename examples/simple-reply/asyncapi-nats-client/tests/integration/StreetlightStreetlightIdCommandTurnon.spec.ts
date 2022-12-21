@@ -26,7 +26,7 @@ describe('streetlight/{streetlight_id}/command/turnon can talk to itself', () =>
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
     var receivedMsg: TestClient.TurnOnRequest | undefined = undefined;
-    var receivedStreetlightId: string | undefined = undefined
+    var receivedStreetlightId: string | undefined = undefined;
     var replyMessage: Client.GeneralReply = Client.GeneralReply.unmarshal({
       "status_code": 0,
       "status_message": "string"
@@ -34,12 +34,12 @@ describe('streetlight/{streetlight_id}/command/turnon can talk to itself', () =>
     var receiveMessage: TestClient.TurnOnRequest = TestClient.TurnOnRequest.unmarshal({
       "lumen": 0
     });
-    var StreetlightIdToSend: string = "string"
+    var StreetlightIdToSend: string = "string";
     const replySubscription = await client.replyToStreetlightStreetlightIdCommandTurnon((err, msg, streetlight_id) => {
         return new Promise((resolve, reject) => {
           receivedError = err;
           receivedMsg = msg;
-          receivedStreetlightId = streetlight_id
+          receivedStreetlightId = streetlight_id;
           resolve(replyMessage);
         })
       },

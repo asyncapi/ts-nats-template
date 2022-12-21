@@ -1,6 +1,6 @@
 {
 	"name": "@asyncapi/ts-nats-template",
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"description": "NATS TypeScript/Node.js template for the AsyncAPI generator.",
 	"keywords": [
 		"asyncapi",

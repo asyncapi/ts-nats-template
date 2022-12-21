@@ -26,15 +26,15 @@ describe('streetlight/{streetlight_id}/command/turnon can talk to itself', () =>
   it('can send message', async () => {
     var receivedError: NatsTypescriptTemplateError | undefined = undefined;
     var receivedMsg: TestClient.TurnOn | undefined = undefined;
-    var receivedStreetlightId: string | undefined = undefined
+    var receivedStreetlightId: string | undefined = undefined;
     var publishMessage: Client.TurnOn = Client.TurnOn.unmarshal({
       "lumen": 0
     });
-    var StreetlightIdToSend: string = "string"
+    var StreetlightIdToSend: string = "string";
     const subscription = await testClient.subscribeToStreetlightStreetlightIdCommandTurnon((err, msg, streetlight_id) => {
         receivedError = err;
         receivedMsg = msg;
-        receivedStreetlightId = streetlight_id
+        receivedStreetlightId = streetlight_id;
       }, StreetlightIdToSend,
       true
     );
