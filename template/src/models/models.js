@@ -1,12 +1,10 @@
 import { File } from '@asyncapi/generator-react-sdk';
 import { TypeScriptGenerator, FormatHelpers, TS_COMMON_PRESET } from '@asyncapi/modelina';
 
-import { Parser } from '@asyncapi/parserV2';
-const parser = new Parser();
 /**
  * @typedef RenderArgument
  * @type {object}
- * @property {any} originalAsyncAPI received from the generator.
+ * @property {any} asyncapi received from the generator.
  */
 
 /**
@@ -14,7 +12,7 @@ const parser = new Parser();
  * @param {RenderArgument} param0 
  * @returns 
  */
-export default async function schemaRender({ originalAsyncAPI }) {
+export default async function schemaRender({ asyncapi }) {
   const typescriptGenerator = new TypeScriptGenerator({
     modelType: 'class',
     presets: [
@@ -26,8 +24,7 @@ export default async function schemaRender({ originalAsyncAPI }) {
       }
     ]
   });
-  const { document } = await parser.parse(originalAsyncAPI);
-  const generatedModels = await typescriptGenerator.generateCompleteModels(document, {moduleSystem: 'ESM'});
+  const generatedModels = await typescriptGenerator.generateCompleteModels(asyncapi, {moduleSystem: 'ESM'});
   const files = [];
   for (const generatedModel of generatedModels) {
     const modelFileName = `${FormatHelpers.toPascalCase(generatedModel.modelName)}.ts`;
@@ -35,4 +32,3 @@ export default async function schemaRender({ originalAsyncAPI }) {
   }
   return files;
 }
-
