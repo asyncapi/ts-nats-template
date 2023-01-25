@@ -32,7 +32,7 @@
 	"dependencies": {
 		"@asyncapi/generator-filters": "^2.1.0",
 		"@asyncapi/generator-react-sdk": "^0.2.11",
-		"@asyncapi/modelina": "^0.59.1",
+		"@asyncapi/modelina": "^1.1.0",
 		"@asyncapi/parser": "^1.17.2",
 		"cross-env": "^7.0.2",
 		"filenamify": "^4.1.0",
