@@ -9,18 +9,30 @@ const contentTypeBinary = 'application/octet-stream';
 /**
  * @typedef TemplateParameters
  * @type {object}
- * @property {boolean} generateTestClient - whether or not test client should be generated.
- * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
+ * @property {boolean|string} generateTestClient - whether or not test client should be generated.
+ * @property {boolean|string} promisifyReplyCallback - whether or not reply callbacks should be promisify.
  */
 
 /**
- * Should the callbacks be promisify.
- * 
+ * Should the test client be generated.
+ *
+ * @param {TemplateParameters} params passed to the template
+ * @returns {boolean} should it promisify callbacks
+ */
+export function shouldGenerateTestClient(params) {
+  return typeof params.generateTestClient === 'boolean' && params.generateTestClient
+    || typeof params.generateTestClient === 'string' && params.generateTestClient === 'true';
+}
+
+/**
+ * Should the callbacks be promisified.
+ *
  * @param {TemplateParameters} params passed to the template
  * @returns {boolean} should it promisify callbacks
  */
 export function shouldPromisifyCallbacks(params) {
-  return params.promisifyReplyCallback;
+  return typeof params.promisifyReplyCallback === 'boolean' && params.promisifyReplyCallback
+    || typeof params.promisifyReplyCallback === 'string' && params.promisifyReplyCallback === 'true';
 }
 
 export function camelCase(string) {

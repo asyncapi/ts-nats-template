@@ -3,7 +3,7 @@
     "example_name": "simple-request"
   },
   "scripts": {
-    "generate:client": "../../node_modules/.bin/ag --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",
+    "generate:client": "../../node_modules/.bin/ag --output \"./asyncapi-nats-client\" \"./asyncapi.json\" \"../../\" --force-write --param \"generateTestClient=true\" --param \"promisifyReplyCallback=true\" && cd ./asyncapi-nats-client && npm i && npm run build && cd ..",
     "generate:client:windows": "cd ..\\.. && .\\node_modules\\.bin\\ag --output \".\\examples\\%npm_package_config_example_name%\\asyncapi-nats-client\" \".\\examples\\%npm_package_config_example_name%\\asyncapi.json\" \".\" --force-write --param \"promisifyReplyCallback=true\" && cd .\\examples\\%npm_package_config_example_name%\\asyncapi-nats-client && npm i && npm run build && cd ..",
     "start": "../../node_modules/.bin/ts-node --cwd ../../ ./examples/$npm_package_config_example_name/index.ts",
     "start:windows": "..\\..\\node_modules\\.bin\\ts-node --cwd ..\\..\\ .\\examples\\%npm_package_config_example_name%\\index.ts",

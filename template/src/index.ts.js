@@ -4,7 +4,7 @@ import { Publish } from '../../components/index/publish';
 import { Subscribe } from '../../components/index/subscribe';
 import { Reply } from '../../components/index/reply';
 import { Request } from '../../components/index/request';
-import { isRequestReply, isReplier, isRequester, isPubsub} from '../../utils/index';
+import { isRequestReply, isReplier, isRequester, isPubsub, shouldGenerateTestClient } from '../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../components/index/jetstreamPushSubscription';
@@ -16,8 +16,8 @@ import { JetstreamPublish } from '../../components/index/jetstreamPublish';
 /**
  * @typedef TemplateParameters
  * @type {object}
- * @property {boolean} generateTestClient - whether or not test client should be generated.
- * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
+ * @property {boolean|string} generateTestClient - whether or not test client should be generated.
+ * @property {boolean|string} promisifyReplyCallback - whether or not reply callbacks should be promisify.
  */
 
 /**
@@ -120,11 +120,11 @@ export default function index({ asyncapi, params }) {
   return (
     <File name="index.ts">
       {`
-${params.generateTestClient && 'import * as TestClient from \'./testclient/\';'}
+${shouldGenerateTestClient(params) ? 'import * as TestClient from \'./testclient/\';' : ''}
 ${getStandardHeaderCode(asyncapi, '.', './channels')}
 export {ErrorCode, NatsTypescriptTemplateError}
 
-${params.generateTestClient && 'export {TestClient};'}
+${shouldGenerateTestClient(params) ? 'export {TestClient};' : ''}
 
 /**
  * @class NatsAsyncApiClient

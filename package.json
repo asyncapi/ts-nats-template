@@ -92,12 +92,12 @@
 		"parameters": {
 			"generateTestClient": {
 				"description": "Generate the test client",
-				"default": "false",
+				"default": false,
 				"required": false
 			},
 			"promisifyReplyCallback": {
 				"description": "Use promises as callbacks for reply operation",
-				"default": "false",
+				"default": false,
 				"required": false
 			}
 		},

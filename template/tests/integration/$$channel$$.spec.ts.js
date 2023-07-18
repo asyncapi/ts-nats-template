@@ -1,7 +1,7 @@
 import { File } from '@asyncapi/generator-react-sdk';
 import { publish, subscribe } from '../../../components/test/publishSubscribe';
 import { request, reply } from '../../../components/test/requestReply';
-import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase} from '../../../utils/index';
+import { isRequestReply, isReplier, isRequester, isPubsub, pascalCase, shouldGenerateTestClient } from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { Channel } from '@asyncapi/parser';
 
@@ -52,7 +52,7 @@ function getTestCode(channel, channelName) {
 }
 
 export default function channelRender({ channelName, channel, params }) {
-  if (!params.generateTestClient) {
+  if (!shouldGenerateTestClient(params)) {
     return;
   }
 
