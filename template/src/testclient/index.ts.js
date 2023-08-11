@@ -4,7 +4,7 @@ import { Publish } from '../../../components/index/publish';
 import { Subscribe } from '../../../components/index/subscribe';
 import { Reply } from '../../../components/index/reply';
 import { Request } from '../../../components/index/request';
-import { isRequestReply, isReplier, isRequester, isPubsub} from '../../../utils/index';
+import { isRequestReply, isReplier, isRequester, isPubsub, shouldGenerateTestClient } from '../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
 import { JetstreamPullSubscribe } from '../../../components/index/jetStreamPullSubscription';
@@ -16,8 +16,8 @@ import { JetstreamPublish } from '../../../components/index/jetstreamPublish';
 /**
  * @typedef TemplateParameters
  * @type {object}
- * @property {boolean} generateTestClient - whether or not test client should be generated.
- * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
+ * @property {boolean|string} generateTestClient - whether or not test client should be generated.
+ * @property {boolean|string} promisifyReplyCallback - whether or not reply callbacks should be promisify.
  */
 
 /**
@@ -116,7 +116,7 @@ function getChannelWrappers(asyncapi, params) {
  * @param {RenderArgument} param0 render arguments received from the generator.
  */
 export default function indexFile({ asyncapi, params }) {
-  if (!params.generateTestClient) {
+  if (!shouldGenerateTestClient(params)) {
     return;
   }
 

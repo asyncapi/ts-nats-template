@@ -4,7 +4,7 @@ import { Subscribe } from '../../../../components/channel/subscribe';
 import { Reply } from '../../../../components/channel/reply';
 import { Request } from '../../../../components/channel/request';
 import { General } from '../../../../components/channel/general';
-import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase} from '../../../../utils/index';
+import { pascalCase, isRequestReply, isReplier, isRequester, isPubsub, camelCase, shouldGenerateTestClient } from '../../../../utils/index';
 // eslint-disable-next-line no-unused-vars
 import { AsyncAPIDocument, Channel } from '@asyncapi/parser';
 import { JetstreamPushSubscription } from '../../../../components/channel/jetstreamPushSubscription';
@@ -16,8 +16,8 @@ import { JetstreamPullSubscription } from '../../../../components/channel/jetStr
 /**
  * @typedef TemplateParameters
  * @type {object}
- * @property {boolean} generateTestClient - whether or not test client should be generated.
- * @property {boolean} promisifyReplyCallback - whether or not reply callbacks should be promisify.
+ * @property {boolean|string} generateTestClient - whether or not test client should be generated.
+ * @property {boolean|string} promisifyReplyCallback - whether or not reply callbacks should be promisify.
  */
 /**
  * @typedef RenderArgument
@@ -106,7 +106,7 @@ function getChannelCode(channel, channelName, params) {
  * @param {RenderArgument} param0 render arguments received from the generator.
  */
 export default function channelRender({ channelName, channel, params }) {
-  if (!params.generateTestClient) {
+  if (!shouldGenerateTestClient(params)) {
     return;
   }
 
